@@ -1,0 +1,235 @@
+@import "./common";
+
+#home {
+  background: linear-gradient(to right, #0186E1, #0298f4 50%, #0186E1);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  $left-width: 310px;
+
+  header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px $x-padding;
+    box-sizing: border-box;
+    -webkit-app-region: drag;
+
+    * {
+      -webkit-app-region: no-drag;
+      user-select: none;
+    }
+
+    img {
+      width: 16px;
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
+      color: white;
+      font-size: 13px;
+      width: $left-width;
+
+      .logo {
+        width: fit-content;
+        margin-right: 10px;
+      }
+
+      .login, .register {
+        cursor: pointer;
+        margin-right: 10px;
+      }
+
+      .yun-pan {
+        cursor: pointer;
+        opacity: 0.7;
+        margin-right: 10px;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .divide {
+        height: 12px;
+        width: 1px;
+        margin-right: 10px;
+        background-color: white;
+        opacity: 0.7;
+      }
+    }
+
+    .right {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-grow: 1;
+
+      .search {
+        display: flex;
+        align-items: center;
+        position: relative;
+
+        img, input {
+          margin: 0 5px;
+        }
+
+        img {
+          cursor: pointer;
+          opacity: 0.7;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+
+        .return {
+          transform: rotate(90deg);
+        }
+
+        input {
+          width: 260px;
+          background-color: #CCEBFB;
+          color: black;
+          font-size: 12px;
+          border-radius: 15px;
+          line-height: 25px;
+          padding: 0 30px 0 10px;
+          box-sizing: border-box;
+          border-width: 0;
+        }
+
+        .search-icon {
+          position: absolute;
+          top: 3px;
+          right: 35px;
+          width: 16px;
+          cursor: pointer;
+        }
+      }
+
+      .close-other {
+        display: flex;
+        align-items: center;
+
+        img {
+          margin: 0 8px;
+          opacity: 0.7;
+          cursor: pointer;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+
+        .divide {
+          width: 1px;
+          height: 12px;
+          opacity: 0.7;
+          margin: 0 8px;
+          background-color: white;
+        }
+
+        .remote-controller {
+          width: 10px;
+          height: 16px;
+        }
+
+        .hidden-left {
+          opacity: 0.7;
+          margin: 0 5px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+
+          &:hover {
+            opacity: 1;
+          }
+
+          .rect {
+            width: 4px;
+            height: 13px;
+            border: 1px solid white;
+            border-radius: 3px;
+          }
+
+          img {
+            width: 12px;
+            margin: 0;
+          }
+        }
+
+        .hidden-right {
+          @extend .hidden-left;
+          display: none;
+          transform: rotate(180deg);
+        }
+
+        .close {
+          width: 20px;
+        }
+      }
+    }
+
+    @media (max-width: $left-width) {
+      .right {
+        .search {
+          width: 0;
+          overflow: hidden;
+        }
+
+        .close-other {
+          .hidden-left, .divide, .can-hidden, .remote-controller {
+            display: none;
+          }
+
+          .hidden-right {
+            display: flex;
+          }
+        }
+      }
+    }
+  }
+
+  main {
+    -webkit-app-region: no-drag;
+    flex-grow: 1;
+    background: white;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    .left {
+      width: $left-width;
+      height: 100%;
+      border-right: 1px solid #dddddd;
+    }
+
+    .right {
+      flex-grow: 1;
+      height: 100%;
+      background-color: chartreuse;
+    }
+
+    @media (max-width: $left-width) {
+      .right {
+        display: none;
+      }
+    }
+  }
+
+  footer {
+    width: 100%;
+    -webkit-app-region: drag;
+    height: 86px;
+
+    * {
+      -webkit-app-region: no-drag;
+    }
+  }
+}

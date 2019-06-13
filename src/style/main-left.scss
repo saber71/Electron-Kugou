@@ -1,0 +1,168 @@
+@import "./common";
+
+#main-left {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  .banner {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px $x-padding;
+    box-sizing: border-box;
+    border-bottom: 1px solid #dddddd;
+
+    * {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .music {
+      background: url("../assets/yin-fu-gray.png") center center no-repeat;
+      background-size: contain;
+
+      &:hover {
+        background: url("../assets/yin-fu-dark.png") no-repeat center center;
+        background-size: contain;
+      }
+    }
+
+    .music-active, .music:active {
+      background: url("../assets/yin-fu-blue.png") center center no-repeat;
+      background-size: contain;
+    }
+
+    .cloud {
+      background: url("../assets/cloud-gray.png") center center no-repeat;
+      background-size: contain;
+
+      &:hover {
+        background: url("../assets/cloud-dark.png") center center no-repeat;
+        background-size: contain;
+      }
+    }
+
+    .cloud-active, .cloud:active {
+      background: url("../assets/cloud-blue.png") center center no-repeat;
+      background-size: contain;
+    }
+
+    .radio {
+      background: url("../assets/radio-gray.png") center center no-repeat;
+      background-size: contain;
+
+      &:hover {
+        background: url("../assets/radio-dark.png") center center no-repeat;
+        background-size: contain;
+      }
+    }
+
+    .radio-active, .radio:active {
+      background: url("../assets/radio-blue.png") center center no-repeat;
+      background-size: contain;
+    }
+
+    .mobile {
+      background: url("../assets/moblie-gray.png") center center no-repeat;
+      background-size: contain;
+
+      &:hover {
+        background: url("../assets/moblie-dark.png") center center no-repeat;
+        background-size: contain;
+      }
+    }
+
+    .mobile-active, .mobile:active {
+      background: url("../assets/moblie-blue.png") center center no-repeat;
+      background-size: contain;
+    }
+
+    .download {
+      background: url("../assets/download-gray.png") center center no-repeat;
+      background-size: contain;
+
+      &:hover {
+        background: url("../assets/download-dark.png") center center no-repeat;
+        background-size: contain;
+      }
+    }
+
+    .download-active, .download:active {
+      background: url("../assets/download-blue.png") center center no-repeat;
+      background-size: contain;
+    }
+  }
+
+  .arrow {
+    position: absolute;
+    top: 26px;
+    width: 32px;
+    transition: all 0.5s ease;
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      border: 7px solid transparent;
+      border-bottom-color: #dddddd;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 0;
+      height: 0;
+      border: 7px solid transparent;
+      border-bottom-color: white;
+    }
+  }
+
+  .content {
+    width: 100%;
+    height: calc(100% - 41px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+
+    .item {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      transition: all 0.5s ease;
+    }
+
+    .item1 {
+      @extend .item;
+      background-color: chartreuse;
+    }
+
+    .item2 {
+      @extend .item;
+      background-color: aqua;
+    }
+
+    .item3 {
+      @extend .item;
+      background-color: wheat;
+    }
+
+    .item4 {
+      @extend .item;
+      background-color: yellow;
+    }
+
+    .item5 {
+      @extend .item;
+      background-color: blue;
+    }
+  }
+}
