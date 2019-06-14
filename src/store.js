@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {getLocalStorageItem} from "@/js/util";
-import {ranBoolean, ranDataImage, ranInteger, ranName, ranTitle, ranWord} from "@/js/mock-random";
+import {ranBoolean, ranDataImage, ranInteger, ranName, ranSentence, ranTitle, ranWord} from "@/js/mock-random";
 import {
     autoLoginKey,
     customListKey,
@@ -34,7 +34,7 @@ for (let i = 0; i < 20; i++) {
 const loginHistory = [];
 for (let i = 0; i < 20; i++) {
     loginHistory.push({
-        account: ranBoolean() ? ranName() : ranInteger(10000000000, 20000000000),
+        account: ranBoolean() ? ranSentence(6, 20) : ranInteger(10000000000, 20000000000),
         password: ranWord(minPassword, maxPassword),
         byMessage: ranBoolean()
     })

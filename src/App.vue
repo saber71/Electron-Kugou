@@ -53,4 +53,8 @@
         display: block;
         width: fit-content;
     }
+
+    button {
+        border: none;
+    }
 </style>

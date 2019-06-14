@@ -14,18 +14,38 @@
                                     <label :class="{'label-active':activeLogin===0}" @click="activeLogin=0">密码登陆</label>
                                     <label :class="{'label-active':activeLogin===1}" @click="activeLogin=1">短信登陆</label>
                                 </div>
-                                <div class="form0" v-show="activeLogin===0">
-                                    <input v-model="userName" placeholder="用户名/手机/邮箱">
-                                    <input type="password" v-model="password" placeholder="请输入密码">
-                                    <div class="checked-group">
-                                        <div class="checkbox">
-                                            <input type="checkbox" v-model="rememberPassword">记住密码
-                                        </div>
-                                        <div class="checkbox">
-                                            <input type="checkbox">自动登陆
+                                <form class="form0" v-show="activeLogin===0">
+                                    <div class="input-account">
+                                        <input class="input" v-model="account" placeholder="用户名/手机/邮箱"
+                                               required
+                                               :maxlength="accountInputLimit.maxAccount"
+                                               :pattern="accountInputLimit.accountPattern">
+                                        <div class="popup">
+                                            <div class="item" v-for="v in matchAccountList" @click="clickLoginObj(v)">
+                                                {{v.account}}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <input class="input" type="password" v-model="password" placeholder="请输入密码"
+                                           required
+                                           :maxlength="accountInputLimit.maxPassword"
+                                           :pattern="accountInputLimit.passwordPattern">
+                                    <div class="option">
+                                        <div class="checked-group">
+                                            <div class="checkbox">
+                                                <input id="rememberPassword" type="checkbox" v-model="rememberPassword">
+                                                <label for="rememberPassword">记住密码</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <input id="autoLogin" type="checkbox" v-model="autoLogin">
+                                                <label for="autoLogin">自动登陆</label>
+                                            </div>
+                                        </div>
+                                        <div class="to-register" @click="toRegister">注册账号</div>
+                                    </div>
+                                    <p class="warn" :class="{'warn-active':visibleWarn}">用户名或密码不正确</p>
+                                    <button type="submit" class="button" @submit="login">登陆</button>
+                                </form>
                                 <div class="form1" v-show="activeLogin===1"></div>
                             </section>
                         </div>
@@ -86,7 +106,7 @@
 
 <script>
     import {getWindow} from "@/js/util";
-    import {minHeight, minWidth} from "@/js/_const";
+    import {maxAccount, maxPassword, minAccount, minHeight, minPassword, minWidth} from "@/js/_const";
     import MainLeft from "@/components/MainLeft";
     import MainRight from "@/components/MainRight";
 
@@ -100,36 +120,91 @@
             return {
                 searchText: '',
                 activeLogin: 0,
-                userName: '',
+                accountInputLimit: {
+                    maxPassword: maxPassword,
+                    maxAccount: maxAccount,
+                    passwordPattern: '',
+                    accountPattern: ''
+                },
+                account: '',
                 password: '',
-                rememberPassword: store.state.rememberPassword,
-                autoLogin: store.state.autoLogin
+                rememberPassword: this.$store.state.rememberPassword,
+                autoLogin: store.state.autoLogin,
+                visibleWarn: false,
+                matchAccountList: []
             }
         },
         watch: {
             rememberPassword(newVal) {
+                if (!newVal) {
+                    this.autoLogin = false
+                }
                 store.commit('rememberPassword', newVal)
             },
             autoLogin(newVal) {
+                if (newVal) {
+                    this.rememberPassword = true
+                }
                 store.commit('autoLogin', newVal)
+            },
+            account(newVal) {
+                this.matchAccountList = []
+                if (newVal !== '') {
+                    const list = store.state.loginHistory
+                    for (let i = 0; i < list.length; i++) {
+                        const obj = list[i]
+                        if (typeof obj.account === 'string' && obj.account.indexOf(newVal) >= 0) {
+                            this.matchAccountList.push(obj)
+                        }
+                    }
+                    if (this.matchAccountList.length === 1) {
+                        const obj = this.matchAccountList[0]
+                        if (obj.account === newVal) {
+                            this.matchAccountList = []
+                        }
+                    }
+                }
             }
-        },
-        computed: {},
+        }
+        ,
+        computed: {}
+        ,
         methods: {
+            login() {
+                return false
+            },
+            clickLoginObj(obj) {
+                this.account = obj.account;
+                this.password = obj.password;
+            },
+            toRegister() {
+                this.clickLogin()
+                this.clickRegister()
+            }
+            ,
+            toLogin() {
+                this.clickRegister()
+                this.clickLogin()
+            }
+            ,
             clickLogin() {
                 store.commit('visibleLogin')
-            },
+            }
+            ,
             clickRegister() {
                 store.commit('visibleRegister')
-            },
+            }
+            ,
             close() {
                 const win = getWindow();
                 win.close();
-            },
+            }
+            ,
             min() {
                 const win = getWindow();
                 win.minimize();
-            },
+            }
+            ,
             hiddenLeft() {
                 const win = getWindow();
                 let w = 310;
@@ -137,7 +212,8 @@
                 win.setMinimumSize(w, minHeight);
                 win.setResizable(false);
                 win.setBounds({width: w});
-            },
+            }
+            ,
             hiddenRight() {
                 const win = getWindow();
                 win.setResizable(true);
@@ -146,11 +222,16 @@
                     win.setMinimumSize(minWidth, minHeight);
                 })
             }
-        },
+        }
+        ,
         mounted() {
-        },
+        }
+        ,
         created() {
-        },
+            this.accountInputLimit.passwordPattern = `^\\w{${minPassword},${maxPassword}}$`
+            this.accountInputLimit.accountPattern = `^([^\\s=-\\\\+\\\\'\\\\"]*[a-zA-Z0-9]){${minAccount},${maxAccount}}$`
+        }
+        ,
         destroyed() {
         }
     }
