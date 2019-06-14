@@ -29,7 +29,7 @@
         props: {},
         data() {
             return {
-                activeBanner: 4,
+                activeBanner: 0,
             }
         },
         watch: {},
@@ -63,8 +63,10 @@
             }
         },
         mounted() {
+            // store.commit('setMainLeft', document.getElementById('main-left').getBoundingClientRect())
         },
         created() {
+            store.commit('initList');
         },
         destroyed() {
         }
