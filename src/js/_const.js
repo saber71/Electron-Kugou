@@ -4,13 +4,14 @@ export const minAccount = 6
 export const maxAccount = 20
 export const minPassword = 6
 export const maxPassword = 20
+
 export const defaultListKey = '默认列表'
 export const otherSourceListKey = '第三方列表'
 export const recentMusicListKey = '最近播放'
 export const recentMVListKey = '最近播放视频'
 export const customListKey = '自定义列表'
 export const loginHistoryKey = '登陆历史'
-export const inlineUserKey = '在线用户'
+export const onlineUserKey = '在线用户'
 export const rememberPasswordKey = '记住密码'
 export const autoLoginKey = '自动登陆'
 

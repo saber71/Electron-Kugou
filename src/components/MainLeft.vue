@@ -63,7 +63,7 @@
             }
         },
         mounted() {
-            // store.commit('setMainLeft', document.getElementById('main-left').getBoundingClientRect())
+            store.commit('setMainLeft', document.getElementById('main-left').getBoundingClientRect())
         },
         created() {
         },

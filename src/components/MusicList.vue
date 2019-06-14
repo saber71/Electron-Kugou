@@ -11,7 +11,8 @@
             </template>
             <template v-slot:items>
                 <div class="items">
-                    <div class="item" v-for="(v) in array">
+                    <div class="item" v-for="(v,i) in array"
+                         @mouseenter="musicPopupActive=i" @mouseleave="musicPopupActive=-1">
                         <div class="content">
                             <div class="text">
                                 <img src="../assets/add.png" title="稍后播">
@@ -27,7 +28,9 @@
                                 <span class="duration">{{formatDuration(v.duration)}}</span>
                             </div>
                         </div>
-                        <div class="popup">
+                        <div class="popup"
+                             :class="{'popup-active':musicPopupActive===i}"
+                             @mouseenter="musicPopupActive=-1">
                             <h6>{{name(v)}}</h6>
                             <div class="info">
                                 <img :src="v.img">
@@ -66,6 +69,7 @@
 
 <script>
     import List from "@/components/List";
+    import {isReachMainLeftBottom} from "@/js/util";
 
     export default {
         name: "MusicList",
@@ -96,6 +100,7 @@
             return {
                 visiblePopup: false,
                 popupHiddenOption: {},
+                musicPopupActive: -1
             }
         },
         watch: {},
@@ -246,9 +251,9 @@
                     right: 0;
                     top: 40px;
                     width: 250px;
+                    visibility: hidden;
                     box-shadow: 0 0 2px #777777;
                     padding: 10px;
-                    display: none;
                     background-color: white;
                     z-index: 10;
 
@@ -292,14 +297,8 @@
 
                 }
 
-                &:hover {
-                    .popup {
-                        display: block;
-                    }
-                }
-
-                .popup:hover {
-                    display: none;
+                .popup-active {
+                    visibility: visible;
                 }
             }
         }

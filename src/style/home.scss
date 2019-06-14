@@ -102,6 +102,43 @@
               box-sizing: border-box;
             }
           }
+
+          .loading {
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+
+            .bg {
+              width: 50px;
+              height: 50px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: rgba(0, 0, 0, 0.7);
+              border-radius: 1px;
+
+              img {
+                width: 32px;
+                height: 32px;
+                animation: loading-rotate 0.5s linear infinite;
+              }
+
+              @keyframes loading-rotate {
+                from {
+                  transform: rotate(0);
+                }
+                to {
+                  transform: rotate(360deg);
+                }
+              }
+            }
+          }
         }
 
         .login-sec {
@@ -157,7 +194,7 @@
               .input-account {
                 position: relative;
 
-                &:after {
+                .down {
                   content: '';
                   position: absolute;
                   right: 10px;

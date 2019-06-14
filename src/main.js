@@ -6,8 +6,13 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+const isDevelopment = process.env.NODE_ENV !== 'production'
+if (isDevelopment) {
+    import('./js/mock-ajax')
+}
+
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount('#app');

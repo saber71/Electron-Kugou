@@ -61,10 +61,14 @@ export function ranInteger(min, max) {
     return ran.integer(min, max);
 }
 
-export function ranBoolean() {
-    return ran.boolean();
+export function ranBoolean(current, min, max) {
+    return ran.boolean(min, max, current);
 }
 
 export function ranWord(min, max) {
     return ran.word(min, max)
+}
+
+export function ranImage(size) {
+    return ran.image(size)
 }

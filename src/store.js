@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {getLocalStorageItem} from "@/js/util";
+import {getLocalStorageItem, setLocalStorageItem} from "@/js/util";
 import {ranBoolean, ranDataImage, ranInteger, ranName, ranSentence, ranTitle, ranWord} from "@/js/mock-random";
 import {
     autoLoginKey,
     customListKey,
-    defaultListKey, inlineUserKey, loginHistoryKey,
+    defaultListKey, onlineUserKey, loginHistoryKey,
     maxPassword,
     minPassword,
     otherSourceListKey,
@@ -34,7 +34,7 @@ for (let i = 0; i < 20; i++) {
 const loginHistory = [];
 for (let i = 0; i < 20; i++) {
     loginHistory.push({
-        account: ranBoolean() ? ranSentence(6, 20) : ranInteger(10000000000, 20000000000),
+        account: ranBoolean() ? ranWord(6, 20) : ranInteger(10000000000, 20000000000),
         password: ranWord(minPassword, maxPassword),
         byMessage: ranBoolean()
     })
@@ -48,7 +48,7 @@ export default new Vuex.Store({
         recentMVList: getLocalStorageItem(recentMVListKey, []),
         customList: getLocalStorageItem(customListKey, []),
         loginHistory: getLocalStorageItem(loginHistoryKey, loginHistory),
-        inlineUser: getLocalStorageItem(inlineUserKey, {}),
+        onlineUser: getLocalStorageItem(onlineUserKey, undefined),
         rememberPassword: getLocalStorageItem(rememberPasswordKey, false),
         autoLogin: getLocalStorageItem(autoLoginKey, false),
 
@@ -70,19 +70,19 @@ export default new Vuex.Store({
         },
         defaultListPush(state, val) {
             state.defaultList.push(val)
-            localStorage.setItem(defaultListKey, state.defaultList)
+            setLocalStorageItem(defaultListKey, state.defaultList)
         },
         autoLogin(state, val) {
             state.autoLogin = val
-            localStorage.setItem(autoLoginKey, val)
+            setLocalStorageItem(autoLoginKey, val)
         },
         rememberPassword(state, val) {
             state.rememberPassword = val
-            localStorage.setItem(rememberPasswordKey, val)
+            setLocalStorageItem(rememberPasswordKey, val)
         },
-        inlineUser(state, val) {
-            state.inlineUser = val
-            localStorage.setItem(inlineUserKey, val)
+        onlineUser(state, val) {
+            state.onlineUser = val
+            setLocalStorageItem(onlineUserKey, val)
         },
         loginHistoryPush(state, val) {
             let i = 0;
@@ -96,7 +96,7 @@ export default new Vuex.Store({
             if (i >= state.loginHistory.length) {
                 state.loginHistory.push(val)
             }
-            localStorage.setItem(loginHistoryKey, state.loginHistory)
+            setLocalStorageItem(loginHistoryKey, state.loginHistory)
         }
     },
     actions: {}

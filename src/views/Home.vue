@@ -20,6 +20,7 @@
                                                required
                                                :maxlength="accountInputLimit.maxAccount"
                                                :pattern="accountInputLimit.accountPattern">
+                                        <div class="down" @click="clickAccountInputDown"></div>
                                         <div class="popup">
                                             <div class="item" v-for="v in matchAccountList" @click="clickLoginObj(v)">
                                                 {{v.account}}
@@ -44,10 +45,15 @@
                                         <div class="to-register" @click="toRegister">注册账号</div>
                                     </div>
                                     <p class="warn" :class="{'warn-active':visibleWarn}">用户名或密码不正确</p>
-                                    <button type="submit" class="button" @submit="login">登陆</button>
+                                    <button type="button" class="button" @click="login">登陆</button>
                                 </form>
                                 <div class="form1" v-show="activeLogin===1"></div>
                             </section>
+                        </div>
+                        <div class="loading" v-show="loading">
+                            <div class="bg">
+                                <img src="../assets/loading.png">
+                            </div>
                         </div>
                     </section>
                 </div>
@@ -58,6 +64,11 @@
                         <div class="mask" @click="clickRegister"></div>
                         <div class="region">
                             <h3 class="title">注册账号<img src="../assets/close.png" @click="clickRegister"></h3>
+                        </div>
+                        <div class="loading" v-show="loading">
+                            <div class="bg">
+                                <img src="../assets/loading.png">
+                            </div>
                         </div>
                     </section>
                 </div>
@@ -109,6 +120,7 @@
     import {maxAccount, maxPassword, minAccount, minHeight, minPassword, minWidth} from "@/js/_const";
     import MainLeft from "@/components/MainLeft";
     import MainRight from "@/components/MainRight";
+    import ajax from "@/js/ajax";
 
     let width = minWidth;
 
@@ -131,7 +143,8 @@
                 rememberPassword: this.$store.state.rememberPassword,
                 autoLogin: store.state.autoLogin,
                 visibleWarn: false,
-                matchAccountList: []
+                matchAccountList: [],
+                loading: false
             }
         },
         watch: {
@@ -165,13 +178,29 @@
                     }
                 }
             }
-        }
-        ,
-        computed: {}
-        ,
+        },
+        computed: {},
         methods: {
-            login() {
+            clickAccountInputDown() {
+                this.matchAccountList = store.state.loginHistory
+            },
+            async login() {
+                const obj = {
+                    account: this.account,
+                    password: this.password
+                }
+                this.setLoading()
+                const res = (await ajax.login(obj)).data
+                this.setLoading()
+                if (res) {
+                    store.commit('onlineUser', obj)
+                    this.clickLogin()
+                }
+                this.visibleWarn = !res
                 return false
+            },
+            setLoading() {
+                this.loading = !this.loading
             },
             clickLoginObj(obj) {
                 this.account = obj.account;
@@ -180,31 +209,25 @@
             toRegister() {
                 this.clickLogin()
                 this.clickRegister()
-            }
-            ,
+            },
             toLogin() {
                 this.clickRegister()
                 this.clickLogin()
-            }
-            ,
+            },
             clickLogin() {
                 store.commit('visibleLogin')
-            }
-            ,
+            },
             clickRegister() {
                 store.commit('visibleRegister')
-            }
-            ,
+            },
             close() {
                 const win = getWindow();
                 win.close();
-            }
-            ,
+            },
             min() {
                 const win = getWindow();
                 win.minimize();
-            }
-            ,
+            },
             hiddenLeft() {
                 const win = getWindow();
                 let w = 310;
@@ -212,8 +235,7 @@
                 win.setMinimumSize(w, minHeight);
                 win.setResizable(false);
                 win.setBounds({width: w});
-            }
-            ,
+            },
             hiddenRight() {
                 const win = getWindow();
                 win.setResizable(true);
@@ -222,16 +244,13 @@
                     win.setMinimumSize(minWidth, minHeight);
                 })
             }
-        }
-        ,
+        },
         mounted() {
-        }
-        ,
+        },
         created() {
             this.accountInputLimit.passwordPattern = `^\\w{${minPassword},${maxPassword}}$`
             this.accountInputLimit.accountPattern = `^([^\\s=-\\\\+\\\\'\\\\"]*[a-zA-Z0-9]){${minAccount},${maxAccount}}$`
-        }
-        ,
+        },
         destroyed() {
         }
     }
