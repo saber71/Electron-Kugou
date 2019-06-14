@@ -53,18 +53,20 @@
   }
 
   .list-popup {
-    position: absolute;
+    position: fixed;
     left: -100%;
     top: -100%;
     width: 100%;
+    height: 100%;
     padding: 10px 0;
     transform: scale(0);
     opacity: 0;
     transition: all 0.5s ease;
+    z-index: 10;
+    overflow-y: auto;
 
     .mask {
-      content: '';
-      position: absolute;
+      position: fixed;
       left: 0;
       top: 0;
       width: 100%;
@@ -73,11 +75,14 @@
     }
 
     .content {
-      width: 70%;
-      height: fit-content;
+      position: absolute;
+      left: 25%;
+      top: 10px;
+      width: 50%;
+      height: calc(100% - 10px);
       margin: auto;
       border-radius: 5px;
-      overflow: hidden;
+      overflow-y: auto;
 
       .title {
         width: 100%;

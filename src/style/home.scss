@@ -40,14 +40,119 @@
       }
 
       .login, .register {
-        cursor: pointer;
-        margin-right: 10px;
+        label {
+          display: block;
+          cursor: pointer;
+          margin-right: 10px;
+        }
+
+        .login-sec, .register-sec {
+          position: fixed;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+
+          .mask {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+          }
+
+          .region {
+            width: 400px;
+            height: 400px;
+            margin: 50px auto;
+            @media (max-width: $left-width) {
+              width: $left-width;
+            }
+
+            .title {
+              margin: 0;
+              padding: 10px 10px;
+              color: white;
+              font-size: 14px;
+              font-weight: normal;
+              background-color: #009CE9;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              width: 100%;
+              box-sizing: border-box;
+
+              img {
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+              }
+            }
+
+            .body {
+              width: 100%;
+              height: 100%;
+              background: white;
+              padding: 50px;
+              box-sizing: border-box;
+            }
+          }
+        }
+      }
+
+      .login-sec {
+        .body {
+          .label {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+
+            label {
+              display: block;
+              width: 100%;
+              border-bottom: 1px solid #dddddd;
+              color: rgba(0, 0, 0, 0.7);
+              font-weight: bold;
+              font-size: 16px;
+              text-align: center;
+              line-height: 30px;
+              cursor: pointer;
+              box-sizing: border-box;
+
+              &:hover {
+                color: #0298f4;
+              }
+            }
+
+            .label-active {
+              color: #0298f4;
+              border-bottom: 2px solid #0298f4;
+            }
+          }
+
+          .form0 {
+            input {
+              width: 100%;
+              font-size: 16px;
+              color: #333333;
+              margin-top: 20px;
+              padding: 10px 5px;
+              box-sizing: border-box;
+              border: 1px solid #dddddd;
+
+              &:focus {
+                border-color: #aaaaaa;
+              }
+            }
+          }
+        }
       }
 
       .yun-pan {
         cursor: pointer;
         opacity: 0.7;
-        margin-right: 10px;
 
         &:hover {
           opacity: 1;

@@ -69,7 +69,7 @@
             </div>
         </div>
         <section class="container" :style="{height:containerHeight}">
-            <div class="content">
+            <div class="music-content">
                 <slot name="items"></slot>
             </div>
         </section>
@@ -111,9 +111,9 @@
         computed: {
             containerHeight() {
                 if (this.visibleContainer) {
-                    const content = document.getElementsByClassName('content').item(0);
+                    const content = document.getElementsByClassName('music-content').item(0);
                     if (content) {
-                        return content.getBoundingClientRect.height + 'px'
+                        return content.getBoundingClientRect().height + 'px'
                     }
                 }
                 return '0';

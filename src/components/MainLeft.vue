@@ -66,7 +66,6 @@
             // store.commit('setMainLeft', document.getElementById('main-left').getBoundingClientRect())
         },
         created() {
-            store.commit('initList');
         },
         destroyed() {
         }

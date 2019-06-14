@@ -64,3 +64,7 @@ export function ranInteger(min, max) {
 export function ranBoolean() {
     return ran.boolean();
 }
+
+export function ranWord(min, max) {
+    return ran.word(min, max)
+}

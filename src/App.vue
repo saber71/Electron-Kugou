@@ -5,6 +5,9 @@
 </template>
 
 <script>
+    import Vue from "vue";
+    import {getPlayTimes} from "@/js/util";
+
     export default {
         name: 'app',
         errorCaptured(err, vm, info) {
@@ -15,6 +18,20 @@
             window.store = this.$store;
             window.axios = this.$axios;
             window.state = store.state;
+            Vue.mixin({
+                methods: {
+                    //格式化时间，参数单位秒
+                    formatDuration(seconds) {
+                        let minute = parseInt(seconds / 60)
+                        let second = seconds - minute * 60
+                        return (minute < 10 ? '0' + minute : minute) + ':' + (second < 10 ? '0' + second : second)
+                    },
+                    //获取歌曲的播放次数
+                    musicPlayTimes(music) {
+                        return getPlayTimes(music)
+                    }
+                }
+            })
         }
     }
 </script>
