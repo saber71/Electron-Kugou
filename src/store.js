@@ -56,17 +56,27 @@ export default new Vuex.Store({
         mainLeftHeight: 0,
         visibleLogin: false,
         visibleRegister: false,
+        verificationCode: -21321321
     },
     mutations: {
+        verificationCode(state, val) {
+            state.verificationCode = val
+        },
         setMainLeft(state, rect) {
             state.mainLeftY = rect.y;
             state.mainLeftHeight = rect.height;
         },
-        visibleLogin(state) {
-            state.visibleLogin = !state.visibleLogin
+        visibleLogin(state, val) {
+            if (val === undefined || val === null) {
+                val = !state.visibleLogin
+            }
+            state.visibleLogin = val
         },
-        visibleRegister(state) {
-            state.visibleRegister = !state.visibleRegister
+        visibleRegister(state, val) {
+            if (val === undefined || val === null) {
+                val = !state.visibleRegister
+            }
+            state.visibleRegister = val
         },
         defaultListPush(state, val) {
             state.defaultList.push(val)

@@ -37,6 +37,7 @@ export function setPlayTimes(music) {
 //判断组件是否触及了main-left的底部
 export function isReachMainLeftBottom(y, height) {
     const bottom = store.state.mainLeftY + store.state.mainLeftHeight
+    // alert(y + " " + height + '  ' + bottom)
     return y + height >= bottom
 }
 

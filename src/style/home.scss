@@ -171,26 +171,60 @@
               }
             }
 
-            .form0 {
-              .input {
+            .input {
+              width: 100%;
+              font-size: 16px;
+              color: #333333;
+              margin-bottom: 10px;
+              padding: 10px 5px;
+              box-sizing: border-box;
+              border: 1px solid #dddddd;
+              border-radius: 1px;
+
+              &:focus {
+                border-color: #aaaaaa;
+              }
+            }
+
+            .input-invalid {
+              border-color: red;
+            }
+
+            .warn {
+              color: red;
+              font-size: 12px;
+              padding: 5px 0;
+              margin: 0;
+            }
+
+            .button {
+              width: 100%;
+              font-size: 18px;
+              color: white;
+              background-color: #0C8EE6;
+              padding: 10px 0;
+              cursor: pointer;
+              position: relative;
+              text-align: center;
+              border: none;
+              border-radius: 1px;
+
+              &:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
                 width: 100%;
-                font-size: 16px;
-                color: #333333;
-                margin-bottom: 10px;
-                padding: 10px 5px;
-                box-sizing: border-box;
-                border: 1px solid #dddddd;
-                border-radius: 1px;
-
-                &:focus {
-                  border-color: #aaaaaa;
-                }
-
-                &:invalid {
-                  border-color: red;
-                }
+                height: 100%;
+                background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
               }
 
+              &:hover {
+                filter: brightness(120%);
+              }
+            }
+
+            .form0 {
               .input-account {
                 position: relative;
 
@@ -263,42 +297,33 @@
                   cursor: pointer;
                 }
               }
+            }
 
-              .warn {
-                color: red;
-                font-size: 12px;
-                padding: 5px 0;
-                margin: 0;
-                visibility: hidden;
-              }
+            .form1 {
+              .line2 {
+                display: flex;
+                align-items: center;
 
-              .warn-active {
-                visibility: visible;
-              }
-
-              .button {
-                width: 100%;
-                font-size: 18px;
-                color: white;
-                background-color: #0C8EE6;
-                padding: 10px 0;
-                cursor: pointer;
-                position: relative;
-                text-align: center;
-                border: none;
-
-                &:before {
-                  content: '';
-                  position: absolute;
-                  left: 0;
-                  top: 0;
-                  width: 100%;
-                  height: 100%;
-                  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
+                .verification-code {
+                  width: 60%;
                 }
 
-                &:hover {
-                  filter: brightness(120%);
+                .send-message {
+                  width: calc(40% - 10px);
+                  margin-left: 10px;
+                  margin-top: -9px;
+                  border: 1px solid gray;
+                  font-size: 12px;
+                  color: #444444;
+                  text-align: center;
+                  line-height: 35px;
+                  background: white;
+                  cursor: pointer;
+                }
+
+                .send-message-disabled {
+                  cursor: default;
+                  background: gray;
                 }
               }
             }

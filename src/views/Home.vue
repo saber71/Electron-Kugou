@@ -16,10 +16,9 @@
                                 </div>
                                 <form class="form0" v-show="activeLogin===0">
                                     <div class="input-account">
-                                        <input class="input" v-model="account" placeholder="用户名/手机/邮箱"
-                                               required
-                                               :maxlength="accountInputLimit.maxAccount"
-                                               :pattern="accountInputLimit.accountPattern">
+                                        <input class="input" :class="{'input-invalid':accountInvalid}"
+                                               v-model="account" placeholder="用户名/手机/邮箱" required
+                                               :maxlength="accountInputLimit.maxAccount">
                                         <div class="down" @click="clickAccountInputDown"></div>
                                         <div class="popup">
                                             <div class="item" v-for="v in matchAccountList" @click="clickLoginObj(v)">
@@ -27,10 +26,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <input class="input" type="password" v-model="password" placeholder="请输入密码"
-                                           required
-                                           :maxlength="accountInputLimit.maxPassword"
-                                           :pattern="accountInputLimit.passwordPattern">
+                                    <input class="input" :class="{'input-invalid':passwordInvalid}"
+                                           type="password" v-model="password" placeholder="请输入密码"
+                                           required :maxlength="accountInputLimit.maxPassword">
                                     <div class="option">
                                         <div class="checked-group">
                                             <div class="checkbox">
@@ -44,10 +42,26 @@
                                         </div>
                                         <div class="to-register" @click="toRegister">注册账号</div>
                                     </div>
-                                    <p class="warn" :class="{'warn-active':visibleWarn}">用户名或密码不正确</p>
+                                    <p class="warn">{{warnMessage}}</p>
                                     <button type="button" class="button" @click="login">登陆</button>
                                 </form>
-                                <div class="form1" v-show="activeLogin===1"></div>
+                                <form class="form1" v-show="activeLogin===1">
+                                    <input class="input" :class="{'input-invalid':accountInvalid}"
+                                           v-model="account" placeholder="请输入手机号" maxlength="11" required>
+                                    <div class="line2">
+                                        <input class="input verification-code"
+                                               :class="{'input-invalid':passwordInvalid}"
+                                               v-model="password" placeholder="请输入验证码"
+                                               required maxlength="6">
+                                        <button type="button" class="send-message"
+                                                :class="{'send-message-disabled':!canSendMessage}"
+                                                @click="sendVerificationCode">
+                                            {{canSendMessage?'短信获取':`重新发送(${countDown}秒)`}}
+                                        </button>
+                                    </div>
+                                    <p class="warn">{{warnMessage}}</p>
+                                    <button type="button" class="button" @click="messageLogin">登陆</button>
+                                </form>
                             </section>
                         </div>
                         <div class="loading" v-show="loading">
@@ -121,6 +135,7 @@
     import MainLeft from "@/components/MainLeft";
     import MainRight from "@/components/MainRight";
     import ajax from "@/js/ajax";
+    import {ranInteger} from "@/js/mock-random";
 
     let width = minWidth;
 
@@ -140,11 +155,16 @@
                 },
                 account: '',
                 password: '',
+                accountInvalid: false,
+                passwordInvalid: false,
                 rememberPassword: this.$store.state.rememberPassword,
                 autoLogin: store.state.autoLogin,
                 visibleWarn: false,
                 matchAccountList: [],
-                loading: false
+                loading: false,
+                warnMessage: '',
+                canSendMessage: true,
+                countDown: 60
             }
         },
         watch: {
@@ -177,14 +197,114 @@
                         }
                     }
                 }
+            },
+            activeLogin() {
+                this.account = ''
+                this.password = ''
+                this.warnMessage = ''
+                this.accountInvalid = false
+                this.passwordInvalid = false
             }
         },
         computed: {},
         methods: {
+            sendVerificationCode() {
+                if (!this.canSendMessage) {
+                    return;
+                }
+                this.warnMessage = ''
+                this.accountInvalid = false
+                if (this.account === '') {
+                    this.accountInvalid = true
+                    this.warnMessage = '请输入手机号'
+                    return
+                }
+                const account = parseInt(this.account)
+                if (account <= 10000000000 || account >= 20000000000) {
+                    this.accountInvalid = true
+                    this.warnMessage = '无效的手机号'
+                    return
+                }
+                const code = ranInteger(100000, 999999)
+                store.commit('verificationCode', code)
+                setTimeout(() => {
+                    alert(code)
+                }, ranInteger(500, 2000))
+                this.canSendMessage = false
+                this.countDown = 60
+                const handler = setInterval(() => {
+                    if (this.countDown < 0) {
+                        this.canSendMessage = true
+                        clearInterval(handler)
+                        return
+                    }
+                    this.countDown--
+                }, 1000)
+            },
             clickAccountInputDown() {
                 this.matchAccountList = store.state.loginHistory
             },
+            async messageLogin() {
+                this.warnMessage = ''
+                this.accountInvalid = false
+                this.passwordInvalid = false
+                const account = this.account
+                if (account === '' || this.password === '') {
+                    this.warnMessage = '请输入手机号和验证码'
+                    this.accountInvalid = account === ''
+                    this.passwordInvalid = this.password === ''
+                    return
+                }
+                if (account <= 10000000000 || account >= 20000000000) {
+                    this.accountInvalid = true
+                    this.warnMessage = '无效的手机号'
+                    return
+                }
+                if (parseInt(this.password) !== store.state.verificationCode || store.state.verificationCode < 0) {
+                    this.passwordInvalid = true
+                    this.warnMessage = '无效的验证码'
+                    alert((this.password !== store.state.verificationCode) + '  ' + this.password + '  ' + store.state.verificationCode)
+                    return
+                }
+                this.setLoading()
+                const res = (await ajax.msgLogin(account)).data
+                if (res) {
+                    this.clickLogin()
+                    const obj = {
+                        account,
+                        password: '',
+                        byMessage: true
+                    }
+                    store.commit('onlineUser', obj)
+                    store.commit('loginHistoryPush', obj)
+                } else {
+                    this.clickLogin(true)
+                    this.accountInvalid = true
+                    this.password = ''
+                    this.warnMessage = '账号不存在'
+                }
+                this.setLoading()
+            },
             async login() {
+                this.warnMessage = ''
+                this.accountInvalid = false
+                this.passwordInvalid = false
+                if (this.account === '' || this.password === '') {
+                    this.warnMessage = '请输入账号和密码'
+                    this.accountInvalid = this.account === ''
+                    this.passwordInvalid = this.password === ''
+                    return
+                }
+                if (new RegExp(this.accountInputLimit.accountPattern).test(this.account) === false) {
+                    this.accountInvalid = true
+                    this.warnMessage = '无效的账号'
+                    return
+                }
+                if (new RegExp(this.accountInputLimit.passwordPattern).test(this.password) === false) {
+                    this.passwordInvalid = true
+                    this.warnMessage = '无效的密码'
+                    return
+                }
                 const obj = {
                     account: this.account,
                     password: this.password
@@ -194,10 +314,12 @@
                 this.setLoading()
                 if (res) {
                     store.commit('onlineUser', obj)
+                    store.commit('loginHistoryPush', obj)
                     this.clickLogin()
+                } else {
+                    this.clickLogin(true)
+                    this.warnMessage = '账号或密码错误'
                 }
-                this.visibleWarn = !res
-                return false
             },
             setLoading() {
                 this.loading = !this.loading
@@ -214,11 +336,11 @@
                 this.clickRegister()
                 this.clickLogin()
             },
-            clickLogin() {
-                store.commit('visibleLogin')
+            clickLogin(val) {
+                store.commit('visibleLogin', val)
             },
-            clickRegister() {
-                store.commit('visibleRegister')
+            clickRegister(val) {
+                store.commit('visibleRegister', val)
             },
             close() {
                 const win = getWindow();
