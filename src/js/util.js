@@ -41,6 +41,31 @@ export function isReachMainLeftBottom(y, height) {
     return y + height >= bottom
 }
 
+//有一个参数为null或undefined或空字符串
+export function strNoVal() {
+    for (let i = 0; i < arguments.length; i++) {
+        const str = arguments[i]
+        if (objNoVal(str) || str === '') {
+            return true
+        }
+    }
+    return false
+}
+
+//有一个参数为null或undefined
+export function objNoVal(obj) {
+    if (arguments.length === 1)
+        return obj === null || obj === undefined
+    else {
+        for (let i = 0; i < arguments.length; i++) {
+            const obj = arguments[i]
+            if (obj === null || obj === undefined)
+                return true
+        }
+        return false
+    }
+}
+
 //获取歌曲的key
 function musicKey(music) {
     return music.name + ' - ' + music.singer

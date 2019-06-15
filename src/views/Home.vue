@@ -77,7 +77,62 @@
                     <section class="register-sec" v-show="$store.state.visibleRegister">
                         <div class="mask" @click="clickRegister"></div>
                         <div class="region">
-                            <h3 class="title">注册账号<img src="../assets/close.png" @click="clickRegister"></h3>
+                            <h3 class="title">快速注册<img src="../assets/close.png" @click="clickRegister"></h3>
+                            <form class="body">
+                                <div class="element">
+                                    <label>手机号码</label>
+                                    <input class="form-input" maxlength="11" placeholder="请输入手机号码"
+                                           v-model="registerInput.phone">
+                                </div>
+                                <p class="warn">{{registerWarn.phoneMsg}}</p>
+                                <div class="element">
+                                    <label>短信验证</label>
+                                    <input class="form-input-code" maxlength="6" v-model="registerInput.code">
+                                    <button class="send-message">
+                                        {{registerCanSendMessage?'获取短信':`重新获取(${registerCountDown}秒)`}}
+                                    </button>
+                                </div>
+                                <p class="warn">{{registerWarn.codeMsg}}</p>
+                                <div class="element">
+                                    <label>密码</label>
+                                    <div class="password-input">
+                                        <input class="form-input" :maxlength="accountInputLimit.maxPassword"
+                                               placeholder="请输入密码" v-model="registerInput.password">
+                                    </div>
+                                </div>
+                                <p class="warn">{{registerWarn.passwordMsg}}</p>
+                                <div class="element">
+                                    <label>重复密码</label>
+                                    <input class="form-input" :maxlength="accountInputLimit.maxPassword"
+                                           placeholder="请再次输入密码" v-model="registerInput.twicePassword">
+                                </div>
+                                <p class="warn">{{registerWarn.twicePasswordMsg}}</p>
+                                <div class="element">
+                                    <label>性别</label>
+                                    <div class="radio-group">
+                                        <input type="radio" name="sex" v-model="registerInput.man">男
+                                        <input type="radio" name="sex" v-model="registerInput.woman">女
+                                    </div>
+                                </div>
+                                <p class="warn">{{registerWarn.sexMsg}}</p>
+                                <div class="element">
+                                    <label></label>
+                                    <div class="read">
+                                        <input class="form-checked" v-model="registerInput.read">
+                                        我已阅读并同意<span class="with-underline">用户协议</span>、<span class="with-underline">隐私政策</span>
+                                    </div>
+                                </div>
+                                <div class="element">
+                                    <label></label>
+                                    <div class="button-register">注册</div>
+                                </div>
+                                <div class="element">
+                                    <label></label>
+                                    <div class="text">
+                                        已注册，<span class="to-login">去登录</span>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                         <div class="loading" v-show="loading">
                             <div class="bg">
@@ -130,7 +185,7 @@
 </template>
 
 <script>
-    import {getWindow} from "@/js/util";
+    import {getWindow, strNoVal} from "@/js/util";
     import {maxAccount, maxPassword, minAccount, minHeight, minPassword, minWidth} from "@/js/_const";
     import MainLeft from "@/components/MainLeft";
     import MainRight from "@/components/MainRight";
@@ -164,7 +219,30 @@
                 loading: false,
                 warnMessage: '',
                 canSendMessage: true,
-                countDown: 60
+                registerCanSendMessage: true,
+                countDown: 60,
+                registerCountDown: 0,
+                registerWarn: {
+                    phone: false,
+                    phoneMsg: '',
+                    code: false,
+                    codeMsg: '',
+                    password: false,
+                    passwordMsg: '请输入6-16位的数字或字符',
+                    twicePassword: false,
+                    twicePasswordMsg: '',
+                    sex: false,
+                    sexMsg: ''
+                },
+                registerInput: {
+                    phone: '',
+                    code: '',
+                    password: '',
+                    twicePassword: '',
+                    man: false,
+                    woman: false,
+                    read: false,
+                }
             }
         },
         watch: {
@@ -214,13 +292,13 @@
                 }
                 this.warnMessage = ''
                 this.accountInvalid = false
-                if (this.account === '') {
+                if (strNoVal(this.account)) {
                     this.accountInvalid = true
                     this.warnMessage = '请输入手机号'
                     return
                 }
                 const account = parseInt(this.account)
-                if (account <= 10000000000 || account >= 20000000000) {
+                if (!validPhone(account)) {
                     this.accountInvalid = true
                     this.warnMessage = '无效的手机号'
                     return
@@ -233,7 +311,7 @@
                 this.canSendMessage = false
                 this.countDown = 60
                 const handler = setInterval(() => {
-                    if (this.countDown < 0) {
+                    if (this.countDown <= 0) {
                         this.canSendMessage = true
                         clearInterval(handler)
                         return
@@ -249,18 +327,18 @@
                 this.accountInvalid = false
                 this.passwordInvalid = false
                 const account = this.account
-                if (account === '' || this.password === '') {
+                if (strNoVal(account, this.password)) {
                     this.warnMessage = '请输入手机号和验证码'
                     this.accountInvalid = account === ''
                     this.passwordInvalid = this.password === ''
                     return
                 }
-                if (account <= 10000000000 || account >= 20000000000) {
+                if (!validPhone(account)) {
                     this.accountInvalid = true
                     this.warnMessage = '无效的手机号'
                     return
                 }
-                if (parseInt(this.password) !== store.state.verificationCode || store.state.verificationCode < 0) {
+                if (!validVerificationCode(this.password)) {
                     this.passwordInvalid = true
                     this.warnMessage = '无效的验证码'
                     alert((this.password !== store.state.verificationCode) + '  ' + this.password + '  ' + store.state.verificationCode)
@@ -289,7 +367,7 @@
                 this.warnMessage = ''
                 this.accountInvalid = false
                 this.passwordInvalid = false
-                if (this.account === '' || this.password === '') {
+                if (strNoVal(this.account, this.password)) {
                     this.warnMessage = '请输入账号和密码'
                     this.accountInvalid = this.account === ''
                     this.passwordInvalid = this.password === ''
@@ -375,6 +453,15 @@
         },
         destroyed() {
         }
+    }
+
+    function validPhone(phone) {
+        phone = parseInt(phone)
+        return phone > 10000000000 && phone < 20000000000
+    }
+
+    function validVerificationCode(code) {
+        return parseInt(code) === store.state.verificationCode
     }
 </script>
 
