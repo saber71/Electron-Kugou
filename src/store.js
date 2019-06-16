@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {getLocalStorageItem, setLocalStorageItem} from "@/js/util";
+import {getLocalStorageItem, objNoVal, setLocalStorageItem} from "@/js/util";
 import {ranBoolean, ranDataImage, ranInteger, ranName, ranSentence, ranTitle, ranWord} from "@/js/mock-random";
 import {
     autoLoginKey,
@@ -67,13 +67,13 @@ export default new Vuex.Store({
             state.mainLeftHeight = rect.height;
         },
         visibleLogin(state, val) {
-            if (val === undefined || val === null) {
+            if (objNoVal(val)) {
                 val = !state.visibleLogin
             }
             state.visibleLogin = val
         },
         visibleRegister(state, val) {
-            if (val === undefined || val === null) {
+            if (objNoVal(val)) {
                 val = !state.visibleRegister
             }
             state.visibleRegister = val

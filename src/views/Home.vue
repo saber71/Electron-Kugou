@@ -6,9 +6,9 @@
                 <div class="login">
                     <label @click="clickLogin">登陆</label>
                     <section class="login-sec" v-show="$store.state.visibleLogin">
-                        <div class="mask" @click="clickLogin"></div>
+                        <div class="mask" @click="clickLogin(false)"></div>
                         <div class="region">
-                            <h3 class="title">登陆账号<img src="../assets/close.png" @click="clickLogin"></h3>
+                            <h3 class="title">登陆账号<img src="../assets/close.png" @click="clickLogin(false)"></h3>
                             <section class="body">
                                 <div class="label">
                                     <label :class="{'label-active':activeLogin===0}" @click="activeLogin=0">密码登陆</label>
@@ -75,50 +75,67 @@
                 <div class="register">
                     <label @click="clickRegister">注册</label>
                     <section class="register-sec" v-show="$store.state.visibleRegister">
-                        <div class="mask" @click="clickRegister"></div>
+                        <div class="mask" @click="clickRegister(false)"></div>
                         <div class="region">
-                            <h3 class="title">快速注册<img src="../assets/close.png" @click="clickRegister"></h3>
+                            <h3 class="title">快速注册<img src="../assets/close.png" @click="clickRegister(false)"></h3>
                             <form class="body">
                                 <div class="element">
                                     <label>手机号码</label>
-                                    <input class="form-input" maxlength="11" placeholder="请输入手机号码"
-                                           v-model="registerInput.phone">
+                                    <input class="form-input" :class="{'input-warn':registerWarn.phone}"
+                                           @blur="()=>this.registerInput.phoneValidator()"
+                                           maxlength="11" placeholder="请输入手机号码" v-model="registerInput.phone">
+                                    <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.phone">
                                 </div>
-                                <p class="warn">{{registerWarn.phoneMsg}}</p>
+                                <p class="warn" :class="{'warn-active':registerWarn.phone}">
+                                    {{registerWarn.phoneMsg}}</p>
                                 <div class="element">
                                     <label>短信验证</label>
-                                    <input class="form-input-code" maxlength="6" v-model="registerInput.code">
-                                    <button class="send-message">
+                                    <input class="form-input-code" :class="{'input-warn':registerWarn.code}"
+                                           @blur="()=>this.registerInput.codeValidator()"
+                                           maxlength="6" v-model="registerInput.code">
+                                    <button class="send-message" @click="()=>this.registerMethod.sendVerificationCode()"
+                                            :class="{'send-message-disabled':!registerCanSendMessage}">
                                         {{registerCanSendMessage?'获取短信':`重新获取(${registerCountDown}秒)`}}
                                     </button>
+                                    <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.code">
                                 </div>
-                                <p class="warn">{{registerWarn.codeMsg}}</p>
+                                <p class="warn" :class="{'warn-active':registerWarn.code}">{{registerWarn.codeMsg}}</p>
                                 <div class="element">
                                     <label>密码</label>
                                     <div class="password-input">
-                                        <input class="form-input" :maxlength="accountInputLimit.maxPassword"
+                                        <input class="form-input" :class="{'input-warn':registerWarn.password}"
+                                               @blur="()=>this.registerInput.passwordValidator()"
+                                               :maxlength="accountInputLimit.maxPassword"
                                                placeholder="请输入密码" v-model="registerInput.password">
                                     </div>
+                                    <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.password">
                                 </div>
-                                <p class="warn">{{registerWarn.passwordMsg}}</p>
+                                <p class="warn" :class="{'warn-active':registerWarn.password}">
+                                    {{registerWarn.passwordMsg}}</p>
                                 <div class="element">
                                     <label>重复密码</label>
-                                    <input class="form-input" :maxlength="accountInputLimit.maxPassword"
+                                    <input class="form-input" :class="{'input-warn':registerWarn.twicePassword}"
+                                           :maxlength="accountInputLimit.maxPassword"
+                                           @blur="()=>this.registerInput.twicePasswordValidator()"
                                            placeholder="请再次输入密码" v-model="registerInput.twicePassword">
+                                    <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.twicePassword">
                                 </div>
-                                <p class="warn">{{registerWarn.twicePasswordMsg}}</p>
+                                <p class="warn" :class="{'warn-active':registerWarn.twicePassword}">
+                                    {{registerWarn.twicePasswordMsg}}</p>
                                 <div class="element">
                                     <label>性别</label>
                                     <div class="radio-group">
-                                        <input type="radio" name="sex" v-model="registerInput.man">男
-                                        <input type="radio" name="sex" v-model="registerInput.woman">女
+                                        <input id="radio-man" type="radio" name="sex" :value="true"
+                                               v-model="registerInput.man"><label for="radio-man">男</label>
+                                        <input id="radio-woman" type="radio" name="sex" :value="true"
+                                               v-model="registerInput.woman"><label for="radio-woman">女</label>
                                     </div>
                                 </div>
-                                <p class="warn">{{registerWarn.sexMsg}}</p>
+                                <p class="warn" :class="{'warn-active':registerWarn.sex}">{{registerWarn.sexMsg}}</p>
                                 <div class="element">
                                     <label></label>
                                     <div class="read">
-                                        <input class="form-checked" v-model="registerInput.read">
+                                        <input type="checkbox" class="form-checked" v-model="registerInput.read">
                                         我已阅读并同意<span class="with-underline">用户协议</span>、<span class="with-underline">隐私政策</span>
                                     </div>
                                 </div>
@@ -126,10 +143,12 @@
                                     <label></label>
                                     <div class="button-register">注册</div>
                                 </div>
+                                <p class="warn" :class="{'warn-active':registerWarn.register}">
+                                    {{registerWarn.registerMsg}}</p>
                                 <div class="element">
                                     <label></label>
                                     <div class="text">
-                                        已注册，<span class="to-login">去登录</span>
+                                        已注册，<span class="to-login" @click="toLogin">去登录</span>
                                     </div>
                                 </div>
                             </form>
@@ -185,7 +204,7 @@
 </template>
 
 <script>
-    import {getWindow, strNoVal} from "@/js/util";
+    import {getWindow, objNoVal, strNoVal} from "@/js/util";
     import {maxAccount, maxPassword, minAccount, minHeight, minPassword, minWidth} from "@/js/_const";
     import MainLeft from "@/components/MainLeft";
     import MainRight from "@/components/MainRight";
@@ -228,20 +247,136 @@
                     code: false,
                     codeMsg: '',
                     password: false,
-                    passwordMsg: '请输入6-16位的数字或字符',
+                    passwordMsg: '',
                     twicePassword: false,
                     twicePasswordMsg: '',
                     sex: false,
-                    sexMsg: ''
+                    sexMsg: '',
+                    register: false,
+                    registerMsg: ''
                 },
                 registerInput: {
                     phone: '',
+                    phoneValidator: async () => {
+                        const val = this.registerInput.phone
+                        this.registerWarn.phone = false
+                        this.registerWarn.phoneMsg = ''
+                        if (strNoVal(val)) {
+                            this.registerWarn.phone = true
+                            this.registerWarn.phoneMsg = '请输入手机号'
+                        } else if (!validPhone(val)) {
+                            this.registerWarn.phone = true
+                            this.registerWarn.phoneMsg = '无效的手机号'
+                        } else {
+                            const res = (await ajax.verificationPhone(val)).data
+                            if (!res) {
+                                this.registerWarn.phone = true
+                                this.registerWarn.phoneMsg = '该手机号已被注册'
+                            }
+                        }
+                    },
                     code: '',
+                    codeValidator: () => {
+                        this.registerWarn.code = false
+                        this.registerWarn.codeMsg = ''
+                        const code = this.registerInput.code
+                        if (strNoVal(code)) {
+                            this.registerWarn.code = true
+                            this.registerWarn.codeMsg = '请输入验证码'
+                        } else if (code != this.registerInput.verificationCode) {
+                            this.registerWarn.code = true
+                            this.registerWarn.codeMsg = '验证码错误'
+                        }
+                    },
+                    verificationCode: '1234567',
                     password: '',
+                    passwordLevel: 0,
+                    passwordValidator: () => {
+                        const maxPassword = maxPassword
+                        const minPassword = minPassword
+                        const password = this.registerInput.password
+                        this.registerWarn.password = false
+                        this.registerWarn.passwordMsg = ''
+                        this.registerInput.passwordLevel = 0
+                        if (strNoVal(password)) {
+                            this.registerWarn.password = true
+                            this.registerWarn.passwordMsg = '请输入密码'
+                        } else if (!password.match(this.accountInputLimit.passwordPattern)) {
+                            this.registerWarn.password = true
+                            this.registerWarn.passwordMsg = "请输入6-20位的数字或字符"
+                        } else {
+                            const strongPassword = `^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*!@#).{10,${maxPassword}}`
+                            const middlePassword = `^(?=.*[a-z])(?=.*\\d).{${minPassword},${maxPassword}}`
+                            if (password.match(strongPassword)) {
+                                this.registerInput.passwordLevel = 3
+                            } else if (password.match(middlePassword)) {
+                                this.registerInput.passwordLevel = 2
+                            } else {
+                                this.registerInput.passwordLevel = 1
+                            }
+                        }
+                    },
                     twicePassword: '',
+                    twicePasswordValidator: () => {
+                        const password = this.registerInput.password
+                        const twicePassword = this.registerInput.twicePassword
+                        this.registerWarn.twicePassword = false
+                        this.registerWarn.twicePasswordMsg = ''
+                        if (strNoVal(twicePassword)) {
+                            this.registerWarn.twicePassword = true
+                            this.registerWarn.twicePasswordMsg = '请再次输入密码'
+                        } else if (password != twicePassword) {
+                            this.registerWarn.twicePassword = true
+                            this.registerWarn.twicePasswordMsg = '密码不一致'
+                        }
+                    },
                     man: false,
                     woman: false,
                     read: false,
+                },
+                registerMethod: {
+                    sendVerificationCode: () => {
+                        if (!this.registerCanSendMessage || this.registerWarn.phone) {
+                            return;
+                        }
+                        const code = generateVerificationCode()
+                        this.registerInput.verificationCode = code
+                        setTimeout(() => {
+                            alert('验证码：' + code)
+                        }, ranInteger(500, 1500))
+                        this.registerCanSendMessage = false
+                        this.registerCountDown = 60
+                        const handler = setInterval(() => {
+                            if (this.registerCountDown <= 0) {
+                                clearInterval(handler)
+                                this.registerCanSendMessage = true
+                                return
+                            }
+                            this.registerCountDown--
+                        }, 1000)
+                    },
+                    register: async () => {
+                        const input = this.registerInput
+                        const warn = this.registerWarn
+                        if (warn.phone || warn.code || warn.password || warn.twicePassword) {
+                        } else if (!input.man && !input.woman) {
+                            warn.sex = true
+                            warn.sexMsg = '请选择性别'
+                        } else {
+                            const obj = {}
+                            obj.account = input.phone
+                            obj.password = input.password
+                            obj.sex = input.sex
+                            const res = (await ajax.register(obj)).data
+                            if (res) {
+                                loginSuccessful(obj)
+                                this.clickRegister()
+                            } else {
+                                warn.register = true
+                                warn.registerMsg = '注册失败'
+                            }
+                        }
+                    },
                 }
             }
         },
@@ -282,10 +417,40 @@
                 this.warnMessage = ''
                 this.accountInvalid = false
                 this.passwordInvalid = false
+            },
+            'registerInput.man': function (newVal) {
+                if (newVal) {
+                    this.registerInput.woman = false
+                }
+            },
+            'registerInput.woman': function (newVal) {
+                if (newVal) {
+                    this.registerInput.man = false
+                }
             }
         },
         computed: {},
         methods: {
+            registerSendVerificationCode() {
+                if (!this.registerCanSendMessage || this.registerWarn.phone) {
+                    return;
+                }
+                const code = generateVerificationCode()
+                this.registerInput.verificationCode = code
+                setTimeout(() => {
+                    alert('验证码：' + code)
+                }, ranInteger(500, 1500))
+                this.registerCanSendMessage = false
+                this.registerCountDown = 60
+                const handler = setInterval(() => {
+                    if (this.registerCountDown <= 0) {
+                        clearInterval(handler)
+                        this.registerCanSendMessage = true
+                        return
+                    }
+                    this.registerCountDown--
+                }, 1000)
+            },
             sendVerificationCode() {
                 if (!this.canSendMessage) {
                     return;
@@ -303,7 +468,7 @@
                     this.warnMessage = '无效的手机号'
                     return
                 }
-                const code = ranInteger(100000, 999999)
+                const code = generateVerificationCode()
                 store.commit('verificationCode', code)
                 setTimeout(() => {
                     alert(code)
@@ -449,7 +614,7 @@
         },
         created() {
             this.accountInputLimit.passwordPattern = `^\\w{${minPassword},${maxPassword}}$`
-            this.accountInputLimit.accountPattern = `^([^\\s=-\\\\+\\\\'\\\\"]*[a-zA-Z0-9]){${minAccount},${maxAccount}}$`
+            this.accountInputLimit.accountPattern = `^([^\\s/=-\\\\+\\\\'\\\\"]*[a-zA-Z0-9]){${minAccount},${maxAccount}}$`
         },
         destroyed() {
         }
@@ -462,6 +627,14 @@
 
     function validVerificationCode(code) {
         return parseInt(code) === store.state.verificationCode
+    }
+
+    function generateVerificationCode() {
+        return ranInteger(100000, 999999) + ''
+    }
+
+    function loginSuccessful(account) {
+
     }
 </script>
 

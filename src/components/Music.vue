@@ -74,7 +74,7 @@
                 if (newVal) {
                     const el = this.$refs.music
                     if (el) {
-                        if (isReachMainLeftBottom(el.getBoundingClientRect().y, this.popupHeight)) {
+                        if (isReachMainLeftBottom(el.getBoundingClientRect().y, this.popupHeight + 40)) {
                             this.popupTop = true
                             return
                         }
