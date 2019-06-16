@@ -2,163 +2,196 @@
     <div id="home">
         <header>
             <div class="left">
-                <img class="logo" src="../assets/logo.png">
-                <div class="login">
-                    <label @click="clickLogin">登陆</label>
-                    <section class="login-sec" v-show="$store.state.visibleLogin">
-                        <div class="mask" @click="clickLogin(false)"></div>
-                        <div class="region">
-                            <h3 class="title">登陆账号<img src="../assets/close.png" @click="clickLogin(false)"></h3>
-                            <section class="body">
-                                <div class="label">
-                                    <label :class="{'label-active':activeLogin===0}" @click="activeLogin=0">密码登陆</label>
-                                    <label :class="{'label-active':activeLogin===1}" @click="activeLogin=1">短信登陆</label>
-                                </div>
-                                <form class="form0" v-show="activeLogin===0">
-                                    <div class="input-account">
-                                        <input class="input" :class="{'input-invalid':accountInvalid}"
-                                               v-model="account" placeholder="用户名/手机/邮箱" required
-                                               :maxlength="accountInputLimit.maxAccount">
-                                        <div class="down" @click="clickAccountInputDown"></div>
-                                        <div class="popup">
-                                            <div class="item" v-for="v in matchAccountList" @click="clickLoginObj(v)">
-                                                {{v.account}}
+                <div class="before-login" v-if="!$store.state.onlineUser">
+                    <img class="logo" src="../assets/logo.png">
+                    <div class="login">
+                        <label @click="visibleLoginCard">登陆</label>
+                        <section class="login-sec" v-show="$store.state.visibleLogin">
+                            <div class="mask" @click="visibleLoginCard(false)"></div>
+                            <div class="region">
+                                <h3 class="title">登陆账号<img src="../assets/close.png" @click="visibleLoginCard(false)">
+                                </h3>
+                                <section class="body">
+                                    <div class="label">
+                                        <label :class="{'label-active':activeLogin===0}"
+                                               @click="activeLogin=0">密码登陆</label>
+                                        <label :class="{'label-active':activeLogin===1}"
+                                               @click="activeLogin=1">短信登陆</label>
+                                    </div>
+                                    <form class="form0" v-show="activeLogin===0">
+                                        <div class="input-account">
+                                            <input class="input" :class="{'input-invalid':loginWarn.account}"
+                                                   @blur="()=>this.loginInput.accountValidator()"
+                                                   v-model="loginInput.account" placeholder="用户名/手机/邮箱" required
+                                                   :maxlength="accountInputLimit.maxAccount">
+                                            <div class="down" @click="clickAccountInputDown"></div>
+                                            <div class="popup">
+                                                <div class="item" v-for="v in matchAccountList"
+                                                     @click="clickLoginObj(v)">
+                                                    {{v.account}}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <input class="input" :class="{'input-invalid':passwordInvalid}"
-                                           type="password" v-model="password" placeholder="请输入密码"
-                                           required :maxlength="accountInputLimit.maxPassword">
-                                    <div class="option">
-                                        <div class="checked-group">
-                                            <div class="checkbox">
-                                                <input id="rememberPassword" type="checkbox" v-model="rememberPassword">
-                                                <label for="rememberPassword">记住密码</label>
+                                        <p class="warn" :class="{'warn-active':loginWarn.account}">
+                                            {{loginWarn.accountMsg}}</p>
+                                        <input class="input" :class="{'input-invalid':loginWarn.password}"
+                                               @blur="()=>this.loginInput.passwordValidator()"
+                                               type="password" v-model="loginInput.password" placeholder="请输入密码"
+                                               required :maxlength="accountInputLimit.maxPassword">
+                                        <p class="warn" :class="{'warn-active':loginWarn.password}">
+                                            {{loginWarn.passwordMsg}}</p>
+                                        <div class="option">
+                                            <div class="checked-group">
+                                                <div class="checkbox">
+                                                    <input id="rememberPassword" type="checkbox"
+                                                           v-model="rememberPassword">
+                                                    <label for="rememberPassword">记住密码</label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <input id="autoLogin" type="checkbox" v-model="autoLogin">
+                                                    <label for="autoLogin">自动登陆</label>
+                                                </div>
                                             </div>
-                                            <div class="checkbox">
-                                                <input id="autoLogin" type="checkbox" v-model="autoLogin">
-                                                <label for="autoLogin">自动登陆</label>
-                                            </div>
+                                            <div class="to-register" @click="toRegister">注册账号</div>
                                         </div>
-                                        <div class="to-register" @click="toRegister">注册账号</div>
-                                    </div>
-                                    <p class="warn">{{warnMessage}}</p>
-                                    <button type="button" class="button" @click="login">登陆</button>
-                                </form>
-                                <form class="form1" v-show="activeLogin===1">
-                                    <input class="input" :class="{'input-invalid':accountInvalid}"
-                                           v-model="account" placeholder="请输入手机号" maxlength="11" required>
-                                    <div class="line2">
-                                        <input class="input verification-code"
-                                               :class="{'input-invalid':passwordInvalid}"
-                                               v-model="password" placeholder="请输入验证码"
-                                               required maxlength="6">
-                                        <button type="button" class="send-message"
-                                                :class="{'send-message-disabled':!canSendMessage}"
-                                                @click="sendVerificationCode">
-                                            {{canSendMessage?'短信获取':`重新发送(${countDown}秒)`}}
+                                        <p class="warn" :class="{'warn-active':loginWarn.result}">
+                                            {{loginWarn.resultMsg}}</p>
+                                        <button type="button" class="button" @click="loginMethod.loginByPassword()">登陆
                                         </button>
-                                    </div>
-                                    <p class="warn">{{warnMessage}}</p>
-                                    <button type="button" class="button" @click="messageLogin">登陆</button>
-                                </form>
-                            </section>
-                        </div>
-                        <div class="loading" v-show="loading">
-                            <div class="bg">
-                                <img src="../assets/loading.png">
+                                    </form>
+                                    <form class="form1" v-show="activeLogin===1">
+                                        <input class="input" :class="{'input-invalid':loginWarn.phone}"
+                                               @blur="()=>this.loginInput.phoneValidator()"
+                                               v-model="loginInput.phone" placeholder="请输入手机号" maxlength="11" required>
+                                        <p class="warn" :class="{'warn-active':loginWarn.phone}">
+                                            {{loginWarn.phoneMsg}}</p>
+                                        <div class="line2">
+                                            <input class="input verification-code"
+                                                   :class="{'input-invalid':loginWarn.code}"
+                                                   @blur="()=>this.loginInput.codeValidator()"
+                                                   v-model="loginInput.code" placeholder="请输入验证码"
+                                                   required maxlength="6">
+                                            <button type="button" class="send-message"
+                                                    :class="{'send-message-disabled':!canSendMessage}"
+                                                    @click="loginMethod.sendVerificationCode()">
+                                                {{canSendMessage?'短信获取':`重新发送(${countDown}秒)`}}
+                                            </button>
+                                        </div>
+                                        <p class="warn" :class="{'warn-active':loginWarn.code}">
+                                            {{loginWarn.codeMsg}}</p>
+                                        <p class="warn" :class="{'warn-active':loginWarn.result}">
+                                            {{loginWarn.resultMsg}}</p>
+                                        <button type="button" class="button" @click="loginMethod.loginByMessage()">登陆
+                                        </button>
+                                    </form>
+                                </section>
                             </div>
-                        </div>
-                    </section>
-                </div>
-                <div class="divide"></div>
-                <div class="register">
-                    <label @click="clickRegister">注册</label>
-                    <section class="register-sec" v-show="$store.state.visibleRegister">
-                        <div class="mask" @click="clickRegister(false)"></div>
-                        <div class="region">
-                            <h3 class="title">快速注册<img src="../assets/close.png" @click="clickRegister(false)"></h3>
-                            <form class="body">
-                                <div class="element">
-                                    <label>手机号码</label>
-                                    <input class="form-input" :class="{'input-warn':registerWarn.phone}"
-                                           @blur="()=>this.registerInput.phoneValidator()"
-                                           maxlength="11" placeholder="请输入手机号码" v-model="registerInput.phone">
-                                    <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.phone">
+                            <div class="loading" v-show="loading">
+                                <div class="bg">
+                                    <img src="../assets/loading.png">
                                 </div>
-                                <p class="warn" :class="{'warn-active':registerWarn.phone}">
-                                    {{registerWarn.phoneMsg}}</p>
-                                <div class="element">
-                                    <label>短信验证</label>
-                                    <input class="form-input-code" :class="{'input-warn':registerWarn.code}"
-                                           @blur="()=>this.registerInput.codeValidator()"
-                                           maxlength="6" v-model="registerInput.code">
-                                    <button class="send-message" @click="()=>this.registerMethod.sendVerificationCode()"
-                                            :class="{'send-message-disabled':!registerCanSendMessage}">
-                                        {{registerCanSendMessage?'获取短信':`重新获取(${registerCountDown}秒)`}}
-                                    </button>
-                                    <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.code">
-                                </div>
-                                <p class="warn" :class="{'warn-active':registerWarn.code}">{{registerWarn.codeMsg}}</p>
-                                <div class="element">
-                                    <label>密码</label>
-                                    <div class="password-input">
-                                        <input class="form-input" :class="{'input-warn':registerWarn.password}"
-                                               @blur="()=>this.registerInput.passwordValidator()"
+                            </div>
+                        </section>
+                    </div>
+                    <div class="divide"></div>
+                    <div class="register">
+                        <label @click="visibleRegisterCard">注册</label>
+                        <section class="register-sec" v-show="$store.state.visibleRegister">
+                            <div class="mask" @click="visibleRegisterCard(false)"></div>
+                            <div class="region">
+                                <h3 class="title">快速注册<img src="../assets/close.png"
+                                                           @click="visibleRegisterCard(false)">
+                                </h3>
+                                <form class="body">
+                                    <div class="element">
+                                        <label>手机号码</label>
+                                        <input class="form-input" :class="{'input-warn':registerWarn.phone}"
+                                               @blur="()=>this.registerInput.phoneValidator()"
+                                               maxlength="11" placeholder="请输入手机号码" v-model="registerInput.phone">
+                                        <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.phone">
+                                    </div>
+                                    <p class="warn" :class="{'warn-active':registerWarn.phone}">
+                                        {{registerWarn.phoneMsg}}</p>
+                                    <div class="element">
+                                        <label>短信验证</label>
+                                        <input class="form-input-code" :class="{'input-warn':registerWarn.code}"
+                                               @blur="()=>this.registerInput.codeValidator()"
+                                               maxlength="6" v-model="registerInput.code">
+                                        <button class="send-message"
+                                                @click="()=>this.registerMethod.sendVerificationCode()"
+                                                :class="{'send-message-disabled':!registerCanSendMessage}">
+                                            {{registerCanSendMessage?'获取短信':`重新获取(${registerCountDown}秒)`}}
+                                        </button>
+                                        <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.code">
+                                    </div>
+                                    <p class="warn" :class="{'warn-active':registerWarn.code}">
+                                        {{registerWarn.codeMsg}}</p>
+                                    <div class="element">
+                                        <label>密码</label>
+                                        <div class="password-input">
+                                            <input class="form-input" :class="{'input-warn':registerWarn.password}"
+                                                   @blur="()=>this.registerInput.passwordValidator()"
+                                                   :maxlength="accountInputLimit.maxPassword"
+                                                   placeholder="请输入密码" v-model="registerInput.password">
+                                        </div>
+                                        <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.password">
+                                    </div>
+                                    <p class="warn" :class="{'warn-active':registerWarn.password}">
+                                        {{registerWarn.passwordMsg}}</p>
+                                    <div class="element">
+                                        <label>重复密码</label>
+                                        <input class="form-input" :class="{'input-warn':registerWarn.twicePassword}"
                                                :maxlength="accountInputLimit.maxPassword"
-                                               placeholder="请输入密码" v-model="registerInput.password">
+                                               @blur="()=>this.registerInput.twicePasswordValidator()"
+                                               placeholder="请再次输入密码" v-model="registerInput.twicePassword">
+                                        <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.twicePassword">
                                     </div>
-                                    <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.password">
-                                </div>
-                                <p class="warn" :class="{'warn-active':registerWarn.password}">
-                                    {{registerWarn.passwordMsg}}</p>
-                                <div class="element">
-                                    <label>重复密码</label>
-                                    <input class="form-input" :class="{'input-warn':registerWarn.twicePassword}"
-                                           :maxlength="accountInputLimit.maxPassword"
-                                           @blur="()=>this.registerInput.twicePasswordValidator()"
-                                           placeholder="请再次输入密码" v-model="registerInput.twicePassword">
-                                    <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.twicePassword">
-                                </div>
-                                <p class="warn" :class="{'warn-active':registerWarn.twicePassword}">
-                                    {{registerWarn.twicePasswordMsg}}</p>
-                                <div class="element">
-                                    <label>性别</label>
-                                    <div class="radio-group">
-                                        <input id="radio-man" type="radio" name="sex" :value="true"
-                                               v-model="registerInput.man"><label for="radio-man">男</label>
-                                        <input id="radio-woman" type="radio" name="sex" :value="true"
-                                               v-model="registerInput.woman"><label for="radio-woman">女</label>
+                                    <p class="warn" :class="{'warn-active':registerWarn.twicePassword}">
+                                        {{registerWarn.twicePasswordMsg}}</p>
+                                    <div class="element">
+                                        <label>性别</label>
+                                        <div class="radio-group">
+                                            <input id="radio-man" type="radio" name="sex" :value="true"
+                                                   v-model="registerInput.man"><label for="radio-man">男</label>
+                                            <input id="radio-woman" type="radio" name="sex" :value="true"
+                                                   v-model="registerInput.woman"><label for="radio-woman">女</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <p class="warn" :class="{'warn-active':registerWarn.sex}">{{registerWarn.sexMsg}}</p>
-                                <div class="element">
-                                    <label></label>
-                                    <div class="read">
-                                        <input type="checkbox" class="form-checked" v-model="registerInput.read">
-                                        我已阅读并同意<span class="with-underline">用户协议</span>、<span class="with-underline">隐私政策</span>
+                                    <p class="warn" :class="{'warn-active':registerWarn.sex}">
+                                        {{registerWarn.sexMsg}}</p>
+                                    <div class="element">
+                                        <label></label>
+                                        <div class="read">
+                                            <input type="checkbox" class="form-checked" v-model="registerInput.read">
+                                            我已阅读并同意<span class="with-underline">用户协议</span>、<span
+                                                class="with-underline">隐私政策</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="element">
-                                    <label></label>
-                                    <div class="button-register">注册</div>
-                                </div>
-                                <p class="warn" :class="{'warn-active':registerWarn.register}">
-                                    {{registerWarn.registerMsg}}</p>
-                                <div class="element">
-                                    <label></label>
-                                    <div class="text">
-                                        已注册，<span class="to-login" @click="toLogin">去登录</span>
+                                    <div class="element">
+                                        <label></label>
+                                        <div class="button-register" @click="()=>this.registerMethod.register()">注册
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="loading" v-show="loading">
-                            <div class="bg">
-                                <img src="../assets/loading.png">
+                                    <p class="warn" :class="{'warn-active':registerWarn.register}">
+                                        {{registerWarn.registerMsg}}</p>
+                                    <div class="element">
+                                        <label></label>
+                                        <div class="text">
+                                            已注册，<span class="to-login" @click="toLogin">去登录</span>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                        </div>
-                    </section>
+                            <div class="loading" v-show="loading">
+                                <div class="bg">
+                                    <img src="../assets/loading.png">
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div class="after-login" v-else>
+                    <user></user>
                 </div>
                 <img class="yun-pan" src="../assets/cloud.png" title="私人音乐云盘">
             </div>
@@ -210,12 +243,13 @@
     import MainRight from "@/components/MainRight";
     import ajax from "@/js/ajax";
     import {ranInteger} from "@/js/mock-random";
+    import User from "@/components/User";
 
     let width = minWidth;
 
     export default {
         name: "Home",
-        components: {MainRight, MainLeft},
+        components: {User, MainRight, MainLeft},
         props: {},
         data() {
             return {
@@ -227,16 +261,10 @@
                     passwordPattern: '',
                     accountPattern: ''
                 },
-                account: '',
-                password: '',
-                accountInvalid: false,
-                passwordInvalid: false,
                 rememberPassword: this.$store.state.rememberPassword,
                 autoLogin: store.state.autoLogin,
-                visibleWarn: false,
                 matchAccountList: [],
                 loading: false,
-                warnMessage: '',
                 canSendMessage: true,
                 registerCanSendMessage: true,
                 countDown: 60,
@@ -370,13 +398,159 @@
                             const res = (await ajax.register(obj)).data
                             if (res) {
                                 loginSuccessful(obj)
-                                this.clickRegister()
+                                this.visibleRegisterCard()
                             } else {
                                 warn.register = true
                                 warn.registerMsg = '注册失败'
                             }
                         }
                     },
+                },
+                loginInput: {
+                    account: '',
+                    accountValidator: () => {
+                        const warn = this.loginWarn
+                        const account = this.loginInput.account
+                        warn.account = false
+                        warn.accountMsg = ''
+                        if (strNoVal(account)) {
+                            warn.account = true
+                            warn.accountMsg = '请输入账号'
+                        } else if (!(account + '').match(this.accountInputLimit.accountPattern)) {
+                            warn.account = true
+                            warn.accountMsg = '无效的账号'
+                        }
+                    },
+                    password: '',
+                    passwordValidator: () => {
+                        const warn = this.loginWarn
+                        const password = this.loginInput.password
+                        warn.password = false
+                        warn.passwordMsg = ''
+                        if (strNoVal(password)) {
+                            warn.password = true
+                            warn.passwordMsg = '请输入密码'
+                        } else if (!password.match(this.accountInputLimit.passwordPattern)) {
+                            warn.password = true
+                            warn.passwordMsg = '无效的密码'
+                        }
+                    },
+                    phone: '',
+                    phoneValidator: () => {
+                        const warn = this.loginWarn
+                        const phone = this.loginInput.phone
+                        warn.phone = false
+                        warn.phoneMsg = ''
+                        if (strNoVal(phone)) {
+                            warn.phone = true
+                            warn.phoneMsg = '请输入手机号'
+                        } else if (!validPhone(phone)) {
+                            warn.phone = true
+                            warn.phoneMsg = '无效的手机号'
+                        }
+                    },
+                    code: '',
+                    codeValidator: () => {
+                        const warn = this.loginWarn
+                        const code = this.loginInput.code
+                        warn.code = false
+                        warn.codeMsg = ''
+                        if (strNoVal(code)) {
+                            warn.code = true
+                            warn.codeMsg = '请输入验证码'
+                        } else if (code != this.loginInput.verificationCode) {
+                            warn.code = true
+                            warn.codeMsg = '验证码错误'
+                        }
+                    },
+                    verificationCode: '1234567'
+                },
+                loginWarn: {
+                    account: false,
+                    accountMsg: '',
+                    password: false,
+                    passwordMsg: '',
+                    phone: false,
+                    phoneMsg: '',
+                    code: false,
+                    codeMsg: '',
+                    result: false,
+                    resultMsg: ''
+                },
+                loginMethod: {
+                    sendVerificationCode: () => {
+                        if (!this.canSendMessage || this.loginWarn.phone) {
+                            return;
+                        }
+                        const code = generateVerificationCode()
+                        this.loginInput.verificationCode = code
+                        setTimeout(() => {
+                            alert(code)
+                        }, ranInteger(500, 2000))
+                        this.canSendMessage = false
+                        this.countDown = 60
+                        const handler = setInterval(() => {
+                            if (this.countDown <= 0) {
+                                this.canSendMessage = true
+                                clearInterval(handler)
+                                return
+                            }
+                            this.countDown--
+                        }, 1000)
+                    },
+                    loginByPassword: async () => {
+                        const warn = this.loginWarn;
+                        const input = this.loginInput
+                        warn.result = false
+                        warn.resultMsg = ''
+                        if (warn.password || warn.account) {
+                            return
+                        }
+                        if (strNoVal(input.account, input.password)) {
+                            return
+                        }
+                        this.setLoading()
+                        const obj = {
+                            account: this.loginInput.account,
+                            password: this.loginInput.password
+                        }
+                        const res = (await ajax.login(obj)).data
+                        this.setLoading()
+                        if (res) {
+                            this.visibleLoginCard()
+                            loginSuccessful(obj)
+                        } else {
+                            this.visibleLoginCard(true)
+                            warn.result = true
+                            warn.resultMsg = '账号或密码错误'
+                        }
+                    },
+                    loginByMessage: async () => {
+                        const warn = this.loginWarn;
+                        const input = this.loginInput;
+                        if (warn.code || warn.phone) {
+                            return
+                        }
+                        if (strNoVal(input.phone, input.code)) {
+                            return
+                        }
+                        this.setLoading()
+                        const res = (await ajax.msgLogin(this.loginInput.phone)).data
+                        if (res) {
+                            this.visibleLoginCard()
+                            const obj = {
+                                account: this.loginInput.phone,
+                                password: '',
+                                byMessage: true
+                            }
+                            loginSuccessful(obj)
+                        } else {
+                            this.visibleLoginCard(true)
+                            warn.phone = true
+                            warn.phoneMsg = '账号不存在'
+                        }
+                        this.setLoading()
+                    }
                 }
             }
         },
@@ -393,9 +567,9 @@
                 }
                 store.commit('autoLogin', newVal)
             },
-            account(newVal) {
+            'loginInput.account': function (newVal) {
                 this.matchAccountList = []
-                if (newVal !== '') {
+                if (!strNoVal(newVal)) {
                     const list = store.state.loginHistory
                     for (let i = 0; i < list.length; i++) {
                         const obj = list[i]
@@ -411,13 +585,6 @@
                     }
                 }
             },
-            activeLogin() {
-                this.account = ''
-                this.password = ''
-                this.warnMessage = ''
-                this.accountInvalid = false
-                this.passwordInvalid = false
-            },
             'registerInput.man': function (newVal) {
                 if (newVal) {
                     this.registerInput.woman = false
@@ -431,158 +598,30 @@
         },
         computed: {},
         methods: {
-            registerSendVerificationCode() {
-                if (!this.registerCanSendMessage || this.registerWarn.phone) {
-                    return;
-                }
-                const code = generateVerificationCode()
-                this.registerInput.verificationCode = code
-                setTimeout(() => {
-                    alert('验证码：' + code)
-                }, ranInteger(500, 1500))
-                this.registerCanSendMessage = false
-                this.registerCountDown = 60
-                const handler = setInterval(() => {
-                    if (this.registerCountDown <= 0) {
-                        clearInterval(handler)
-                        this.registerCanSendMessage = true
-                        return
-                    }
-                    this.registerCountDown--
-                }, 1000)
-            },
-            sendVerificationCode() {
-                if (!this.canSendMessage) {
-                    return;
-                }
-                this.warnMessage = ''
-                this.accountInvalid = false
-                if (strNoVal(this.account)) {
-                    this.accountInvalid = true
-                    this.warnMessage = '请输入手机号'
-                    return
-                }
-                const account = parseInt(this.account)
-                if (!validPhone(account)) {
-                    this.accountInvalid = true
-                    this.warnMessage = '无效的手机号'
-                    return
-                }
-                const code = generateVerificationCode()
-                store.commit('verificationCode', code)
-                setTimeout(() => {
-                    alert(code)
-                }, ranInteger(500, 2000))
-                this.canSendMessage = false
-                this.countDown = 60
-                const handler = setInterval(() => {
-                    if (this.countDown <= 0) {
-                        this.canSendMessage = true
-                        clearInterval(handler)
-                        return
-                    }
-                    this.countDown--
-                }, 1000)
-            },
             clickAccountInputDown() {
                 this.matchAccountList = store.state.loginHistory
-            },
-            async messageLogin() {
-                this.warnMessage = ''
-                this.accountInvalid = false
-                this.passwordInvalid = false
-                const account = this.account
-                if (strNoVal(account, this.password)) {
-                    this.warnMessage = '请输入手机号和验证码'
-                    this.accountInvalid = account === ''
-                    this.passwordInvalid = this.password === ''
-                    return
-                }
-                if (!validPhone(account)) {
-                    this.accountInvalid = true
-                    this.warnMessage = '无效的手机号'
-                    return
-                }
-                if (!validVerificationCode(this.password)) {
-                    this.passwordInvalid = true
-                    this.warnMessage = '无效的验证码'
-                    alert((this.password !== store.state.verificationCode) + '  ' + this.password + '  ' + store.state.verificationCode)
-                    return
-                }
-                this.setLoading()
-                const res = (await ajax.msgLogin(account)).data
-                if (res) {
-                    this.clickLogin()
-                    const obj = {
-                        account,
-                        password: '',
-                        byMessage: true
-                    }
-                    store.commit('onlineUser', obj)
-                    store.commit('loginHistoryPush', obj)
-                } else {
-                    this.clickLogin(true)
-                    this.accountInvalid = true
-                    this.password = ''
-                    this.warnMessage = '账号不存在'
-                }
-                this.setLoading()
-            },
-            async login() {
-                this.warnMessage = ''
-                this.accountInvalid = false
-                this.passwordInvalid = false
-                if (strNoVal(this.account, this.password)) {
-                    this.warnMessage = '请输入账号和密码'
-                    this.accountInvalid = this.account === ''
-                    this.passwordInvalid = this.password === ''
-                    return
-                }
-                if (new RegExp(this.accountInputLimit.accountPattern).test(this.account) === false) {
-                    this.accountInvalid = true
-                    this.warnMessage = '无效的账号'
-                    return
-                }
-                if (new RegExp(this.accountInputLimit.passwordPattern).test(this.password) === false) {
-                    this.passwordInvalid = true
-                    this.warnMessage = '无效的密码'
-                    return
-                }
-                const obj = {
-                    account: this.account,
-                    password: this.password
-                }
-                this.setLoading()
-                const res = (await ajax.login(obj)).data
-                this.setLoading()
-                if (res) {
-                    store.commit('onlineUser', obj)
-                    store.commit('loginHistoryPush', obj)
-                    this.clickLogin()
-                } else {
-                    this.clickLogin(true)
-                    this.warnMessage = '账号或密码错误'
-                }
             },
             setLoading() {
                 this.loading = !this.loading
             },
             clickLoginObj(obj) {
-                this.account = obj.account;
-                this.password = obj.password;
+                this.loginInput.account = obj.account
+                this.loginInput.password = obj.password
+                this.loginInput.accountValidator()
+                this.loginInput.passwordValidator()
             },
             toRegister() {
-                this.clickLogin()
-                this.clickRegister()
+                this.visibleLoginCard()
+                this.visibleRegisterCard()
             },
             toLogin() {
-                this.clickRegister()
-                this.clickLogin()
+                this.visibleRegisterCard()
+                this.visibleLoginCard()
             },
-            clickLogin(val) {
+            visibleLoginCard(val) {
                 store.commit('visibleLogin', val)
             },
-            clickRegister(val) {
+            visibleRegisterCard(val) {
                 store.commit('visibleRegister', val)
             },
             close() {
@@ -634,7 +673,8 @@
     }
 
     function loginSuccessful(account) {
-
+        store.commit('onlineUser', account)
+        store.commit('loginHistoryPush', account)
     }
 </script>
 

@@ -51,6 +51,7 @@ export default new Vuex.Store({
         onlineUser: getLocalStorageItem(onlineUserKey, undefined),
         rememberPassword: getLocalStorageItem(rememberPasswordKey, false),
         autoLogin: getLocalStorageItem(autoLoginKey, false),
+        userData: undefined,
 
         mainLeftY: 0,
         mainLeftHeight: 0,
@@ -107,7 +108,10 @@ export default new Vuex.Store({
                 state.loginHistory.push(val)
             }
             setLocalStorageItem(loginHistoryKey, state.loginHistory)
-        }
+        },
+        userData(state, val) {
+            state.userData = val
+        },
     },
     actions: {}
 })

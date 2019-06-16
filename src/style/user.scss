@@ -1,0 +1,45 @@
+#user {
+  cursor: pointer;
+
+  .user-content {
+    display: flex;
+    align-items: center;
+
+    .avatar {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      margin-right: 10px;
+      overflow: hidden;
+    }
+
+    .name {
+      display: inline-block;
+      width: fit-content;
+      max-width: 100px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      color: white;
+      font-size: 12px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .vip {
+      color: white;
+      background-color: #BBBBBB;
+      padding: 0 5px;
+      border-radius: 10px;
+      margin-right: 5px;
+      font-size: 10px;
+      margin-top: -5px;
+      font-style: italic;
+      transform: scale(0.9);
+    }
+
+    .vip-active {
+      background-color: #ffc54d;
+    }
+  }
+}

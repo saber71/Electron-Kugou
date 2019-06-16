@@ -42,3 +42,13 @@ export const autoLoginKey = '自动登陆'
 *   array   music / video 对象数组   array
 * }
 * */
+
+/*
+* userData  {  从服务器返回的用户数据
+*   name    用户名 string
+*   avatar  头像img  string
+*   type    用户类型    number  【0：普通，1：vip】
+*   score   积分  number|string
+*   vipStatus   开通vip的情况    string 【0：从未开通过，具体日期：表示vip到期时间】
+* }
+* */
