@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-import {LOGIN, MSG_LOGIN, REGISTER, USER_DATA, VERIFICATION_PHONE} from "@/js/url";
+import {FETCH_KU_MONEY, LOGIN, MSG_LOGIN, REGISTER, USER_DATA, VERIFICATION_PHONE} from "@/js/url";
 import {getUrlParam, ranBoolean, ranDataImage, ranInteger, ranTitle, ranWord} from "@/js/mock-random";
 import {objNoVal} from "@/js/util";
 import {maxAccount, minAccount} from "@/js/_const";
@@ -47,4 +47,7 @@ m(USER_DATA, 'get', () => {
         score: ranInteger(0, 20000),
         vipStatus
     }
+})
+m(FETCH_KU_MONEY, 'get', () => {
+    return ranInteger(0, 1000)
 })

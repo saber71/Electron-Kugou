@@ -1,1 +1,18 @@
 $x-padding: 20px;
+$left-width: 310px;
+
+.common-loading {
+  width: 16px;
+  height: 16px;
+  background: url("../assets/loading-dark.png") no-repeat center center;
+  background-size: contain;
+  animation: common-loading 1s linear infinite;
+  @keyframes common-loading {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

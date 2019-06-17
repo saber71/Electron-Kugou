@@ -1,4 +1,4 @@
-import {LOGIN, MSG_LOGIN, REGISTER, USER_DATA, VERIFICATION_PHONE} from "@/js/url";
+import {FETCH_KU_MONEY, LOGIN, MSG_LOGIN, REGISTER, USER_DATA, VERIFICATION_PHONE} from "@/js/url";
 
 const ajax = {
     /**
@@ -39,6 +39,13 @@ const ajax = {
      */
     async getUserData() {
         return axios.get(USER_DATA)
+    },
+    /**
+     * 查询酷币余额
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async getKuMoney() {
+        return axios.get(FETCH_KU_MONEY)
     },
 }
 
