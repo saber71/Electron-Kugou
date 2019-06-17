@@ -77,12 +77,13 @@
     .content {
       position: absolute;
       left: 25%;
-      top: 50px;
+      top: 44px;
       width: 50%;
       height: calc(100% - 110px);
       margin: auto;
       overflow-y: auto;
-      box-shadow: 0 0 5px lightgrey;
+      box-shadow: 0 0 2px #a7a7a7;
+      border-radius: 3px;
 
       .title {
         width: 100%;

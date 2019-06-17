@@ -10,7 +10,7 @@ import {
     minPassword,
     otherSourceListKey,
     recentMusicListKey,
-    recentMVListKey, rememberPasswordKey
+    recentMVListKey, rememberPasswordKey, HOME_COMMON_BG, MAIN_RIGHT_ACTIVE_DEFAULT
 } from "@/js/_const";
 
 Vue.use(Vuex);
@@ -53,15 +53,17 @@ export default new Vuex.Store({
         autoLogin: getLocalStorageItem(autoLoginKey, false),
         userData: undefined,
 
+        homeBg: HOME_COMMON_BG,
+        mainBg: 'white',
         mainLeftY: 0,
         mainLeftHeight: 0,
         visibleLogin: false,
         visibleRegister: false,
-        verificationCode: -21321321
+        mainRightActive: MAIN_RIGHT_ACTIVE_DEFAULT
     },
     mutations: {
-        verificationCode(state, val) {
-            state.verificationCode = val
+        mainRightActive(st, val) {
+            st.mainRightActive = val
         },
         setMainLeft(state, rect) {
             state.mainLeftY = rect.y;
@@ -111,6 +113,18 @@ export default new Vuex.Store({
         },
         userData(state, val) {
             state.userData = val
+        },
+        mainBg(state, val) {
+            if (objNoVal(val)) {
+                val = 'white'
+            }
+            state.mainBg = val
+        },
+        homeBg(st, val) {
+            if (objNoVal(val)) {
+                val = HOME_COMMON_BG
+            }
+            st.homeBg = val
         },
     },
     actions: {}

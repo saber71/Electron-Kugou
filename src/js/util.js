@@ -2,10 +2,35 @@ export function getWindow() {
     return require('electron').remote.getCurrentWindow()
 }
 
+/**
+ * 当前是否已超过指定日期
+ * @param date  日期字符串，分隔符‘-’
+ */
+export function overDate(date) {
+    const now = new Date()
+    const vals = date.split('-')
+    const yearBias = now.getUTCFullYear() - parseInt(vals[0])
+    const monthBias = now.getMonth() + 1 - parseInt(vals[1])
+    const dayBias = now.getDate() - parseInt(vals[2])
+    if (yearBias > 0) {
+        return true
+    } else if (yearBias < 0) {
+        return false
+    } else {
+        if (monthBias > 0) {
+            return true
+        } else if (monthBias < 0) {
+            return false
+        } else {
+            return dayBias > 0
+        }
+    }
+}
+
 //根据Key获取LocalStorage中存储的数据
 export function getLocalStorageItem(key, defaultValue) {
     const val = localStorage.getItem(key)
-    if (val) {
+    if (!strNoVal(val)) {
         const type = typeof defaultValue
         if (type === "object" || defaultValue === undefined || defaultValue === null) {
             return JSON.parse(val)
@@ -45,7 +70,7 @@ export function isReachMainLeftBottom(y, height) {
 export function strNoVal() {
     for (let i = 0; i < arguments.length; i++) {
         const str = arguments[i]
-        if (objNoVal(str) || str === '') {
+        if (objNoVal(str) || str === '' || str === 'undefined' || str === 'null') {
             return true
         }
     }

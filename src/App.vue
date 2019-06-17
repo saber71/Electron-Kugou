@@ -29,6 +29,10 @@
                     //获取歌曲的播放次数
                     musicPlayTimes(music) {
                         return getPlayTimes(music)
+                    },
+                    //设置MainRight显示的页面
+                    mainRightActive(val) {
+                        store.commit('mainRightActive', val)
                     }
                 }
             })

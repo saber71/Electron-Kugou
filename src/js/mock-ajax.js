@@ -1,6 +1,6 @@
 import Mock from 'mockjs'
 import {FETCH_KU_MONEY, LOGIN, MSG_LOGIN, REGISTER, USER_DATA, VERIFICATION_PHONE} from "@/js/url";
-import {getUrlParam, ranBoolean, ranDataImage, ranInteger, ranTitle, ranWord} from "@/js/mock-random";
+import {getUrlParam, ranBoolean, ranDataImage, ranInteger, ranWord} from "@/js/mock-random";
 import {objNoVal} from "@/js/util";
 import {maxAccount, minAccount} from "@/js/_const";
 
@@ -38,7 +38,7 @@ m(USER_DATA, 'get', () => {
     let vipStatus = '0'
     if (isVip) {
         const date = new Date()
-        vipStatus = date.getUTCFullYear() + '-' + (ranBoolean() ? date.getUTCMonth() + 1 : date.getUTCMonth() - 1) + '-' + date.getDay()
+        vipStatus = date.getUTCFullYear() + '-' + (ranBoolean() ? date.getMonth() + 2 : date.getMonth()) + '-' + date.getDate()
     }
     return {
         name: ranWord(minAccount, maxAccount),

@@ -1,5 +1,5 @@
 <template>
-    <div id="home">
+    <div id="home" :style="{'background':$store.state.homeBg}">
         <header>
             <div class="left">
                 <div class="before-login" v-if="!$store.state.onlineUser">
@@ -224,7 +224,7 @@
                 </div>
             </div>
         </header>
-        <main>
+        <main :style="{'background':$store.state.mainBg}">
             <section class="left">
                 <main-left></main-left>
             </section>
