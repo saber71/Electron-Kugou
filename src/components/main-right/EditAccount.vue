@@ -27,7 +27,12 @@
                     </div>
                     <div class="form-line">
                         <label class="label">昵称：</label>
-                        <input v-model="userDataForm.name" :maxlength="nameMaxLength">
+                        <div class="input">
+                            <input :class="{'input-invalid':warn.name}"
+                                   v-model="userDataForm.name" :maxlength="nameMaxLength"
+                                   @blur="()=>this.validator.name()">
+                            <span class="warn" v-show="warn.name">{{warn.nameMsg}}</span>
+                        </div>
                     </div>
                     <div class="form-line">
                         <label class="label">性别：</label>
@@ -42,7 +47,12 @@
                     </div>
                     <div class="form-line">
                         <label class="label">生日：</label>
-                        <input id="birthday-input" type="date" v-model="userDataForm.birthday">
+                        <div class="input">
+                            <input :class="{'input-invalid':warn.birthday}"
+                                   type="date" v-model="userDataForm.birthday"
+                                   @blur="()=>this.validator.birthday()">
+                            <span class="warn" v-show="warn.birthday">{{warn.birthdayMsg}}</span>
+                        </div>
                     </div>
                     <div class="form-line">
                         <label class="label">地区：</label>
@@ -63,7 +73,7 @@
                             <label>字数不超过60个字符</label>
                         </div>
                     </div>
-                    <div class="save-button" @click="opinionSave">保存</div>
+                    <div class="save-button" @click="userDataSave">保存</div>
                     <label class="warn" v-show="visibleWarn">无法链接服务器，请检查网络链接</label>
                 </form>
                 <div class="success-img" v-show="visibleSuccess">
@@ -75,15 +85,17 @@
             <section class="edit-password" v-if="activeLabel===2"></section>
             <section class="account-security" v-if="activeLabel===3"></section>
         </section>
+        <div class="big-loading" v-show="visibleLoading"></div>
     </div>
 </template>
 
 <script>
     import {maxAccount} from "@/js/_const";
-    import {objNoVal} from "@/js/util";
+    import {objNoVal, strNoVal} from "@/js/util";
     import {USER_DATA_CHANGE} from "@/js/event-bus";
     import {ranCity, ranProvince} from "@/js/mock-random";
     import ajax from "@/js/ajax";
+    import {validAccount} from "@/js/reg";
 
     export default {
         name: "EditAccount",
@@ -96,7 +108,39 @@
                 cityList: [],
                 userDataForm: {},
                 visibleWarn: false,
-                visibleSuccess: false
+                visibleSuccess: false,
+                validator: {
+                    name: () => {
+                        const name = this.userDataForm.name
+                        this.warn.name = false
+                        this.warn.nameMsg = ''
+                        if (strNoVal(name)) {
+                            this.warn.name = true
+                            this.warn.nameMsg = '请输入昵称'
+                        } else if (!validAccount(name)) {
+                            this.warn.name = true
+                            this.warn.nameMsg = '无效的昵称'
+                        }
+                    },
+                    birthday: () => {
+                        const birthday = this.userDataForm.birthday
+                        this.warn.birthday = false
+                        this.warn.birthdayMsg = ''
+                        if (strNoVal(birthday)) {
+                            this.warn.birthday = true
+                            this.warn.birthdayMsg = '请输入生日'
+                        }
+                    },
+                },
+                warn: {
+                    name: false,
+                    nameMsg: '',
+                    password: false,
+                    passwordMsg: '',
+                    birthday: false,
+                    birthdayMsg: ''
+                },
+                visibleLoading: false,
             }
         },
         watch: {
@@ -139,16 +183,20 @@
                 this.userDataForm.opinion = opinion
                 el.value = opinion
             },
-            async opinionSave() {
+            async userDataSave() {
+                if (this.warn.name)
+                    return
                 store.commit("userData", this.userDataForm)
                 this.visibleWarn = false
                 this.visibleSuccess = false
+                this.visibleLoading = true
                 const res = (await ajax.saveUserData()).data
+                this.visibleLoading = false
                 if (res) {
                     this.visibleSuccess = true
                     setTimeout(() => {
                         this.visibleSuccess = false
-                    }, 1000)
+                    }, 1500)
                 } else {
                     this.visibleWarn = true
                 }

@@ -1,6 +1,7 @@
 @import "../common";
 
 #edit-account {
+  position: relative;
   width: 100%;
   height: calc(100% - 41px);
   padding: 10px 40px;
@@ -21,9 +22,13 @@
       padding: 5px 20px;
       margin-right: 10px;
       cursor: pointer;
+
+      &:hover {
+        background-color: gray;
+      }
     }
 
-    .labels-element-active, .labels-element:hover {
+    .labels-element-active {
       background-color: $light-blue;
     }
   }
@@ -45,6 +50,7 @@
           display: grid;
           grid-template-columns: 70px calc(100% - 80px);
           grid-gap: 10px;
+          align-items: center;
           margin: 15px 0;
 
           .label {
@@ -58,7 +64,6 @@
             color: #BBBBBB;
             padding: 3px 5px;
             box-sizing: border-box;
-            margin-top: -3px;
 
             &:hover, &:focus {
               border-color: $light-blue;
@@ -66,6 +71,27 @@
 
             &:focus {
               color: #777777;
+            }
+          }
+
+          .input-invalid {
+            border-color: red;
+
+            &:hover, &:focus {
+              border-color: red;
+            }
+          }
+
+          .input {
+            display: flex;
+
+            .warn {
+              color: red;
+              font-size: 12px;
+              display: inline-block;
+              width: fit-content;
+              padding: 3px 0;
+              margin-left: 5px;
             }
           }
 

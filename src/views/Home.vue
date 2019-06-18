@@ -117,7 +117,7 @@
                                         <input class="form-input-code" :class="{'input-warn':registerWarn.code}"
                                                @blur="()=>this.registerInput.codeValidator()"
                                                maxlength="6" v-model="registerInput.code">
-                                        <button class="send-message"
+                                        <button type="button" class="send-message"
                                                 @click="()=>this.registerMethod.sendVerificationCode()"
                                                 :class="{'send-message-disabled':!registerCanSendMessage}">
                                             {{registerCanSendMessage?'获取短信':`重新获取(${registerCountDown}秒)`}}
@@ -133,6 +133,9 @@
                                                    @blur="()=>this.registerInput.passwordValidator()"
                                                    :maxlength="accountInputLimit.maxPassword"
                                                    placeholder="请输入密码" v-model="registerInput.password">
+                                            <span class="password-level"
+                                                  :class="'password-level-'+registerInput.passwordLevel"
+                                                  v-show="!registerWarn.password">{{passwordLevelText}}</span>
                                         </div>
                                         <img class="sigh" src="../assets/sigh.png" v-show="registerWarn.password">
                                     </div>
@@ -244,6 +247,14 @@
     import ajax from "@/js/ajax";
     import {ranInteger} from "@/js/mock-random";
     import User from "@/components/User";
+    import {
+        generateVerificationCode,
+        isMiddlePassword,
+        isStrongPassword,
+        validAccount,
+        validPassword,
+        validPhone
+    } from "@/js/reg";
 
     let width = minWidth;
 
@@ -258,8 +269,6 @@
                 accountInputLimit: {
                     maxPassword: maxPassword,
                     maxAccount: maxAccount,
-                    passwordPattern: '',
-                    accountPattern: ''
                 },
                 rememberPassword: this.$store.state.rememberPassword,
                 autoLogin: store.state.autoLogin,
@@ -320,8 +329,6 @@
                     password: '',
                     passwordLevel: 0,
                     passwordValidator: () => {
-                        const maxPassword = maxPassword
-                        const minPassword = minPassword
                         const password = this.registerInput.password
                         this.registerWarn.password = false
                         this.registerWarn.passwordMsg = ''
@@ -329,15 +336,13 @@
                         if (strNoVal(password)) {
                             this.registerWarn.password = true
                             this.registerWarn.passwordMsg = '请输入密码'
-                        } else if (!password.match(this.accountInputLimit.passwordPattern)) {
+                        } else if (!validPassword(password)) {
                             this.registerWarn.password = true
                             this.registerWarn.passwordMsg = "请输入6-20位的数字或字符"
                         } else {
-                            const strongPassword = `^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*!@#).{10,${maxPassword}}`
-                            const middlePassword = `^(?=.*[a-z])(?=.*\\d).{${minPassword},${maxPassword}}`
-                            if (password.match(strongPassword)) {
+                            if (isStrongPassword(password)) {
                                 this.registerInput.passwordLevel = 3
-                            } else if (password.match(middlePassword)) {
+                            } else if (isMiddlePassword(password)) {
                                 this.registerInput.passwordLevel = 2
                             } else {
                                 this.registerInput.passwordLevel = 1
@@ -416,7 +421,7 @@
                         if (strNoVal(account)) {
                             warn.account = true
                             warn.accountMsg = '请输入账号'
-                        } else if (!(account + '').match(this.accountInputLimit.accountPattern)) {
+                        } else if (!validAccount(account)) {
                             warn.account = true
                             warn.accountMsg = '无效的账号'
                         }
@@ -430,7 +435,7 @@
                         if (strNoVal(password)) {
                             warn.password = true
                             warn.passwordMsg = '请输入密码'
-                        } else if (!password.match(this.accountInputLimit.passwordPattern)) {
+                        } else if (!validPassword(password)) {
                             warn.password = true
                             warn.passwordMsg = '无效的密码'
                         }
@@ -596,7 +601,20 @@
                 }
             }
         },
-        computed: {},
+        computed: {
+            passwordLevelText() {
+                switch (this.registerInput.passwordLevel) {
+                    case 1:
+                        return "弱"
+                    case 2:
+                        return "中"
+                    case 3:
+                        return "强"
+                    default:
+                        return ''
+                }
+            }
+        },
         methods: {
             clickAccountInputDown() {
                 this.matchAccountList = store.state.loginHistory
@@ -652,24 +670,9 @@
         mounted() {
         },
         created() {
-            this.accountInputLimit.passwordPattern = `^\\w{${minPassword},${maxPassword}}$`
-            this.accountInputLimit.accountPattern = `^([^\\s/=-\\\\+\\\\'\\\\"]*[a-zA-Z0-9]){${minAccount},${maxAccount}}$`
         },
         destroyed() {
         }
-    }
-
-    function validPhone(phone) {
-        phone = parseInt(phone)
-        return phone > 10000000000 && phone < 20000000000
-    }
-
-    function validVerificationCode(code) {
-        return parseInt(code) === store.state.verificationCode
-    }
-
-    function generateVerificationCode() {
-        return ranInteger(100000, 999999) + ''
     }
 
     function loginSuccessful(account) {

@@ -361,7 +361,7 @@
                   }
 
                   .form-input, .form-input-code {
-                    width: 200px;
+                    width: 180px;
                     padding: 5px;
                     box-sizing: border-box;
                     margin-right: 10px;
@@ -373,7 +373,7 @@
                   }
 
                   .form-input-code {
-                    width: 100px;
+                    width: 80px;
                   }
 
                   .input-warn {
@@ -394,11 +394,30 @@
                   .send-message-disabled {
                     cursor: default;
                     background-color: #aaaaaa;
+                    padding: 5px 5px;
                   }
 
                   .password-input {
                     position: relative;
                     width: fit-content;
+                  }
+
+                  .password-level {
+                    font-size: 13px;
+                    width: fit-content;
+                    display: inline-block;
+                  }
+
+                  .password-level-1 {
+                    color: #ffce11;
+                  }
+
+                  .password-level-2 {
+                    color: #197de9;
+                  }
+
+                  .password-level-3 {
+                    color: #e95644;
                   }
 
                   .radio-group {
