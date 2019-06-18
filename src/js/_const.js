@@ -60,7 +60,13 @@ export const MAIN_RIGHT_ACTIVE_BUY_SVIP = 9//开通SVIP
 
 /*
 * userData  {  从服务器返回的用户数据
+*   id  用户ID    number
 *   name    用户名 string
+*   sex     性别  【0：男，1：女】
+*   birthday    生日  string  【xxxx-xx-xx】
+*   opinion     个性签名    string
+*   province    省份  string
+*   city    城市  string
 *   avatar  头像img  string
 *   type    用户类型    number  【0：普通，1：vip】
 *   score   积分  number|string

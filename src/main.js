@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './js/mock-ajax'
+import './js/event-bus'
 
 Vue.config.productionTip = false
 

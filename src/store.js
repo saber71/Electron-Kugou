@@ -12,6 +12,7 @@ import {
     recentMusicListKey,
     recentMVListKey, rememberPasswordKey, HOME_COMMON_BG, MAIN_RIGHT_ACTIVE_DEFAULT
 } from "@/js/_const";
+import {USER_DATA_CHANGE} from "@/js/event-bus";
 
 Vue.use(Vuex);
 
@@ -113,6 +114,7 @@ export default new Vuex.Store({
         },
         userData(state, val) {
             state.userData = val
+            eventBus.$emit(USER_DATA_CHANGE, val)
         },
         mainBg(state, val) {
             if (objNoVal(val)) {

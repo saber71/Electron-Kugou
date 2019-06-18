@@ -1,4 +1,4 @@
-import {FETCH_KU_MONEY, LOGIN, MSG_LOGIN, REGISTER, USER_DATA, VERIFICATION_PHONE} from "@/js/url";
+import {FETCH_KU_MONEY, LOGIN, MSG_LOGIN, REGISTER, USER_DATA, USER_DATA_SAVE, VERIFICATION_PHONE} from "@/js/url";
 
 const ajax = {
     /**
@@ -46,6 +46,13 @@ const ajax = {
      */
     async getKuMoney() {
         return axios.get(FETCH_KU_MONEY)
+    },
+    /**
+     * 保存个人信息
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async saveUserData() {
+        return axios.post(USER_DATA_SAVE, store.state.userData)
     },
 }
 

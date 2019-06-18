@@ -20,10 +20,11 @@
                         <div class="text">
                             <div class="top">
                                 <label class="name">{{getName()}}</label>
-                                <img class="option-icon" src="../assets/option.png" @click="visibleOptionPopup=true">
+                                <img ref="optionIcon" class="option-icon" src="../assets/option.png"
+                                     @click="visibleOptionPopup=true">
                                 <div class="option-popup" v-show="visibleOptionPopup">
                                     <div class="option-popup-mask" @click="visibleOptionPopup=false"></div>
-                                    <div class="option-popup-content">
+                                    <div class="option-popup-content" :style="{left:optionPopupLeft}">
                                         <div class="option-popup-element" @click="toEditAccount">修改资料</div>
                                         <div class="option-popup-element" @click="exchangeAccount">切换账号</div>
                                         <div class="option-popup-element" @click="toMusicSpace">音乐空间</div>
@@ -77,17 +78,29 @@
                 visiblePopup: false,
                 visibleOptionPopup: false,
                 kuMoney: -1,
-                kuMoneyLoading: false
+                kuMoneyLoading: false,
+                optionPopupLeft: 0
             }
         },
-        watch: {},
+        watch: {
+            visibleOptionPopup(newVal) {
+                if (newVal && this.optionPopupLeft <= 0) {
+                    const optionPopup = this.$refs['optionIcon']
+                    this.optionPopupLeft = (optionPopup.getBoundingClientRect().x + 15) + 'px'
+                }
+            }
+        },
         computed: {},
         methods: {
             toEditAccount() {
                 this.mainRightActive(MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT)
+                this.visiblePopup = false
+                this.visibleOptionPopup = false
             },
             toMusicSpace() {
                 this.mainRightActive(MAIN_RIGHT_ACTIVE_MUSIC_SPACE)
+                this.visiblePopup = false
+                this.visibleOptionPopup = false
             },
             exchangeAccount() {
                 this.visibleOptionPopup = false

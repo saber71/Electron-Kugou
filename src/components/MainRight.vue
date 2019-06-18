@@ -2,42 +2,45 @@
     <div id="main-right">
         <section class="header">
             <div class="header-element"
-                 :class="{'header-element-active':$store.state.mainRightActive===constant.MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY}"
+                 :class="{'header-element-active':mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY}"
                  title="最新最火歌曲尽在其中"
                  @click="mainRightActive(constant.MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY)">乐库
             </div>
             <div class="header-element"
-                 :class="{'header-element-active':$store.state.mainRightActive===constant.MAIN_RIGHT_ACTIVE_RADIO}"
+                 :class="{'header-element-active':mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_RADIO}"
                  title="享受随便听听的精彩"
                  @click="mainRightActive(constant.MAIN_RIGHT_ACTIVE_RADIO)">电台
             </div>
             <div class="header-element"
-                 :class="{'header-element-active':$store.state.mainRightActive===constant.MAIN_RIGHT_ACTIVE_MUSIC_LIST}"
+                 :class="{'header-element-active':mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_MUSIC_LIST}"
                  title="海量歌单想听就听"
                  @click="mainRightActive(constant.MAIN_RIGHT_ACTIVE_MUSIC_LIST)">歌单
             </div>
             <div class="header-element"
-                 :class="{'header-element-active':$store.state.mainRightActive===constant.MAIN_RIGHT_ACTIVE_MV}"
+                 :class="{'header-element-active':mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_MV}"
                  title="随意点播百万MV"
                  @click="mainRightActive(constant.MAIN_RIGHT_ACTIVE_MV)">MV
             </div>
             <div class="header-element"
-                 :class="{'header-element-active':$store.state.mainRightActive===constant.MAIN_RIGHT_ACTIVE_LIVE_BROADCAST}"
+                 :class="{'header-element-active':mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_LIVE_BROADCAST}"
                  title="在线直播"
                  @click="mainRightActive(constant.MAIN_RIGHT_ACTIVE_LIVE_BROADCAST)">直播
             </div>
             <div class="header-element"
-                 :class="{'header-element-active':$store.state.mainRightActive===constant.MAIN_RIGHT_ACTIVE_KTV}"
+                 :class="{'header-element-active':mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_KTV}"
                  title="在线K歌"
                  @click="mainRightActive(constant.MAIN_RIGHT_ACTIVE_KTV)">KTV
             </div>
             <div class="header-element"
-                 :class="{'header-element-active':$store.state.mainRightActive===constant.MAIN_RIGHT_ACTIVE_LYRIC}"
+                 :class="{'header-element-active':mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_LYRIC}"
                  title="精准歌词搭配高清写真"
                  @click="mainRightActive(constant.MAIN_RIGHT_ACTIVE_LYRIC)">歌词
             </div>
             <div class="slide" :style="{'left':slideLeft}"
-                 v-show="$store.state.mainRightActive<=constant.MAIN_RIGHT_ACTIVE_LYRIC"></div>
+                 v-show="mainRightActiveIndex<=constant.MAIN_RIGHT_ACTIVE_LYRIC"></div>
+        </section>
+        <section class="main">
+            <edit-account v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT"></edit-account>
         </section>
     </div>
 </template>
@@ -54,9 +57,11 @@
         MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY,
         MAIN_RIGHT_ACTIVE_MUSIC_SPACE, MAIN_RIGHT_ACTIVE_MV, MAIN_RIGHT_ACTIVE_RADIO
     } from "@/js/_const";
+    import EditAccount from "@/components/main-right/EditAccount";
 
     export default {
         name: "MainRight",
+        components: {EditAccount},
         props: {},
         data() {
             return {
@@ -77,6 +82,9 @@
         },
         watch: {},
         computed: {
+            mainRightActiveIndex() {
+                return store.state.mainRightActive
+            },
             slideLeft() {
                 let res = '0'
                 switch (store.state.mainRightActive) {
@@ -103,7 +111,7 @@
                         break
                 }
                 return 'calc(' + res + ')'
-            }
+            },
         },
         methods: {},
         mounted() {

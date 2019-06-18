@@ -72,3 +72,15 @@ export function ranWord(min, max) {
 export function ranImage(size) {
     return ran.image(size)
 }
+
+export function ranProvince() {
+    return ran.province()
+}
+
+export function ranCity() {
+    return ran.city()
+}
+
+export function ranCounty() {
+    return ran.county()
+}

@@ -1,11 +1,14 @@
 $x-padding: 20px;
 $left-width: 310px;
 $blue: #0298f4;
+$light-blue: #64B0FA;
+$light-gray: #CECECE;
+$lighter-gray: #F5F5F5;
 
 .common-loading {
   width: 16px;
   height: 16px;
-  background: url("../assets/loading-dark.png") no-repeat center center;
+  background: url("/img/loading-dark.png") no-repeat center center;
   background-size: contain;
   animation: common-loading 1s linear infinite;
   @keyframes common-loading {

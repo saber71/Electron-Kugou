@@ -2,6 +2,13 @@ export function getWindow() {
     return require('electron').remote.getCurrentWindow()
 }
 
+export function formatDate(date) {
+    const year = date.getUTCFullYear()
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+    return year + '-' + (month >= 10 ? month : '0' + month) + "-" + (day >= 10 ? day : '0' + day)
+}
+
 /**
  * 当前是否已超过指定日期
  * @param date  日期字符串，分隔符‘-’

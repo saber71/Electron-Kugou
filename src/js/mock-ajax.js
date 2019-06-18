@@ -1,7 +1,16 @@
 import Mock from 'mockjs'
-import {FETCH_KU_MONEY, LOGIN, MSG_LOGIN, REGISTER, USER_DATA, VERIFICATION_PHONE} from "@/js/url";
-import {getUrlParam, ranBoolean, ranDataImage, ranInteger, ranWord} from "@/js/mock-random";
-import {objNoVal} from "@/js/util";
+import {FETCH_KU_MONEY, LOGIN, MSG_LOGIN, REGISTER, USER_DATA, USER_DATA_SAVE, VERIFICATION_PHONE} from "@/js/url";
+import {
+    getUrlParam,
+    ranBoolean,
+    ranCity,
+    ranDataImage,
+    ranInteger,
+    ranParagraph,
+    ranProvince,
+    ranWord
+} from "@/js/mock-random";
+import {objNoVal, formatDate} from "@/js/util";
 import {maxAccount, minAccount} from "@/js/_const";
 
 Mock.setup({
@@ -36,18 +45,27 @@ m(REGISTER, 'post', () => {
 m(USER_DATA, 'get', () => {
     const isVip = ranBoolean()
     let vipStatus = '0'
+    const date = new Date()
     if (isVip) {
-        const date = new Date()
         vipStatus = date.getUTCFullYear() + '-' + (ranBoolean() ? date.getMonth() + 2 : date.getMonth()) + '-' + date.getDate()
     }
     return {
+        id: ranInteger(0, Number.MAX_SAFE_INTEGER),
         name: ranWord(minAccount, maxAccount),
         avatar: ranDataImage('25x25'),
         type: isVip ? 1 : 0,
         score: ranInteger(0, 20000),
-        vipStatus
+        vipStatus,
+        birthday: formatDate(new Date()),
+        sex: ranInteger(0, 1),
+        opinion: ranParagraph(1, 3),
+        province: ranProvince(),
+        city: ranCity()
     }
 })
 m(FETCH_KU_MONEY, 'get', () => {
     return ranInteger(0, 1000)
+})
+m(USER_DATA_SAVE, 'post', () => {
+    return ranBoolean(false, 1, 2)
 })
