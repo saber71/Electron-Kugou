@@ -41,6 +41,11 @@ export function ranTitle(min, max) {
     return ran.title(min, max);
 }
 
+export function ranCTitle(min, max) {
+    return ran.ctitle(min, max);
+}
+
+
 export function ranSentence(min, max) {
     return ran.sentence(min, max);
 }
@@ -87,4 +92,8 @@ export function ranCounty() {
 
 export function ranColor() {
     return ran.color()
+}
+
+export function ranEmail() {
+    return ran.email()
 }

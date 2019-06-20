@@ -43,6 +43,7 @@
             <edit-account v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT"></edit-account>
             <upload-avatar v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR"></upload-avatar>
             <EditPassword v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_EDIT_PASSWORD"></EditPassword>
+            <account-security v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_SECURITY"></account-security>
         </section>
     </div>
 </template>
@@ -51,21 +52,27 @@
     import {
         MAIN_RIGHT_ACTIVE_BUY_SVIP,
         MAIN_RIGHT_ACTIVE_DEFAULT,
-        MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT, MAIN_RIGHT_ACTIVE_EDIT_PASSWORD,
+        MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT,
+        MAIN_RIGHT_ACTIVE_EDIT_PASSWORD,
         MAIN_RIGHT_ACTIVE_KTV,
         MAIN_RIGHT_ACTIVE_LIVE_BROADCAST,
         MAIN_RIGHT_ACTIVE_LYRIC,
         MAIN_RIGHT_ACTIVE_MUSIC_LIST,
         MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY,
-        MAIN_RIGHT_ACTIVE_MUSIC_SPACE, MAIN_RIGHT_ACTIVE_MV, MAIN_RIGHT_ACTIVE_RADIO, MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR
+        MAIN_RIGHT_ACTIVE_MUSIC_SPACE,
+        MAIN_RIGHT_ACTIVE_MV,
+        MAIN_RIGHT_ACTIVE_RADIO,
+        MAIN_RIGHT_ACTIVE_SECURITY,
+        MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR
     } from "@/js/_const";
     import EditAccount from "@/components/main-right/account-setting/EditAccount";
     import UploadAvatar from "@/components/main-right/account-setting/UploadAvatar";
     import EditPassword from "@/components/main-right/account-setting/EditPassword";
+    import AccountSecurity from "@/components/main-right/account-setting/AccountSecurity";
 
     export default {
         name: "MainRight",
-        components: {EditPassword, UploadAvatar, EditAccount},
+        components: {AccountSecurity, EditPassword, UploadAvatar, EditAccount},
         props: {},
         data() {
             return {
@@ -83,6 +90,7 @@
                     MAIN_RIGHT_ACTIVE_BUY_SVIP,
                     MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR,
                     MAIN_RIGHT_ACTIVE_EDIT_PASSWORD,
+                    MAIN_RIGHT_ACTIVE_SECURITY,
                 },
             }
         },

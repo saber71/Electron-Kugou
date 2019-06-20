@@ -66,6 +66,15 @@ export default new Vuex.Store({
     },
     mutations: {
         /**
+         * 回退
+         * @param st
+         */
+        goBack(st) {
+            if (st.mainRightActiveHistory.length > 0) {
+                st.mainRightActive = st.mainRightActiveHistory.pop()
+            }
+        },
+        /**
          * 设置MainRightActive，添加MainRightActive历史记录
          * @param st
          * @param val

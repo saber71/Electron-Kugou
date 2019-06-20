@@ -12,11 +12,11 @@ import {
 import {
     getUrlParam,
     ranBoolean,
-    ranCity,
-    ranDataImage,
+    ranCity, ranCTitle,
+    ranDataImage, ranEmail,
     ranInteger,
     ranParagraph,
-    ranProvince,
+    ranProvince, ranTitle,
     ranWord
 } from "@/js/mock-random";
 import {objNoVal, formatDate} from "@/js/util";
@@ -71,6 +71,8 @@ m(USER_DATA, 'get', () => {
         name: ranWord(minAccount, maxAccount),
         password: ranBoolean() ? '' : ranWord(minPassword, maxPassword),
         phone: ranBoolean() ? '' : generatePhone(),
+        securityQuestion: ranCTitle(7, 9),
+        email: ranEmail(),
         avatar: ranDataImage('25x25'),
         type: isVip ? 1 : 0,
         score: ranInteger(0, 20000),

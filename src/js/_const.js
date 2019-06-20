@@ -66,9 +66,11 @@ export const MAIN_RIGHT_ACTIVE_SECURITY = 12//安全设置
 *   id  用户ID    number
 *   name    用户名 string
 *   password    密码  string
+*   email   邮箱  string
 *   sex     性别  【0：男，1：女】
 *   birthday    生日  string  【xxxx-xx-xx】
 *   opinion     个性签名    string
+*   securityQuestion    安全问题    string
 *   province    省份  string
 *   city    城市  string
 *   avatar  头像img  string

@@ -40,6 +40,7 @@
         MAIN_RIGHT_ACTIVE_EDIT_PASSWORD,
         MAIN_RIGHT_ACTIVE_SECURITY, MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR
     } from "@/js/_const";
+    import {objNoVal} from "@/js/util";
 
     export default {
         name: "AccountSettingContainer",
@@ -67,6 +68,10 @@
         mounted() {
         },
         created() {
+            if (objNoVal(store.state.onlineUser)) {
+                store.commit('goBack')
+                return
+            }
             this.$on("loading", (val) => {
                 this.visibleLoading = val
             })
@@ -148,7 +153,7 @@
                 }
 
                 .labels-element-active {
-                    background-color: $light-blue;
+                    background-color: $blue;
                 }
             }
         }

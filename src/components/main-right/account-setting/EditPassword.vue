@@ -26,6 +26,11 @@
                                    @blur="newPasswordValidator"
                                    :type="input.newPasswordInputType"
                                    v-model="input.newPassword" :maxLength="input.maxLength">
+                            <img class="eye" src="../../../assets/open-eye.png"
+                                 v-if="input.newPasswordInputType==='text'"
+                                 @click="input.newPasswordInputType='password'">
+                            <img class="eye" src="../../../assets/close-eye.png" v-else
+                                 @click="input.newPasswordInputType='text'">
                             <div class="warn" v-show="warn.newPassword.length>0">
                                 <img src="../../../assets/sigh.png">
                                 {{warn.newPassword}}
@@ -35,9 +40,15 @@
                         </div>
                         <div class="password-level">
                             密码强度：弱&nbsp;
-                            <div class="line" :class="{'line-active':input.newPasswordLevel>=1}"></div>
-                            <div class="line" :class="{'line-active':input.newPasswordLevel>=2}"></div>
-                            <div class="line" :class="{'line-active':input.newPasswordLevel>=3}"></div>
+                            <div class="line">
+                                <div class="inner" :class="{'inner-active':input.newPasswordLevel>=1}"></div>
+                            </div>
+                            <div class="line">
+                                <div class="inner" :class="{'inner-active':input.newPasswordLevel>=2}"></div>
+                            </div>
+                            <div class="line">
+                                <div class="inner" :class="{'inner-active':input.newPasswordLevel>=3}"></div>
+                            </div>
                             强
                         </div>
                     </div>
@@ -169,14 +180,16 @@
                 this.warn.newPassword = ''
                 if (strNoVal(val)) {
                     this.warn.newPassword = '不能为空'
+                    this.setPasswordLevel(0)
                 } else if (!validPassword(val)) {
                     this.warn.newPassword = '无效的密码'
+                    this.setPasswordLevel(0)
                 } else if (isStrongPassword(val)) {
-                    this.input.newPasswordLevel = 3
+                    this.setPasswordLevel(3)
                 } else if (isMiddlePassword(val)) {
-                    this.input.newPasswordLevel = 2
+                    this.setPasswordLevel(2)
                 } else {
-                    this.input.newPasswordLevel = 1
+                    this.setPasswordLevel(1)
                 }
             },
             repeatPasswordValidator() {
@@ -227,6 +240,22 @@
                     }
                 }
             },
+            setPasswordLevel(newVal) {
+                const oldLevel = this.input.newPasswordLevel
+                if (oldLevel !== newVal) {
+                    this.input.newPasswordLevel = newVal
+                    const innerEl = document.getElementsByClassName('inner')
+                    if (oldLevel < newVal) {
+                        for (let i = 0; i < 3; i++) {
+                            innerEl.item(i).style.transitionDelay = (0.1 * i) + 's'
+                        }
+                    } else {
+                        for (let i = 2; i >= 0; i--) {
+                            innerEl.item(i).style.transitionDelay = (0.1 * (2 - i)) + 's'
+                        }
+                    }
+                }
+            }
         },
         mounted() {
             this.drawCode()
@@ -306,6 +335,21 @@
                 .input {
                     display: flex;
                     align-items: center;
+                    position: relative;
+
+                    input {
+
+                    }
+
+                    .eye {
+                        position: absolute;
+                        left: 225px;
+                        top: 2px;
+                        width: 16px;
+                        height: 16px;
+                        cursor: pointer;
+                        opacity: 0.5;
+                    }
                 }
 
                 .success {
@@ -341,10 +385,17 @@
                         height: 15px;
                         margin-right: 5px;
                         background-color: #E0E0E0;
-                    }
 
-                    .line-active {
-                        background-color: $light-blue;
+                        .inner, .inner, .inner {
+                            width: 0;
+                            height: 100%;
+                            background-color: $light-blue;
+                            transition: width 0.1s ease;
+                        }
+
+                        .inner-active {
+                            width: 50px;
+                        }
                     }
                 }
 

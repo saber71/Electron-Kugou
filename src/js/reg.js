@@ -52,7 +52,7 @@ export function generateVerificationCode() {
  * @returns {boolean}   true，强密码
  */
 export function isStrongPassword(password) {
-    const strongPassword = `^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#]).{10,${maxPassword}}`
+    const strongPassword = `^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#]).{${minPassword},${maxPassword}}`
     return new RegExp(strongPassword).test(password)
 }
 
