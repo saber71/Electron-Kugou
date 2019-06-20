@@ -102,3 +102,124 @@ export function objNoVal(obj) {
 function musicKey(music) {
     return music.name + ' - ' + music.singer
 }
+
+/**
+ * 字节数组转换为base64字符串
+ * @param buffer
+ * @returns {string}
+ */
+function bytesToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
+
+/**
+ * 打开对话框选择音乐文件
+ * @param callback
+ * @param multiSelections
+ */
+export function toSelectMusicFiles(callback, multiSelections) {
+    openDialogToSelect('openFile', [
+        {name: '音乐', extensions: ['mp3', 'flac']},
+        {name: '所有文件', extensions: ['*']}
+    ], multiSelections, callback)
+}
+
+/**
+ * 打开对话框选择图片文件
+ * @param callback
+ * @param multiSelections
+ */
+export function toSelectImageFiles(multiSelections, callback) {
+    openDialogToSelect('openFile', [
+        {name: '图片', extensions: ['jpg', 'jpeg', 'png']},
+        {name: '所有文件', extensions: ['*']}
+    ], multiSelections, callback)
+}
+
+/**
+ * 打开对话框选择文件夹
+ * @param callback
+ * @param multiSelections
+ */
+export function toSelectDirectory(multiSelections, callback) {
+    openDialogToSelect('openDirectory', undefined, multiSelections, callback)
+}
+
+/**
+ * 调用electron的对话框选择文件/夹，支持多选
+ * @param openTarget
+ * @param filters
+ * @param callback
+ * @param multiSelections
+ */
+function openDialogToSelect(openTarget, filters, multiSelections, callback) {
+    const {dialog} = require('electron').remote
+    dialog.showOpenDialog({
+        properties: [openTarget, multiSelections ? 'multiSelections' : ''],
+        filters
+    }, callback)
+}
+
+/**
+ * 获得文件后缀名
+ * @param path
+ * @returns {string}
+ */
+export function getSuffix(path) {
+    return path.substring(path.lastIndexOf('.') + 1).toLowerCase()
+}
+
+/**
+ * 将图片数据转为base64编码
+ * @param imgEl
+ * @returns {string}
+ */
+export function imageToBase64(imgEl) {
+    const canvas = document.createElement("canvas");
+    canvas.width = imgEl.width;
+    canvas.height = imgEl.height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(imgEl, 0, 0, imgEl.width, imgEl.height);
+    const ext = getSuffix(imgEl.src)
+    return canvas.toDataURL("image/" + ext);
+}
+
+/**
+ * 截取图片
+ * @param imgEl
+ * @param imgType
+ * @param bound {x,y,width,height}
+ * @returns {string}    base64编码的图片数据
+ */
+export function clipImg(imgEl, imgType, bound) {
+    const canvas = document.createElement("canvas");
+    canvas.width = bound.width;
+    canvas.height = bound.height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(imgEl, bound.x, bound.y, bound.width, bound.height)
+    return canvas.toDataURL("image/" + imgType);
+}
+
+/**
+ * 以base64格式异步读取文件
+ * @param path
+ * @param callback
+ */
+export function readAsBase64(path, callback) {
+    const fs = require('fs')
+    fs.readFile(path, {flag: 'r+', encoding: 'base64'}, (err, data) => {
+        if (err)
+            alert("读取图片失败")
+        else {
+            const ext = getSuffix(path)
+            data = 'data:image/' + ext + ';base64,' + data
+            callback(data)
+        }
+    })
+}

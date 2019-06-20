@@ -3,159 +3,109 @@
 #edit-account {
   position: relative;
   width: 100%;
-  height: calc(100% - 41px);
-  padding: 10px 40px;
-  box-sizing: border-box;
-  background-color: $lighter-gray;
-
-  .labels {
-    width: 550px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid $light-blue;
-
-    .labels-element {
-      color: white;
-      background-color: $light-gray;
-      font-size: 14px;
-      padding: 5px 20px;
-      margin-right: 10px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: gray;
-      }
-    }
-
-    .labels-element-active {
-      background-color: $light-blue;
-    }
-  }
+  height: $main-right-height;
 
   .body {
-    width: 550px;
+    width: $account-setting-labels-width;
     margin: auto;
-    padding: 10px;
+    padding: 0 10px;
     box-sizing: border-box;
+    position: relative;
 
-    .edit-account {
-      position: relative;
+    form {
+      font-size: 13px;
+      color: #777777;
 
-      form {
-        font-size: 13px;
-        color: #777777;
+      .form-line {
+        display: grid;
+        grid-template-columns: 70px calc(100% - 80px);
+        grid-gap: 10px;
+        align-items: center;
+        margin: 15px 0;
 
-        .form-line {
-          display: grid;
-          grid-template-columns: 70px calc(100% - 80px);
-          grid-gap: 10px;
-          align-items: center;
-          margin: 15px 0;
+        .label {
+          text-align: right;
+        }
 
-          .label {
-            text-align: right;
+        input {
+          width: 200px;
+          border: 1px solid #dddddd;
+          border-radius: 1px;
+          color: #BBBBBB;
+          padding: 3px 5px;
+          box-sizing: border-box;
+
+          &:hover, &:focus {
+            border-color: $light-blue;
           }
 
-          input {
-            width: 200px;
-            border: 1px solid #dddddd;
-            border-radius: 1px;
-            color: #BBBBBB;
-            padding: 3px 5px;
-            box-sizing: border-box;
-
-            &:hover, &:focus {
-              border-color: $light-blue;
-            }
-
-            &:focus {
-              color: #777777;
-            }
+          &:focus {
+            color: #777777;
           }
+        }
 
-          .input-invalid {
+        .input-invalid {
+          border-color: red;
+
+          &:hover, &:focus {
             border-color: red;
-
-            &:hover, &:focus {
-              border-color: red;
-            }
           }
+        }
 
-          .input {
-            display: flex;
+        .input {
+          display: flex;
 
-            .warn {
-              color: red;
-              font-size: 12px;
-              display: inline-block;
-              width: fit-content;
-              padding: 3px 0;
-              margin-left: 5px;
-            }
-          }
-
-          input[type=radio] {
-            width: fit-content;
-          }
-
-          .sex-label {
+          .warn {
+            color: red;
+            font-size: 12px;
             display: inline-block;
+            width: fit-content;
+            padding: 3px 0;
+            margin-left: 5px;
+          }
+        }
+
+        input[type=radio] {
+          width: fit-content;
+        }
+
+        .sex-label {
+          display: inline-block;
+          margin-right: 5px;
+        }
+
+        .textarea {
+          display: flex;
+
+          textarea {
+            width: 250px;
+            resize: none;
             margin-right: 5px;
           }
-
-          .textarea {
-            display: flex;
-
-            textarea {
-              width: 250px;
-              resize: none;
-              margin-right: 5px;
-            }
-          }
-        }
-
-        .save-button {
-          width: fit-content;
-          margin-left: 80px;
-          border-width: 0;
-          color: white;
-          padding: 5px 30px;
-          background-color: $blue;
-          font-size: 14px;
-          border-radius: 3px;
-          cursor: pointer;
-
-          &:hover {
-            filter: brightness(1.1);
-          }
-        }
-
-        .warn {
-          color: red;
-          margin-left: 5px;
-          padding: 5px 0;
         }
       }
 
-      .success-img {
-        position: absolute;
-        left: calc(50% - 50px);
-        top: calc(50% - 100px);
-        width: 100px;
-        height: 100px;
-        background-color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        border-radius: 5px;
+      .save-button {
+        display: inline-block;
+        width: fit-content;
+        margin-left: 80px;
+        border-width: 0;
+        color: white;
+        padding: 5px 30px;
+        background-color: $blue;
+        font-size: 14px;
+        border-radius: 3px;
+        cursor: pointer;
 
-        p {
-          width: 100%;
-          text-align: center;
-          margin: 0;
+        &:hover {
+          filter: brightness(1.1);
         }
+      }
+
+      .warn {
+        color: red;
+        margin-left: 5px;
+        padding: 5px 0;
       }
     }
   }

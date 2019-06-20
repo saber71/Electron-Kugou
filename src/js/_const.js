@@ -26,9 +26,12 @@ export const MAIN_RIGHT_ACTIVE_MV = 3//MV
 export const MAIN_RIGHT_ACTIVE_LIVE_BROADCAST = 4//直播
 export const MAIN_RIGHT_ACTIVE_KTV = 5//KTV
 export const MAIN_RIGHT_ACTIVE_LYRIC = 6//歌词
-export const MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT = 7//账号设置
+export const MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT = 7//设置个人信息
 export const MAIN_RIGHT_ACTIVE_MUSIC_SPACE = 8//音乐空间
 export const MAIN_RIGHT_ACTIVE_BUY_SVIP = 9//开通SVIP
+export const MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR = 10//上传头像
+export const MAIN_RIGHT_ACTIVE_EDIT_PASSWORD = 11//修改密码
+export const MAIN_RIGHT_ACTIVE_SECURITY = 12//安全设置
 
 /*
 * music {   歌曲对象

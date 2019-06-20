@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {getLocalStorageItem, objNoVal, setLocalStorageItem} from "@/js/util";
-import {ranBoolean, ranDataImage, ranInteger, ranName, ranSentence, ranTitle, ranWord} from "@/js/mock-random";
+import {ranBoolean, ranDataImage, ranInteger, ranName, ranTitle, ranWord} from "@/js/mock-random";
 import {
     autoLoginKey,
     customListKey,
@@ -60,11 +60,25 @@ export default new Vuex.Store({
         mainLeftHeight: 0,
         visibleLogin: false,
         visibleRegister: false,
-        mainRightActive: MAIN_RIGHT_ACTIVE_DEFAULT
+        mainRightActive: MAIN_RIGHT_ACTIVE_DEFAULT,
+        mainRightActiveHistory: [MAIN_RIGHT_ACTIVE_DEFAULT]
     },
     mutations: {
+        /**
+         * 设置MainRightActive，添加MainRightActive历史记录
+         * @param st
+         * @param val
+         */
         mainRightActive(st, val) {
             st.mainRightActive = val
+            st.mainRightActiveHistory.push(val)
+        },
+        /**
+         * 从MainRightActive的历史记录中取出最新的记录
+         * @param st
+         */
+        mainRightActiveBack(st) {
+            st.mainRightActive = st.mainRightActiveHistory.pop()
         },
         setMainLeft(state, rect) {
             state.mainLeftY = rect.y;

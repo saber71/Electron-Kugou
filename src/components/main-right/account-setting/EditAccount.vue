@@ -1,21 +1,7 @@
 <template>
     <div id="edit-account">
-        <section class="labels">
-            <div class="labels-element" :class="{'labels-element-active':activeLabel===0}"
-                 @click="activeLabel=0">个人资料
-            </div>
-            <div class="labels-element" :class="{'labels-element-active':activeLabel===1}"
-                 @click="activeLabel=1">修改头像
-            </div>
-            <div class="labels-element" :class="{'labels-element-active':activeLabel===2}"
-                 @click="activeLabel=2">修改密码
-            </div>
-            <div class="labels-element" :class="{'labels-element-active':activeLabel===3}"
-                 @click="activeLabel=3">账号安全
-            </div>
-        </section>
-        <section class="body">
-            <section class="edit-account" v-if="activeLabel===0">
+        <account-setting-container ref="container" :active-label="0">
+            <section class="body">
                 <form>
                     <div class="form-line">
                         <label class="label">账号：</label>
@@ -41,7 +27,8 @@
                             <label class="sex-label" for="radio-man">男</label>
                             <input id="radio-woman" type="radio" v-model="userDataForm.sex" name="sex" :value="1">
                             <label class="sex-label" for="radio-woman">女</label>
-                            <input id="radio-security" type="radio" v-model="userDataForm.sex" name="sex" :value="2">
+                            <input id="radio-security" type="radio" v-model="userDataForm.sex" name="sex"
+                                   :value="2">
                             <label class="sex-label" for="radio-security">保密</label>
                         </div>
                     </div>
@@ -76,16 +63,8 @@
                     <div class="save-button" @click="userDataSave">保存</div>
                     <label class="warn" v-show="visibleWarn">无法链接服务器，请检查网络链接</label>
                 </form>
-                <div class="success-img" v-show="visibleSuccess">
-                    <img src="../../assets/success.png">
-                    <p>保存成功</p>
-                </div>
             </section>
-            <section class="edit-avatar" v-if="activeLabel===1"></section>
-            <section class="edit-password" v-if="activeLabel===2"></section>
-            <section class="account-security" v-if="activeLabel===3"></section>
-        </section>
-        <div class="big-loading" v-show="visibleLoading"></div>
+        </account-setting-container>
     </div>
 </template>
 
@@ -96,19 +75,19 @@
     import {ranCity, ranProvince} from "@/js/mock-random";
     import ajax from "@/js/ajax";
     import {validAccount} from "@/js/reg";
+    import AccountSettingContainer from "@/components/main-right/account-setting/AccountSettingContainer";
 
     export default {
         name: "EditAccount",
+        components: {AccountSettingContainer},
         props: {},
         data() {
             return {
-                activeLabel: 0,
                 nameMaxLength: maxAccount,
                 provinceList: [],
                 cityList: [],
                 userDataForm: {},
                 visibleWarn: false,
-                visibleSuccess: false,
                 validator: {
                     name: () => {
                         const name = this.userDataForm.name
@@ -187,16 +166,15 @@
                 if (this.warn.name)
                     return
                 store.commit("userData", this.userDataForm)
+                const container = this.$refs.container
                 this.visibleWarn = false
-                this.visibleSuccess = false
-                this.visibleLoading = true
+                container.$emit("loading", true)
+                container.$emit("success", false)
                 const res = (await ajax.saveUserData()).data
                 this.visibleLoading = false
+                container.$emit("loading", false)
                 if (res) {
-                    this.visibleSuccess = true
-                    setTimeout(() => {
-                        this.visibleSuccess = false
-                    }, 1500)
+                    container.$emit("success", true)
                 } else {
                     this.visibleWarn = true
                 }
@@ -220,5 +198,5 @@
 </script>
 
 <style scoped lang="scss">
-    @import "../../style/main-right/edit-account";
+    @import "../../../style/main-right/edit-account";
 </style>

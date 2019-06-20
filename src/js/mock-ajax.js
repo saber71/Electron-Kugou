@@ -1,5 +1,14 @@
 import Mock from 'mockjs'
-import {FETCH_KU_MONEY, LOGIN, MSG_LOGIN, REGISTER, USER_DATA, USER_DATA_SAVE, VERIFICATION_PHONE} from "@/js/url";
+import {
+    FETCH_KU_MONEY,
+    LOGIN,
+    MSG_LOGIN,
+    REGISTER,
+    UPLOAD_AVATAR,
+    USER_DATA,
+    USER_DATA_SAVE,
+    VERIFICATION_PHONE
+} from "@/js/url";
 import {
     getUrlParam,
     ranBoolean,
@@ -27,11 +36,18 @@ function regm(url, method, action) {
     mock(new RegExp('^' + baseUrl + url), method, action)
 }
 
+/**
+ * 25%的概率返回false
+ */
+function mayFalse() {
+    return ranBoolean(false, 1, 3)
+}
+
 m(LOGIN, 'post', () => {
-    return ranBoolean(false, 1, 2)
+    return mayFalse()
 })
 m(MSG_LOGIN, 'post', () => {
-    return ranBoolean(false, 1, 2)
+    return mayFalse()
 })
 regm(VERIFICATION_PHONE + '?', 'get', (option) => {
     const {phone} = getUrlParam(option.url)
@@ -67,5 +83,8 @@ m(FETCH_KU_MONEY, 'get', () => {
     return ranInteger(0, 1000)
 })
 m(USER_DATA_SAVE, 'post', () => {
-    return ranBoolean(false, 1, 2)
+    return mayFalse()
+})
+m(UPLOAD_AVATAR, 'post', () => {
+    return mayFalse()
 })
