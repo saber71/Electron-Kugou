@@ -32,6 +32,13 @@ export function validPhone(phone) {
 }
 
 /**
+ * 生成手机号
+ */
+export function generatePhone() {
+    return ranInteger(10000000000, 20000000000)
+}
+
+/**
  * 生成验证码
  * @returns {string}
  */

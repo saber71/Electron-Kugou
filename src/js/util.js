@@ -1,3 +1,5 @@
+import {ranBoolean, ranInteger, ranWord} from "@/js/mock-random";
+
 export function getWindow() {
     return require('electron').remote.getCurrentWindow()
 }
@@ -82,6 +84,21 @@ export function strNoVal() {
         }
     }
     return false
+}
+
+/**
+ * 判断所有的字符串参数都为空
+ * @returns {boolean}   true，都为空
+ */
+export function allStrNoVal() {
+    for (let i = 0; i < arguments.length; i++) {
+        const str = arguments[i]
+        if (objNoVal(str) || str === '' || str === 'undefined' || str === 'null') {
+        } else {
+            return false
+        }
+    }
+    return true
 }
 
 //有一个参数为null或undefined
@@ -222,4 +239,20 @@ export function readAsBase64(path, callback) {
             callback(data)
         }
     })
+}
+
+/**
+ * 生成验证码
+ * @returns {string|string}
+ */
+export function generateCode() {
+    let res = ''
+    for (let i = 0; i < 5; i++) {
+        if (ranBoolean()) {
+            res += ranInteger(0, 9)
+        } else {
+            res += ranWord(1, 1)
+        }
+    }
+    return res
 }

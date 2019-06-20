@@ -10,9 +10,10 @@ import {
     minPassword,
     otherSourceListKey,
     recentMusicListKey,
-    recentMVListKey, rememberPasswordKey, HOME_COMMON_BG, MAIN_RIGHT_ACTIVE_DEFAULT
+    recentMVListKey, rememberPasswordKey, HOME_COMMON_BG, MAIN_RIGHT_ACTIVE_DEFAULT, minAccount, maxAccount
 } from "@/js/_const";
 import {USER_DATA_CHANGE} from "@/js/event-bus";
+import {generatePhone} from "@/js/reg";
 
 Vue.use(Vuex);
 
@@ -35,7 +36,7 @@ for (let i = 0; i < 20; i++) {
 const loginHistory = [];
 for (let i = 0; i < 20; i++) {
     loginHistory.push({
-        account: ranBoolean() ? ranWord(6, 20) : ranInteger(10000000000, 20000000000),
+        account: ranBoolean() ? ranWord(minAccount, maxAccount) : generatePhone(),
         password: ranWord(minPassword, maxPassword),
         byMessage: ranBoolean()
     })

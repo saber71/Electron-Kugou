@@ -20,7 +20,8 @@ import {
     ranWord
 } from "@/js/mock-random";
 import {objNoVal, formatDate} from "@/js/util";
-import {maxAccount, minAccount} from "@/js/_const";
+import {maxAccount, maxPassword, minAccount, minPassword} from "@/js/_const";
+import {generatePhone} from "@/js/reg";
 
 Mock.setup({
     timeout: '500-1500'
@@ -68,6 +69,8 @@ m(USER_DATA, 'get', () => {
     return {
         id: ranInteger(0, Number.MAX_SAFE_INTEGER),
         name: ranWord(minAccount, maxAccount),
+        password: ranBoolean() ? '' : ranWord(minPassword, maxPassword),
+        phone: ranBoolean() ? '' : generatePhone(),
         avatar: ranDataImage('25x25'),
         type: isVip ? 1 : 0,
         score: ranInteger(0, 20000),

@@ -84,3 +84,7 @@ export function ranCity() {
 export function ranCounty() {
     return ran.county()
 }
+
+export function ranColor() {
+    return ran.color()
+}
