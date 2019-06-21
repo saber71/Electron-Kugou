@@ -3,7 +3,7 @@
         <section class="account-setting-container-header">
             <section class="account-setting-container-banner">
                 <label>账号设置</label>
-                <div class="my-music-space">
+                <div class="my-music-space" @click="mainRightActive(constant.MAIN_RIGHT_ACTIVE_MUSIC_SPACE)">
                     <img src="../../../assets/my-music-space.png">
                     我的音乐空间
                 </div>
@@ -37,7 +37,7 @@
 <script>
     import {
         MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT,
-        MAIN_RIGHT_ACTIVE_EDIT_PASSWORD,
+        MAIN_RIGHT_ACTIVE_EDIT_PASSWORD, MAIN_RIGHT_ACTIVE_MUSIC_SPACE,
         MAIN_RIGHT_ACTIVE_SECURITY, MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR
     } from "@/js/_const";
     import {objNoVal} from "@/js/util";
@@ -58,7 +58,8 @@
                     MAIN_RIGHT_ACTIVE_EDIT_PASSWORD,
                     MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT,
                     MAIN_RIGHT_ACTIVE_SECURITY,
-                    MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR
+                    MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR,
+                    MAIN_RIGHT_ACTIVE_MUSIC_SPACE,
                 },
             }
         },

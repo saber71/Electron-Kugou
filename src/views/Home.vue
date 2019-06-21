@@ -1,5 +1,6 @@
 <template>
-    <div id="home" :style="{'background':$store.state.homeBg}">
+    <div id="home" :style="{'background':$store.state.homeBg}"
+         @click="clickRoot">
         <header>
             <div class="left">
                 <div class="before-login" v-if="!$store.state.onlineUser||!$store.state.alreadyLogin">
@@ -211,7 +212,7 @@
                     <img class="can-hidden" src="../assets/menu.png" title="工具">
                     <img class="can-hidden" src="../assets/message.png" title="消息中心">
                     <img class="can-hidden" src="../assets/clothes.png" title="更换皮肤">
-                    <img class="can-hidden" src="../assets/tool.png" title="主菜单">
+                    <img class="can-hidden" src="../assets/option-white.png" title="主菜单">
                     <div class="divide"></div>
                     <img class="remote-controller" src="../assets/remote-controller.png" title="开启遥控器">
                     <div class="hidden-left" @click="hiddenLeft" title="隐藏音乐库">
@@ -616,6 +617,12 @@
             }
         },
         methods: {
+            clickRoot() {
+                const val = store.state.visiblePopup
+                for (let valKey in val) {
+                    val[valKey] = false
+                }
+            },
             clickAccountInputDown() {
                 this.matchAccountList = store.state.loginHistory
             },
@@ -671,17 +678,21 @@
         },
         created() {
             const onlineUser = store.state.onlineUser
-            if (onlineUser && this.autoLogin) {
-                this.toLogin()
+            if (onlineUser) {
                 this.loginInput.account = onlineUser.account
-                this.loginInput.password = onlineUser.password
                 this.loginInput.phone = onlineUser.phone
-                if (onlineUser.byMessage) {
-                    this.activeLogin = 1
-                    this.loginMethod.loginByMessage()
-                } else {
-                    this.activeLogin = 0
-                    this.loginMethod.loginByPassword()
+                if (this.rememberPassword) {
+                    this.loginInput.password = onlineUser.password
+                }
+                if (this.autoLogin) {
+                    this.visibleLoginCard(true)
+                    if (onlineUser.byMessage) {
+                        this.activeLogin = 1
+                        this.loginMethod.loginByMessage()
+                    } else {
+                        this.activeLogin = 0
+                        this.loginMethod.loginByPassword()
+                    }
                 }
             }
         },

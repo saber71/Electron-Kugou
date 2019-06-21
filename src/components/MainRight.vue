@@ -40,6 +40,7 @@
                  v-show="mainRightActiveIndex<=constant.MAIN_RIGHT_ACTIVE_LYRIC"></div>
         </section>
         <section class="main">
+            <user-music-space v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_MUSIC_SPACE"></user-music-space>
             <edit-account v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT"></edit-account>
             <upload-avatar v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR"></upload-avatar>
             <EditPassword v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_EDIT_PASSWORD"></EditPassword>
@@ -72,10 +73,11 @@
     import EditPassword from "@/components/main-right/account-setting/EditPassword";
     import AccountSecurity from "@/components/main-right/account-setting/AccountSecurity";
     import BindEmail from "@/components/main-right/account-setting/BindEmail";
+    import UserMusicSpace from "@/components/main-right/UserMusicSpace";
 
     export default {
         name: "MainRight",
-        components: {BindEmail, AccountSecurity, EditPassword, UploadAvatar, EditAccount},
+        components: {UserMusicSpace, BindEmail, AccountSecurity, EditPassword, UploadAvatar, EditAccount},
         props: {},
         data() {
             return {

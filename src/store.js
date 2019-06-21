@@ -63,7 +63,10 @@ export default new Vuex.Store({
         visibleLogin: false,
         visibleRegister: false,
         mainRightActive: MAIN_RIGHT_ACTIVE_DEFAULT,
-        mainRightActiveHistory: []
+        mainRightActiveHistory: [],
+        visiblePopup: {
+            musicOption: false
+        }
     },
     mutations: {
         /**
