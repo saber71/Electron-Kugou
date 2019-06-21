@@ -41,7 +41,7 @@ export function getLocalStorageItem(key, defaultValue) {
     const val = localStorage.getItem(key)
     if (!strNoVal(val)) {
         const type = typeof defaultValue
-        if (type === "object" || defaultValue === undefined || defaultValue === null) {
+        if (type === "object" || type === 'boolean' || type === 'number' || defaultValue === undefined || defaultValue === null) {
             return JSON.parse(val)
         } else {
             return val

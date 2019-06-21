@@ -2,7 +2,7 @@
     <div id="home" :style="{'background':$store.state.homeBg}">
         <header>
             <div class="left">
-                <div class="before-login" v-if="!$store.state.onlineUser">
+                <div class="before-login" v-if="!$store.state.onlineUser||!$store.state.alreadyLogin">
                     <img class="logo" src="../assets/logo.png">
                     <div class="login">
                         <label @click="visibleLoginCard">登陆</label>
@@ -240,8 +240,8 @@
 </template>
 
 <script>
-    import {getWindow, objNoVal, strNoVal} from "@/js/util";
-    import {maxAccount, maxPassword, minAccount, minHeight, minPassword, minWidth} from "@/js/_const";
+    import {getWindow, strNoVal} from "@/js/util";
+    import {maxAccount, maxPassword, minHeight, minWidth} from "@/js/_const";
     import MainLeft from "@/components/MainLeft";
     import MainRight from "@/components/MainRight";
     import ajax from "@/js/ajax";
@@ -670,6 +670,20 @@
         mounted() {
         },
         created() {
+            const onlineUser = store.state.onlineUser
+            if (onlineUser && this.autoLogin) {
+                this.toLogin()
+                this.loginInput.account = onlineUser.account
+                this.loginInput.password = onlineUser.password
+                this.loginInput.phone = onlineUser.phone
+                if (onlineUser.byMessage) {
+                    this.activeLogin = 1
+                    this.loginMethod.loginByMessage()
+                } else {
+                    this.activeLogin = 0
+                    this.loginMethod.loginByPassword()
+                }
+            }
         },
         destroyed() {
         }

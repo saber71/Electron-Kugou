@@ -65,8 +65,6 @@
         MAIN_RIGHT_ACTIVE_RADIO,
         MAIN_RIGHT_ACTIVE_SECURITY,
         MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
-        MAIN_RIGHT_ACTIVE_SECURITY_PHONE,
-        MAIN_RIGHT_ACTIVE_SECURITY_QUESTION,
         MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR
     } from "@/js/_const";
     import EditAccount from "@/components/main-right/account-setting/EditAccount";
@@ -97,8 +95,6 @@
                     MAIN_RIGHT_ACTIVE_EDIT_PASSWORD,
                     MAIN_RIGHT_ACTIVE_SECURITY,
                     MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
-                    MAIN_RIGHT_ACTIVE_SECURITY_PHONE,
-                    MAIN_RIGHT_ACTIVE_SECURITY_QUESTION,
                 },
             }
         },

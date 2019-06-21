@@ -10,16 +10,15 @@ import {
     PHONE_VALIDATOR, EMAIL_VALIDATOR
 } from "@/js/url";
 import {
-    getUrlParam,
     ranBoolean,
     ranCity, ranCTitle,
     ranDataImage, ranEmail,
     ranInteger,
     ranParagraph,
-    ranProvince, ranTitle,
+    ranProvince,
     ranWord
 } from "@/js/mock-random";
-import {objNoVal, formatDate} from "@/js/util";
+import {formatDate} from "@/js/util";
 import {maxAccount, maxPassword, minAccount, minPassword} from "@/js/_const";
 import {generatePhone} from "@/js/reg";
 
@@ -57,10 +56,10 @@ m(LOGIN, 'post', () => {
 m(MSG_LOGIN, 'post', () => {
     return mayFalse()
 })
-regm(PHONE_VALIDATOR + '?', 'get', (option) => {
+regm(PHONE_VALIDATOR + '?', 'get', () => {
     return mayTrue()
 })
-regm(EMAIL_VALIDATOR + '?', 'get', (option) => {
+regm(EMAIL_VALIDATOR + '?', 'get', () => {
     return mayTrue()
 })
 m(REGISTER, 'post', () => {
@@ -77,9 +76,10 @@ m(USER_DATA, 'get', () => {
         id: ranInteger(0, Number.MAX_SAFE_INTEGER),
         name: ranWord(minAccount, maxAccount),
         password: ranBoolean() ? '' : ranWord(minPassword, maxPassword),
-        phone: ranBoolean() ? '' : generatePhone(),
-        securityQuestion: ranCTitle(7, 9),
-        email: ranEmail(),
+        phone: ranBoolean() ? undefined : generatePhone(),
+        securityQuestion: ranBoolean() ? ranCTitle(7, 9) : undefined,
+        answer: ranCTitle(1, 10),
+        email: ranBoolean() ? ranEmail() : undefined,
         avatar: ranDataImage('25x25'),
         type: isVip ? 1 : 0,
         score: ranInteger(0, 20000),

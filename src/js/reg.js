@@ -74,3 +74,14 @@ export function validEmail(email) {
     const reg = '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$'
     return new RegExp(reg).test(email)
 }
+
+/**
+ * 判断给定字符串是否只包含汉字
+ * @param str
+ * @param len
+ * @returns {boolean}
+ */
+export function onlyChinese(str, len) {
+    const reg = `^[\u4e00-\u9fa5]{1,${len}}$`
+    return new RegExp(reg).test(str)
+}

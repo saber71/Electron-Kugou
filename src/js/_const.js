@@ -33,8 +33,7 @@ export const MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR = 10//上传头像
 export const MAIN_RIGHT_ACTIVE_EDIT_PASSWORD = 11//修改密码
 export const MAIN_RIGHT_ACTIVE_SECURITY = 12//安全设置
 export const MAIN_RIGHT_ACTIVE_SECURITY_EMAIL = 13//绑定邮箱
-export const MAIN_RIGHT_ACTIVE_SECURITY_PHONE = 14//绑定手机
-export const MAIN_RIGHT_ACTIVE_SECURITY_QUESTION = 15//设置安全问题
+export const MAIN_RIGHT_ACTIVE_SECURITY_QUESTION = 14//设置安全问题
 
 /*
 * music {   歌曲对象
@@ -74,6 +73,7 @@ export const MAIN_RIGHT_ACTIVE_SECURITY_QUESTION = 15//设置安全问题
 *   birthday    生日  string  【xxxx-xx-xx】
 *   opinion     个性签名    string
 *   securityQuestion    安全问题    string
+*   answer  安全问题答案  sting
 *   province    省份  string
 *   city    城市  string
 *   avatar  头像img  string

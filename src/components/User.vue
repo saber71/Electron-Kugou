@@ -67,7 +67,11 @@
 <script>
     import ajax from "@/js/ajax";
     import {overDate} from "@/js/util";
-    import {MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT, MAIN_RIGHT_ACTIVE_MUSIC_SPACE} from "@/js/_const";
+    import {
+        MAIN_RIGHT_ACTIVE_DEFAULT,
+        MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT,
+        MAIN_RIGHT_ACTIVE_MUSIC_SPACE
+    } from "@/js/_const";
 
     export default {
         name: "User",
@@ -111,6 +115,7 @@
             logout() {
                 store.commit('onlineUser', undefined)
                 store.commit('userData', undefined)
+                this.mainRightActive(MAIN_RIGHT_ACTIVE_DEFAULT)
             },
             fetchKuMoney() {
                 this.kuMoneyLoading = true

@@ -56,6 +56,7 @@ export default new Vuex.Store({
         userData: undefined,
 
         homeBg: HOME_COMMON_BG,
+        alreadyLogin: false,
         mainBg: 'white',
         mainLeftY: 0,
         mainLeftHeight: 0,
@@ -119,6 +120,9 @@ export default new Vuex.Store({
             setLocalStorageItem(rememberPasswordKey, val)
         },
         onlineUser(state, val) {
+            if (val) {
+                state.alreadyLogin = true
+            }
             state.onlineUser = val
             setLocalStorageItem(onlineUserKey, val)
         },

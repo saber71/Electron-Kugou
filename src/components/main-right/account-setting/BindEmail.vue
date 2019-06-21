@@ -70,6 +70,7 @@
     import {boolNoVal, generateCode, strNoVal} from "@/js/util";
     import {generateVerificationCode, validEmail} from "@/js/reg";
     import ajax from "@/js/ajax";
+    import {MAIN_RIGHT_ACTIVE_EDIT_PASSWORD} from "@/js/_const";
 
     export default {
         name: "BindEmail",
@@ -187,6 +188,10 @@
         mounted() {
         },
         created() {
+            if (strNoVal(this.userData.password)) {
+                alert("您还未设置密码，请先设置密码")
+                this.mainRightActive(MAIN_RIGHT_ACTIVE_EDIT_PASSWORD)
+            }
         },
         destroyed() {
         }
