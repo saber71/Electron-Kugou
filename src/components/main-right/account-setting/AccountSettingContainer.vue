@@ -160,6 +160,98 @@
 
         .account-setting-container-body {
             width: 100%;
+
+            .form-line {
+                display: grid;
+                grid-template-columns: 75px calc(100% - 80px);
+                grid-gap: 5px;
+                font-size: 13px;
+                color: #777777;
+
+                .right {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .label {
+                    font-size: 13px;
+                    display: inline-block;
+                    width: 100%;
+                    text-align: right;
+                    color: #777777;
+
+                    span {
+                        margin-right: 2px;
+                        color: red;
+                    }
+                }
+
+                input {
+                    width: 250px;
+                    padding: 5px 10px;
+                    box-sizing: border-box;
+                    border: 1px solid #dddddd;
+                    margin-top: -4px;
+                    color: #BBBBBB;
+
+                    &:hover {
+                        border-color: #CECECE;
+                    }
+
+                    &:focus {
+                        border-color: $light-blue;
+                        color: #a7a7a7;
+                    }
+                }
+
+                .input-invalid {
+                    border-color: red;
+
+                    &:focus, &:hover {
+                        border-color: red;
+                    }
+                }
+
+                .success {
+                    width: 14px;
+                    height: 14px;
+                    margin-left: 10px;
+                    margin-top: -4px;
+                }
+
+                .warn {
+                    padding: 5px 10px;
+                    color: red;
+                    margin-left: 10px;
+                    margin-top: -4px;
+                    display: flex;
+                    align-items: center;
+                    background-color: #FADADA;
+
+                    img {
+                        width: 16px;
+                        height: 16px;
+                        margin-right: 5px;
+                    }
+                }
+
+                .input-code {
+                    width: 70px;
+                }
+
+                .save {
+                    color: white;
+                    padding: 5px 20px;
+                    background-color: $light-blue;
+                    cursor: pointer;
+                    font-size: 14px;
+                    border-radius: 3px;
+
+                    &:hover {
+                        filter: brightness(1.1);
+                    }
+                }
+            }
         }
 
         .success-img {

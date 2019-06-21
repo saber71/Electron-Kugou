@@ -15,7 +15,7 @@
                     <div class="right">
                         <label>状态：<span :class="[email?'already-set':'no-set']">{{email?'已设置':'未设置'}}</span></label>
                         <button class="to-unbind" v-if="email">解除绑定</button>
-                        <button class="to-set" v-else>立即设置</button>
+                        <button class="to-set" v-else @click="mainRightActive(constant.toBindEmail)">立即设置</button>
                     </div>
                 </section>
                 <section class="line">
@@ -31,7 +31,7 @@
                     <div class="right">
                         <label>状态：<span :class="[phone?'already-set':'no-set']">{{phone?'已验证':'未设置'}}</span></label>
                         <button class="to-unbind" v-if="phone">解除绑定</button>
-                        <button class="to-set" v-else>立即设置</button>
+                        <button class="to-set" v-else @click="mainRightActive(constant.toBindPhone)">立即设置</button>
                     </div>
                 </section>
                 <section class="line">
@@ -48,7 +48,7 @@
                         <label>状态：<span
                                 :class="[question?'already-set':'no-set']">{{question?'已设置':'未设置'}}</span></label>
                         <button class="to-unbind" v-if="question">解除绑定</button>
-                        <button class="to-set" v-else>立即设置</button>
+                        <button class="to-set" v-else @click="mainRightActive(constant.toSetQuestion)">立即设置</button>
                     </div>
                 </section>
             </section>
@@ -59,6 +59,11 @@
 <script>
     import AccountSettingContainer from "@/components/main-right/account-setting/AccountSettingContainer";
     import ajax from "@/js/ajax";
+    import {
+        MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
+        MAIN_RIGHT_ACTIVE_SECURITY_PHONE,
+        MAIN_RIGHT_ACTIVE_SECURITY_QUESTION
+    } from "@/js/_const";
 
     export default {
         name: "AccountSecurity",
@@ -68,7 +73,12 @@
             return {
                 email: undefined,
                 phone: undefined,
-                question: undefined
+                question: undefined,
+                constant: {
+                    toBindEmail: MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
+                    toBindPhone: MAIN_RIGHT_ACTIVE_SECURITY_PHONE,
+                    toSetQuestion: MAIN_RIGHT_ACTIVE_SECURITY_QUESTION
+                }
             }
         },
         watch: {},
@@ -83,7 +93,7 @@
             else {
                 userData = (await ajax.getUserData()).data
             }
-            this.email = userData.email
+            // this.email = userData.email
             this.phone = userData.phone
             this.question = userData.securityQuestion
         },

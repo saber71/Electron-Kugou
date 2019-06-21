@@ -32,6 +32,9 @@ export const MAIN_RIGHT_ACTIVE_BUY_SVIP = 9//开通SVIP
 export const MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR = 10//上传头像
 export const MAIN_RIGHT_ACTIVE_EDIT_PASSWORD = 11//修改密码
 export const MAIN_RIGHT_ACTIVE_SECURITY = 12//安全设置
+export const MAIN_RIGHT_ACTIVE_SECURITY_EMAIL = 13//绑定邮箱
+export const MAIN_RIGHT_ACTIVE_SECURITY_PHONE = 14//绑定手机
+export const MAIN_RIGHT_ACTIVE_SECURITY_QUESTION = 15//设置安全问题
 
 /*
 * music {   歌曲对象

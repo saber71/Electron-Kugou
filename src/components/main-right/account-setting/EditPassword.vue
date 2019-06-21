@@ -4,7 +4,7 @@
             <form class="content">
                 <br/>
                 <section class="form-line" v-show="!userData||userData.password.length>0">
-                    <label><span>*</span>原密码：</label>
+                    <label class="label"><span>*</span>原密码：</label>
                     <div class="right">
                         <input :class="{'input-invalid':warn.oldPassword.length>0}"
                                @blur="oldPasswordValidator"
@@ -19,7 +19,7 @@
                 </section>
                 <br/>
                 <section class="form-line">
-                    <label><span>*</span>新密码：</label>
+                    <label class="label"><span>*</span>新密码：</label>
                     <div class="input-new-password">
                         <div class="input">
                             <input :class="{'input-invalid':warn.newPassword.length>0}"
@@ -54,7 +54,7 @@
                     </div>
                 </section>
                 <section class="form-line">
-                    <label><span>*</span>确认密码：</label>
+                    <label class="label"><span>*</span>确认密码：</label>
                     <div class="right">
                         <input :class="{'input-invalid':warn.repeatPassword.length>0}"
                                @blur="repeatPasswordValidator"
@@ -69,7 +69,7 @@
                 </section>
                 <br/>
                 <section class="form-line">
-                    <label><span>*</span>验证码：</label>
+                    <label class="label"><span>*</span>验证码：</label>
                     <div class="right">
                         <input class="input-code" :class="{'input-invalid':warn.code.length>0}" v-model="input.code"
                                @blur="codeValidator">
@@ -285,53 +285,6 @@
             font-size: 12px;
 
             .form-line {
-                display: grid;
-                grid-template-columns: 75px calc(100% - 85px);
-
-                .right {
-                    display: flex;
-                    align-items: center;
-                }
-
-                label {
-                    font-size: 13px;
-                    display: inline-block;
-                    width: 100%;
-                    text-align: right;
-                    color: #777777;
-
-                    span {
-                        margin-right: 2px;
-                        color: red;
-                    }
-                }
-
-                input {
-                    width: 250px;
-                    padding: 5px 10px;
-                    box-sizing: border-box;
-                    border: 1px solid #dddddd;
-                    margin-top: -4px;
-                    color: #BBBBBB;
-
-                    &:hover {
-                        border-color: #CECECE;
-                    }
-
-                    &:focus {
-                        border-color: $light-blue;
-                        color: #a7a7a7;
-                    }
-                }
-
-                .input-invalid {
-                    border-color: red;
-
-                    &:focus, &:hover {
-                        border-color: red;
-                    }
-                }
-
                 .input {
                     display: flex;
                     align-items: center;
@@ -349,28 +302,6 @@
                         height: 16px;
                         cursor: pointer;
                         opacity: 0.5;
-                    }
-                }
-
-                .success {
-                    width: 12px;
-                    height: 12px;
-                    margin-left: 10px;
-                }
-
-                .warn {
-                    padding: 5px 10px;
-                    color: red;
-                    margin-left: 10px;
-                    margin-top: -4px;
-                    display: flex;
-                    align-items: center;
-                    background-color: #FADADA;
-
-                    img {
-                        width: 16px;
-                        height: 16px;
-                        margin-right: 5px;
                     }
                 }
 
@@ -399,10 +330,6 @@
                     }
                 }
 
-                .input-code {
-                    width: 70px;
-                }
-
                 #canvas {
                     margin-top: -4px;
                     margin-left: 10px;
@@ -415,18 +342,6 @@
                     margin-left: 10px;
                 }
 
-                .save {
-                    color: white;
-                    padding: 5px 20px;
-                    background-color: $light-blue;
-                    cursor: pointer;
-                    font-size: 14px;
-                    border-radius: 3px;
-
-                    &:hover {
-                        filter: brightness(1.1);
-                    }
-                }
             }
         }
     }

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import LocalList from "@/components/LocalList";
+    import LocalList from "@/components/main-left/LocalList";
 
     export default {
         name: "MainLeft",

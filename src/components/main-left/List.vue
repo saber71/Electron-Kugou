@@ -2,7 +2,7 @@
     <div id="list">
         <section class="header" @click="visibleContainer=!visibleContainer">
             <div class="left">
-                <img :class="{'arrow-down':visibleContainer}" src="../assets/arrow-down-dark.png">
+                <img :class="{'arrow-down':visibleContainer}" src="../../assets/arrow-down-dark.png">
                 <label class="name">{{name}}</label>
                 <span class="size"> [{{size}}]</span>
             </div>
@@ -20,7 +20,7 @@
                     <label :class="{'item-active':visibleSub1}"
                            @mouseup="visibleSub1=!visibleSub1">
                         添加歌曲
-                        <img src="../assets/arrow-down-dark.png">
+                        <img src="../../assets/arrow-down-dark.png">
                     </label>
                     <div class="sub" :style="{height:sub1Height}">
                         <div class="sub-item"><label>添加本地歌曲...</label></div>
@@ -31,7 +31,7 @@
                      v-if="!popupHiddenOptions.addList" @mouseup="visibleSub2=!visibleSub2">
                     <label :class="{'item-active':visibleSub2}">
                         添加到列表
-                        <img src="../assets/arrow-down-dark.png">
+                        <img src="../../assets/arrow-down-dark.png">
                     </label>
                     <div class="sub" :style="{height:sub2Height}">
                         <div class="sub-item"><label>默认列表</label></div>
@@ -48,7 +48,7 @@
                     <label :class="{'item-active':visibleSub3}"
                            @mouseup="visibleSub3=!visibleSub3">
                         排序
-                        <img src="../assets/arrow-down-dark.png">
+                        <img src="../../assets/arrow-down-dark.png">
                     </label>
                     <div class="sub" :style="{height:sub3Height}">
                         <div class="sub-item"><label>按文件名</label></div>
@@ -168,5 +168,5 @@
 </script>
 
 <style scoped lang="scss">
-    @import "../style/list";
+    @import "../../style/list";
 </style>

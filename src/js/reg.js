@@ -65,3 +65,12 @@ export function isMiddlePassword(password) {
     const middlePassword = `^(?=.*[a-z])(?=.*\\d).{${minPassword},${maxPassword}}`
     return new RegExp(middlePassword).test(password)
 }
+
+/**
+ * 判断是否是有效的邮箱
+ * @param email
+ */
+export function validEmail(email) {
+    const reg = '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$'
+    return new RegExp(reg).test(email)
+}

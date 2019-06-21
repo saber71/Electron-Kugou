@@ -1,4 +1,5 @@
 import Mock from 'mockjs'
+import {objNoVal} from "@/js/util";
 
 export function formatDate(date) {
     return date.replace('-', '.').replace('-', '.');
@@ -67,7 +68,7 @@ export function ranInteger(min, max) {
 }
 
 export function ranBoolean(current, min, max) {
-    return ran.boolean(min, max, current);
+    return ran.boolean(min, max, current)
 }
 
 export function ranWord(min, max) {

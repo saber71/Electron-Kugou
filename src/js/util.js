@@ -102,17 +102,26 @@ export function allStrNoVal() {
 }
 
 //有一个参数为null或undefined
-export function objNoVal(obj) {
-    if (arguments.length === 1)
-        return obj === null || obj === undefined
-    else {
-        for (let i = 0; i < arguments.length; i++) {
-            const obj = arguments[i]
-            if (obj === null || obj === undefined)
-                return true
-        }
-        return false
+export function objNoVal() {
+    for (let i = 0; i < arguments.length; i++) {
+        const obj = arguments[i]
+        if (obj === null || obj === undefined)
+            return true
     }
+    return false
+}
+
+/**
+ *有一个参数为null或undefined或false
+ * @returns {boolean}
+ */
+export function boolNoVal() {
+    for (let i = 0; i < arguments.length; i++) {
+        const obj = arguments[i]
+        if (objNoVal(obj) || obj === false)
+            return true
+    }
+    return false
 }
 
 //获取歌曲的key

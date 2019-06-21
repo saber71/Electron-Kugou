@@ -44,6 +44,7 @@
             <upload-avatar v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR"></upload-avatar>
             <EditPassword v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_EDIT_PASSWORD"></EditPassword>
             <account-security v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_SECURITY"></account-security>
+            <bind-email v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_SECURITY_EMAIL"></bind-email>
         </section>
     </div>
 </template>
@@ -63,16 +64,20 @@
         MAIN_RIGHT_ACTIVE_MV,
         MAIN_RIGHT_ACTIVE_RADIO,
         MAIN_RIGHT_ACTIVE_SECURITY,
+        MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
+        MAIN_RIGHT_ACTIVE_SECURITY_PHONE,
+        MAIN_RIGHT_ACTIVE_SECURITY_QUESTION,
         MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR
     } from "@/js/_const";
     import EditAccount from "@/components/main-right/account-setting/EditAccount";
     import UploadAvatar from "@/components/main-right/account-setting/UploadAvatar";
     import EditPassword from "@/components/main-right/account-setting/EditPassword";
     import AccountSecurity from "@/components/main-right/account-setting/AccountSecurity";
+    import BindEmail from "@/components/main-right/account-setting/BindEmail";
 
     export default {
         name: "MainRight",
-        components: {AccountSecurity, EditPassword, UploadAvatar, EditAccount},
+        components: {BindEmail, AccountSecurity, EditPassword, UploadAvatar, EditAccount},
         props: {},
         data() {
             return {
@@ -91,6 +96,9 @@
                     MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR,
                     MAIN_RIGHT_ACTIVE_EDIT_PASSWORD,
                     MAIN_RIGHT_ACTIVE_SECURITY,
+                    MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
+                    MAIN_RIGHT_ACTIVE_SECURITY_PHONE,
+                    MAIN_RIGHT_ACTIVE_SECURITY_QUESTION,
                 },
             }
         },

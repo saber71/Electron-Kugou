@@ -6,7 +6,7 @@ import {
     UPLOAD_AVATAR,
     USER_DATA,
     USER_DATA_SAVE,
-    VERIFICATION_PHONE
+    PHONE_VALIDATOR, EMAIL_VALIDATOR
 } from "@/js/url";
 
 const ajax = {
@@ -31,8 +31,8 @@ const ajax = {
      * @param phone
      * @returns {Promise<AxiosPromise<any>>}    返回true表示已被注册
      */
-    async verificationPhone(phone) {
-        return axios.get(VERIFICATION_PHONE, phone)
+    async phoneValidator(phone) {
+        return axios.get(PHONE_VALIDATOR, phone)
     },
     /**
      * 注册
@@ -70,6 +70,14 @@ const ajax = {
      */
     async uploadAvatar(dataImage) {
         return axios.post(UPLOAD_AVATAR, dataImage)
+    },
+    /**
+     * 判断邮箱是否被绑定
+     * @param email
+     * @returns {Promise<AxiosPromise<any>>}    true，已被绑定；false，未被绑定
+     */
+    async emailValidator(email) {
+        return axios.get(EMAIL_VALIDATOR, email)
     },
 }
 

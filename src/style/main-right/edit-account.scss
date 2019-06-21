@@ -17,52 +17,9 @@
       color: #777777;
 
       .form-line {
-        display: grid;
-        grid-template-columns: 70px calc(100% - 80px);
-        grid-gap: 10px;
-        align-items: center;
-        margin: 15px 0;
-
-        .label {
-          text-align: right;
-        }
-
-        input {
-          width: 200px;
-          border: 1px solid #dddddd;
-          border-radius: 1px;
-          color: #BBBBBB;
-          padding: 3px 5px;
-          box-sizing: border-box;
-
-          &:hover, &:focus {
-            border-color: $light-blue;
-          }
-
-          &:focus {
-            color: #777777;
-          }
-        }
-
-        .input-invalid {
-          border-color: red;
-
-          &:hover, &:focus {
-            border-color: red;
-          }
-        }
-
         .input {
           display: flex;
-
-          .warn {
-            color: red;
-            font-size: 12px;
-            display: inline-block;
-            width: fit-content;
-            padding: 3px 0;
-            margin-left: 5px;
-          }
+          align-items: center;
         }
 
         input[type=radio] {
@@ -82,23 +39,6 @@
             resize: none;
             margin-right: 5px;
           }
-        }
-      }
-
-      .save-button {
-        display: inline-block;
-        width: fit-content;
-        margin-left: 80px;
-        border-width: 0;
-        color: white;
-        padding: 5px 30px;
-        background-color: $blue;
-        font-size: 14px;
-        border-radius: 3px;
-        cursor: pointer;
-
-        &:hover {
-          filter: brightness(1.1);
         }
       }
 

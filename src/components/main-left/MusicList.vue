@@ -4,9 +4,9 @@
               :popup-hidden-option="popupHiddenOption">
             <template v-slot:header>
                 <div class="header-items">
-                    <img src="../assets/update.png" v-if="update" title="一键升级无损音质">
-                    <img src="../assets/share.png" title="分享">
-                    <img src="../assets/menu-music-list.png" title="列表菜单" @click.stop="clickMenu">
+                    <img src="../../assets/update.png" v-if="update" title="一键升级无损音质">
+                    <img src="../../assets/share.png" title="分享">
+                    <img src="../../assets/menu-music-list.png" title="列表菜单" @click.stop="clickMenu">
                 </div>
             </template>
             <template v-slot:items>
@@ -19,9 +19,9 @@
 </template>
 
 <script>
-    import List from "@/components/List";
+    import List from "@/components/main-left/List";
     import {isReachMainLeftBottom} from "@/js/util";
-    import Music from "@/components/Music";
+    import Music from "@/components/main-left/Music";
 
     export default {
         name: "MusicList",
@@ -81,7 +81,7 @@
 </script>
 
 <style scoped lang="scss">
-    @import "../style/common";
+    @import "../../style/common";
 
     #music-list {
         .header-items {

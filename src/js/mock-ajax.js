@@ -7,7 +7,7 @@ import {
     UPLOAD_AVATAR,
     USER_DATA,
     USER_DATA_SAVE,
-    VERIFICATION_PHONE
+    PHONE_VALIDATOR, EMAIL_VALIDATOR
 } from "@/js/url";
 import {
     getUrlParam,
@@ -44,20 +44,27 @@ function mayFalse() {
     return ranBoolean(false, 1, 3)
 }
 
+/**
+ * 25%的概率返回true
+ */
+function mayTrue() {
+    return ranBoolean(true, 1, 3)
+}
+
 m(LOGIN, 'post', () => {
     return mayFalse()
 })
 m(MSG_LOGIN, 'post', () => {
     return mayFalse()
 })
-regm(VERIFICATION_PHONE + '?', 'get', (option) => {
-    const {phone} = getUrlParam(option.url)
-    return !objNoVal(store.state.loginHistory.find((obj) => {
-        return obj.account == phone
-    }))
+regm(PHONE_VALIDATOR + '?', 'get', (option) => {
+    return mayTrue()
+})
+regm(EMAIL_VALIDATOR + '?', 'get', (option) => {
+    return mayTrue()
 })
 m(REGISTER, 'post', () => {
-    return true
+    return mayFalse()
 })
 m(USER_DATA, 'get', () => {
     const isVip = ranBoolean()

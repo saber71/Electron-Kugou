@@ -3,16 +3,16 @@
          @mouseleave="visiblePopup=false" @mouseenter="visiblePopup=true">
         <div ref="music" class="content">
             <div class="text">
-                <img src="../assets/add.png" title="稍后播">
+                <img src="../../assets/add.png" title="稍后播">
                 {{name(music)}}
             </div>
             <div class="icons">
-                <img class="mv" src="../assets/mv.png" v-if="music.mv" title="观看MV">
+                <img class="mv" src="../../assets/mv.png" v-if="music.mv" title="观看MV">
                 <div class="mv-space" v-else></div>
-                <img class="love" src="../assets/love-red.png" v-if="isLove(music)" title="我不喜欢">
-                <img class="love" src="../assets/love.png" v-else title="我喜欢">
-                <img class="remove" src="../assets/remove.png" title="删除">
-                <img class="more" src="../assets/more.png" title="更多">
+                <img class="love" src="../../assets/love-red.png" v-if="isLove(music)" title="我不喜欢">
+                <img class="love" src="../../assets/love.png" v-else title="我喜欢">
+                <img class="remove" src="../../assets/remove.png" title="删除">
+                <img class="more" src="../../assets/more.png" title="更多">
                 <span class="duration">{{formatDuration(music.duration)}}</span>
             </div>
         </div>

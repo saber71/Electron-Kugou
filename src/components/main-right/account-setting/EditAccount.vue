@@ -3,23 +3,29 @@
         <account-setting-container ref="container" :active-label="0">
             <section class="body">
                 <form>
+                    <br/>
                     <div class="form-line">
                         <label class="label">账号：</label>
                         <label>{{$store.state.onlineUser.account}}（积分：{{userDataForm.score}}）</label>
                     </div>
+                    <br/>
                     <div class="form-line">
                         <label class="label">酷狗ID：</label>
                         <label>{{userDataForm.id}}</label>
                     </div>
+                    <br/>
                     <div class="form-line">
                         <label class="label">昵称：</label>
                         <div class="input">
                             <input :class="{'input-invalid':warn.name}"
                                    v-model="userDataForm.name" :maxlength="nameMaxLength"
                                    @blur="()=>this.validator.name()">
-                            <span class="warn" v-show="warn.name">{{warn.nameMsg}}</span>
+                            <div class="warn" v-show="warn.name">
+                                <img src="../../../assets/sigh.png">{{warn.nameMsg}}
+                            </div>
                         </div>
                     </div>
+                    <br/>
                     <div class="form-line">
                         <label class="label">性别：</label>
                         <div>
@@ -32,15 +38,19 @@
                             <label class="sex-label" for="radio-security">保密</label>
                         </div>
                     </div>
+                    <br/>
                     <div class="form-line">
                         <label class="label">生日：</label>
                         <div class="input">
                             <input :class="{'input-invalid':warn.birthday}"
                                    type="date" v-model="userDataForm.birthday"
                                    @blur="()=>this.validator.birthday()">
-                            <span class="warn" v-show="warn.birthday">{{warn.birthdayMsg}}</span>
+                            <div class="warn" v-show="warn.birthday">
+                                <img src="../../../assets/sigh.png">{{warn.birthdayMsg}}
+                            </div>
                         </div>
                     </div>
+                    <br/>
                     <div class="form-line">
                         <label class="label">地区：</label>
                         <div>
@@ -52,6 +62,7 @@
                             </select>
                         </div>
                     </div>
+                    <br/>
                     <div class="form-line">
                         <label class="label">个性签名：</label>
                         <div class="textarea">
@@ -60,8 +71,16 @@
                             <label>字数不超过60个字符</label>
                         </div>
                     </div>
-                    <div class="save-button" @click="userDataSave">保存</div>
-                    <label class="warn" v-show="visibleWarn">无法链接服务器，请检查网络链接</label>
+                    <br/>
+                    <div class="form-line">
+                        <label></label>
+                        <div class="right">
+                            <div class="save" @click="userDataSave">保存</div>
+                            <div class="warn" v-show="visibleWarn">
+                                <img src="../../../assets/sigh.png">无法链接服务器，请检查网络链接
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </section>
         </account-setting-container>

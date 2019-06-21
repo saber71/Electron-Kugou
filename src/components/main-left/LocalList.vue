@@ -6,7 +6,7 @@
 </template>
 
 <script>
-    import MusicList from "@/components/MusicList";
+    import MusicList from "@/components/main-left/MusicList";
     import {ranInteger, ranName, ranTitle} from "@/js/mock-random";
 
     export default {

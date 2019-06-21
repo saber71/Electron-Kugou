@@ -305,7 +305,7 @@
                             this.registerWarn.phone = true
                             this.registerWarn.phoneMsg = '无效的手机号'
                         } else {
-                            const res = (await ajax.verificationPhone(val)).data
+                            const res = (await ajax.phoneValidator(val)).data
                             if (!res) {
                                 this.registerWarn.phone = true
                                 this.registerWarn.phoneMsg = '该手机号已被注册'

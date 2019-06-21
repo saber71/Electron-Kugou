@@ -62,7 +62,7 @@ export default new Vuex.Store({
         visibleLogin: false,
         visibleRegister: false,
         mainRightActive: MAIN_RIGHT_ACTIVE_DEFAULT,
-        mainRightActiveHistory: [MAIN_RIGHT_ACTIVE_DEFAULT]
+        mainRightActiveHistory: []
     },
     mutations: {
         /**
@@ -80,8 +80,8 @@ export default new Vuex.Store({
          * @param val
          */
         mainRightActive(st, val) {
+            st.mainRightActiveHistory.push(st.mainRightActive)
             st.mainRightActive = val
-            st.mainRightActiveHistory.push(val)
         },
         /**
          * 从MainRightActive的历史记录中取出最新的记录
