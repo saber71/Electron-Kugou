@@ -7,3 +7,4 @@ export const USER_DATA = 'user-data'//获取登陆的用户数据
 export const FETCH_KU_MONEY = 'ku-money'//查询酷币余额
 export const USER_DATA_SAVE = 'save/user-data'//保存个人信息
 export const UPLOAD_AVATAR = 'upload/avatar'//上传用户头像
+export const MUSIC_SPACE_DATA = 'user/music-space'//获取指定用户的音乐空间的数据

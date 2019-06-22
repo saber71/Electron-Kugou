@@ -98,6 +98,10 @@
               margin-bottom: 10px;
 
               label {
+                max-width: 120px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
                 display: inline-block;
                 font-size: 12px;
                 font-weight: bold;

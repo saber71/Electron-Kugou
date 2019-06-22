@@ -6,7 +6,7 @@ import {
     UPLOAD_AVATAR,
     USER_DATA,
     USER_DATA_SAVE,
-    PHONE_VALIDATOR, EMAIL_VALIDATOR
+    PHONE_VALIDATOR, EMAIL_VALIDATOR, MUSIC_SPACE_DATA
 } from "@/js/url";
 
 const ajax = {
@@ -78,6 +78,14 @@ const ajax = {
      */
     async emailValidator(email) {
         return axios.get(EMAIL_VALIDATOR, email)
+    },
+    /**
+     * 获取指定用户的音乐空间的数据
+     * @param userAccount
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async getMusicSpaceData(userAccount) {
+        return axios.get(MUSIC_SPACE_DATA, userAccount)
     },
 }
 

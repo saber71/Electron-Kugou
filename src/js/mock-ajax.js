@@ -7,7 +7,7 @@ import {
     UPLOAD_AVATAR,
     USER_DATA,
     USER_DATA_SAVE,
-    PHONE_VALIDATOR, EMAIL_VALIDATOR
+    PHONE_VALIDATOR, EMAIL_VALIDATOR, MUSIC_SPACE_DATA
 } from "@/js/url";
 import {
     ranBoolean,
@@ -19,7 +19,7 @@ import {
     ranWord
 } from "@/js/mock-random";
 import {formatDate} from "@/js/util";
-import {maxAccount, maxPassword, minAccount, minPassword} from "@/js/_const";
+import {generateMusicSpaceData, maxAccount, maxPassword, minAccount, minPassword} from "@/js/_const";
 import {generatePhone} from "@/js/reg";
 
 Mock.setup({
@@ -99,4 +99,7 @@ m(USER_DATA_SAVE, 'post', () => {
 })
 m(UPLOAD_AVATAR, 'post', () => {
     return mayFalse()
+})
+regm(MUSIC_SPACE_DATA, 'get', () => {
+    return generateMusicSpaceData()
 })

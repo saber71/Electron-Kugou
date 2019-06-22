@@ -62,4 +62,25 @@
         border: none;
         cursor: pointer;
     }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #D0D0D0;
+        border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: rgba(242, 242, 242, 1);
+    }
+
+    ::-webkit-scrollbar-button {
+        display: none;
+    }
+
+    ::-webkit-scrollbar-corner {
+        background-color: transparent;
+    }
 </style>

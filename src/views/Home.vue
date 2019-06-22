@@ -256,6 +256,7 @@
         validPassword,
         validPhone
     } from "@/js/reg";
+    import {VISIBLE_POPUP} from "@/js/event-bus";
 
     let width = minWidth;
 
@@ -618,10 +619,11 @@
         },
         methods: {
             clickRoot() {
-                const val = store.state.visiblePopup
-                for (let valKey in val) {
-                    val[valKey] = false
-                }
+                // const val = store.state.visiblePopup
+                // for (let valKey in val) {
+                //     val[valKey] = false
+                // }
+                eventBus.$emit(VISIBLE_POPUP)
             },
             clickAccountInputDown() {
                 this.matchAccountList = store.state.loginHistory
