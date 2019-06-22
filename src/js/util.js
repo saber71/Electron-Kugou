@@ -1,5 +1,9 @@
 import {ranBoolean, ranInteger, ranWord} from "@/js/mock-random";
 
+export function remove(array, index) {
+    array.splice(index, 1)
+}
+
 export function getWindow() {
     return require('electron').remote.getCurrentWindow()
 }

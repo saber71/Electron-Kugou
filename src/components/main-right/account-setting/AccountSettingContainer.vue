@@ -3,7 +3,7 @@
         <section class="account-setting-container-header">
             <section class="account-setting-container-banner">
                 <label>账号设置</label>
-                <div class="my-music-space" @click="mainRightActive(constant.MAIN_RIGHT_ACTIVE_MUSIC_SPACE)">
+                <div class="my-music-space" @click="toMusicSpace">
                     <img src="../../../assets/my-music-space.png">
                     我的音乐空间
                 </div>
@@ -26,11 +26,6 @@
         <section class="account-setting-container-body">
             <slot></slot>
         </section>
-        <div class="big-loading" v-show="visibleLoading"></div>
-        <div class="success-img" v-show="visibleSuccess">
-            <img src="../../../assets/success.png">
-            <p>成功</p>
-        </div>
     </div>
 </template>
 
@@ -41,6 +36,7 @@
         MAIN_RIGHT_ACTIVE_SECURITY, MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR
     } from "@/js/_const";
     import {objNoVal} from "@/js/util";
+    import {LOADING, SUCCESS} from "@/js/event-bus";
 
     export default {
         name: "AccountSettingContainer",
@@ -52,20 +48,22 @@
         },
         data() {
             return {
-                visibleLoading: false,
-                visibleSuccess: false,
                 constant: {
                     MAIN_RIGHT_ACTIVE_EDIT_PASSWORD,
                     MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT,
                     MAIN_RIGHT_ACTIVE_SECURITY,
                     MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR,
-                    MAIN_RIGHT_ACTIVE_MUSIC_SPACE,
                 },
             }
         },
         watch: {},
         computed: {},
-        methods: {},
+        methods: {
+            toMusicSpace() {
+                store.commit('musicSpaceUser', store.state.onlineUser.account)
+                this.mainRightActive(MAIN_RIGHT_ACTIVE_MUSIC_SPACE)
+            }
+        },
         mounted() {
         },
         created() {
@@ -74,15 +72,10 @@
                 return
             }
             this.$on("loading", (val) => {
-                this.visibleLoading = val
+                eventBus.$on(LOADING, val)
             })
             this.$on("success", (val) => {
-                this.visibleSuccess = val
-                if (val) {
-                    setTimeout(() => {
-                        this.visibleSuccess = false
-                    }, 1500)
-                }
+                eventBus.$on(SUCCESS, val)
             })
         },
         destroyed() {
@@ -252,26 +245,6 @@
                         filter: brightness(1.1);
                     }
                 }
-            }
-        }
-
-        .success-img {
-            position: absolute;
-            left: calc(50% - 50px);
-            top: calc(50% - 100px);
-            width: 100px;
-            height: 100px;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            border-radius: 5px;
-
-            p {
-                width: 100%;
-                text-align: center;
-                margin: 0;
             }
         }
     }

@@ -2,12 +2,14 @@ import {
     ranBoolean,
     ranCity,
     ranCTitle,
-    ranDataImage,
-    ranInteger, ranName,
+    ranDataImage, ranEmail,
+    ranInteger, ranName, ranParagraph,
     ranProvince, ranSentence,
     ranTitle,
     ranWord
 } from "@/js/mock-random";
+import {generatePhone} from "@/js/reg";
+import {formatDate} from "@/js/util";
 
 export const minWidth = 1024
 export const minHeight = 600
@@ -44,7 +46,7 @@ export const MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR = 10//上传头像
 export const MAIN_RIGHT_ACTIVE_EDIT_PASSWORD = 11//修改密码
 export const MAIN_RIGHT_ACTIVE_SECURITY = 12//安全设置
 export const MAIN_RIGHT_ACTIVE_SECURITY_EMAIL = 13//绑定邮箱
-export const MAIN_RIGHT_ACTIVE_SECURITY_QUESTION = 14//设置安全问题
+export const MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT = 14//用户的社交信息
 
 /*
 * music {   歌曲对象
@@ -58,10 +60,6 @@ export const MAIN_RIGHT_ACTIVE_SECURITY_QUESTION = 14//设置安全问题
 *   file    文件路径
 * }
 * */
-/**
- * 随机生成music对象
- * @returns {{duration, img, file, singer, name, source: string, type: string, quality: string}}
- */
 export function generateMusic(isNetSource, filePath) {
     return {
         name: ranTitle(1, 3),
@@ -109,6 +107,32 @@ export function generateMusic(isNetSource, filePath) {
 *   vipStatus   开通vip的情况    string 【0：从未开通过，具体日期：表示vip到期时间】
 * }
 * */
+export function generateUserData() {
+    const isVip = ranBoolean()
+    let vipStatus = '0'
+    const date = new Date()
+    if (isVip) {
+        vipStatus = date.getUTCFullYear() + '-' + (ranBoolean() ? date.getMonth() + 2 : date.getMonth()) + '-' + date.getDate()
+    }
+    return {
+        id: ranInteger(0, Number.MAX_SAFE_INTEGER),
+        name: ranWord(minAccount, maxAccount),
+        password: ranBoolean() ? '' : ranWord(minPassword, maxPassword),
+        phone: ranBoolean() ? undefined : generatePhone(),
+        securityQuestion: ranBoolean() ? ranCTitle(7, 9) : undefined,
+        answer: ranCTitle(1, 10),
+        email: ranBoolean() ? ranEmail() : undefined,
+        avatar: ranDataImage('25x25'),
+        type: isVip ? 1 : 0,
+        score: ranInteger(0, 20000),
+        vipStatus,
+        birthday: formatDate(new Date()),
+        sex: ranInteger(0, 1),
+        opinion: ranParagraph(1, 3),
+        province: ranProvince(),
+        city: ranCity()
+    }
+}
 
 /*
 * music-space-data  {  音乐空间数据
@@ -126,10 +150,6 @@ export function generateMusic(isNetSource, filePath) {
 *   favoriteMusicList    array       收藏的歌单，net-music-list数组
 * }
 * */
-/**
- * 随机生成用户的音乐空间数据
- * @returns {{visitors, customMusicList: {img, author, name: *, musics: Array}[], province, city, sex, favoriteMusicList: Array, name, focus, avatar, friends, fans}}
- */
 export function generateMusicSpaceData() {
     const favoriteMusicList = []
     const len = ranInteger(0, 20)
@@ -163,11 +183,6 @@ export function generateMusicSpaceData() {
 *   musics  array   歌单包含的音乐，music数组
 * }
 * */
-/**
- * 随机生成网络歌单
- * @param name  歌单名字
- * @returns {{img, author, name: *, musics: Array}}
- */
 export function generateNetMusicList(name) {
     const musics = []
     const len = ranInteger(1, 20)
@@ -180,4 +195,32 @@ export function generateNetMusicList(name) {
         img: ranDataImage('100x100'),
         musics
     }
+}
+
+/*
+* user-brief-data  {  其他用户的简短信息
+*   name    string  昵称
+*   avatar  string  头像
+*   focus   Boolean 【true，已关注；false，未关注】
+* }
+* */
+export function generateUserBriefData() {
+    return {
+        name: ranWord(minAccount, maxAccount),
+        avatar: ranDataImage('100x100'),
+        focus: ranBoolean()
+    }
+}
+
+/**
+ * 生成复数个user-brief-data
+ * @returns {Array}
+ */
+export function generateMultiUserBriefData() {
+    const res = []
+    const len = ranInteger(0, 20)
+    for (let i = 0; i < len; i++) {
+        res.push(generateUserBriefData())
+    }
+    return res
 }

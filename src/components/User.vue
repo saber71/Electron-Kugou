@@ -103,6 +103,7 @@
             },
             toMusicSpace() {
                 this.mainRightActive(MAIN_RIGHT_ACTIVE_MUSIC_SPACE)
+                store.commit('musicSpaceUser', store.state.onlineUser.account)
                 this.visiblePopup = false
                 this.visibleOptionPopup = false
             },

@@ -201,7 +201,7 @@
             </div>
             <div class="right">
                 <div class="search">
-                    <img class="return" src="../assets/arrow-down.png" title="返回">
+                    <img class="return" src="../assets/arrow-down.png" title="返回" @click="goBack">
                     <img class="refresh" src="../assets/refresh.png">
                     <input v-model="searchText">
                     <img src="../assets/hua-tong.png" title="听歌识曲">
@@ -618,6 +618,9 @@
             }
         },
         methods: {
+            goBack() {
+                store.commit('goBack')
+            },
             clickRoot() {
                 // const val = store.state.visiblePopup
                 // for (let valKey in val) {

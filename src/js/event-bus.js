@@ -6,3 +6,6 @@ window.eventBus = vue
 
 export const USER_DATA_CHANGE = 'user-data-change'
 export const VISIBLE_POPUP = 'visible-popup'
+export const LOADING = 'loading'
+export const SUCCESS = 'success'
+export const FAIL = 'fail'

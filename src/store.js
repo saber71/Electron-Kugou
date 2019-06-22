@@ -66,9 +66,18 @@ export default new Vuex.Store({
         mainRightActiveHistory: [],
         visiblePopup: {
             musicOption: false
-        }
+        },
+
+        musicSpaceUser: '',//正在查看的音乐空间用户
+        socialContactType: 0,//【0：好友，1：关注，2：粉丝，3：访客】
     },
     mutations: {
+        socialContactType(st, val) {
+            st.socialContactType = val
+        },
+        musicSpaceUser(st, val) {
+            st.musicSpaceUser = val
+        },
         /**
          * 回退
          * @param st

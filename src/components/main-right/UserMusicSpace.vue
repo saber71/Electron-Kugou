@@ -3,7 +3,7 @@
         <section class="header">
             <div class="header-bg"></div>
             <section class="line1">
-                <div class="option">
+                <div class="option" :style="{visibility:isMaster?'visible':'hidden'}">
                     <div class="content" @click="clickOption">
                         <img class="icon" src="../../assets/option-white.png">设置
                     </div>
@@ -30,22 +30,22 @@
                             <div class="position">{{musicSpaceData.province+musicSpaceData.city}}</div>
                         </div>
                         <div class="right">
-                            <div class="item">
+                            <div class="item" @click="toFriend">
                                 <span class="number">{{musicSpaceData.friends}}</span>
                                 <label>好友</label>
                             </div>
                             <div class="divide"></div>
-                            <div class="item">
+                            <div class="item" @click="toFocus">
                                 <span class="number">{{musicSpaceData.focus}}</span>
                                 <label>关注</label>
                             </div>
                             <div class="divide"></div>
-                            <div class="item">
+                            <div class="item" @click="toFans">
                                 <span class="number">{{musicSpaceData.fans}}</span>
                                 <label>粉丝</label>
                             </div>
                             <div class="divide"></div>
-                            <div class="item">
+                            <div class="item" @click="toVisitor">
                                 <span class="number">{{musicSpaceData.visitors}}</span>
                                 <label>访客</label>
                             </div>
@@ -71,7 +71,7 @@
                 </section>
             </section>
             <section class="favorite-list">
-                <h2>我创建的歌单<span>[{{musicSpaceData.favoriteMusicList.length}}]</span></h2>
+                <h2>我收藏的歌单<span>[{{musicSpaceData.favoriteMusicList.length}}]</span></h2>
                 <section class="music-list-content">
                     <div class="music-list" v-for="(v) in musicSpaceData.favoriteMusicList"
                          :title="v.name">
@@ -86,7 +86,7 @@
             </section>
         </section>
         <section class="security-popup" v-show="securityPopupCount>0"
-                 @click.stop="">
+                 @click.stop="securityPopupCount=0">
             <div class="dialog">
                 <div class="title">
                     隐私设置
@@ -96,25 +96,25 @@
                     <div class="line">谁可以看到我的个人主页</div>
                     <div class="line" @click.stop="securitySelected=0">
                         <div class="circle" :class="{'circle-active':securitySelected===0}">
-                            <div></div>
+                            <div class="inner"></div>
                         </div>
                         所有人
                     </div>
                     <div class="line" @click.stop="securitySelected=1">
-                        <div class="circle" :class="{'circle-active':securitySelected===0}">
-                            <div></div>
+                        <div class="circle" :class="{'circle-active':securitySelected===1}">
+                            <div class="inner"></div>
                         </div>
                         好友
                     </div>
                     <div class="line" @click.stop="securitySelected=2">
-                        <div class="circle" :class="{'circle-active':securitySelected===0}">
-                            <div></div>
+                        <div class="circle" :class="{'circle-active':securitySelected===2}">
+                            <div class="inner"></div>
                         </div>
                         自己
                     </div>
                 </div>
                 <div class="bottom">
-                    <button class="save">确定</button>
+                    <button class="save" @click="setSecurity">确定</button>
                     <button class="cancel" @click="securityPopupCount=0">返回</button>
                 </div>
             </div>
@@ -123,8 +123,8 @@
 </template>
 
 <script>
-    import {MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT} from "@/js/_const";
-    import {VISIBLE_POPUP} from "@/js/event-bus";
+    import {MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT, MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT} from "@/js/_const";
+    import {FAIL, LOADING, SUCCESS, VISIBLE_POPUP} from "@/js/event-bus";
     import ajax from "@/js/ajax";
 
     export default {
@@ -145,6 +145,9 @@
         computed: {
             visibleMusicOption() {
                 return store.state.visiblePopup.musicOption
+            },
+            isMaster() {
+                return store.state.musicSpaceUser === store.state.onlineUser.account
             }
         },
         methods: {
@@ -152,6 +155,32 @@
                 // const val = this.visibleMusicOption
                 // store.state.visiblePopup.musicOption = !val
                 this.optionPopupCount = 2
+            },
+            async setSecurity() {
+                eventBus.$emit(LOADING, true)
+                const res = (await ajax.setMusicSpaceSecurity(this.securitySelected)).data
+                eventBus.$emit(LOADING, false)
+                if (res) {
+                    eventBus.$emit(SUCCESS, true)
+                } else {
+                    eventBus.$emit(FAIL, "无法连接服务器，请检查网络")
+                }
+            },
+            toFriend() {
+                store.state.socialContactType = 0
+                this.mainRightActive(MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT)
+            },
+            toFocus() {
+                store.state.socialContactType = 1
+                this.mainRightActive(MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT)
+            },
+            toFans() {
+                store.state.socialContactType = 2
+                this.mainRightActive(MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT)
+            },
+            toVisitor() {
+                store.state.socialContactType = 3
+                this.mainRightActive(MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT)
             },
         },
         mounted() {
@@ -161,7 +190,12 @@
                 this.optionPopupCount--
                 this.securityPopupCount--
             })
+            eventBus.$emit(LOADING, true)
             this.musicSpaceData = (await ajax.getMusicSpaceData()).data
+            eventBus.$emit(LOADING, false)
+            if (this.isMaster) {
+                this.securitySelected = (await ajax.getMusicSpaceSecurity()).data
+            }
         },
         destroyed() {
             eventBus.$off(VISIBLE_POPUP)
@@ -463,9 +497,9 @@
 
             .dialog {
                 width: 400px;
-                margin: 100px auto 0;
+                margin: 140px auto 0;
                 background-color: white;
-                border-radius: 1px;
+                border-radius: 3px;
 
                 .title {
                     display: flex;
@@ -485,33 +519,40 @@
 
                 .content {
                     color: rgba(0, 0, 0, 0.5);
-                    padding: 5px 10px;
-                    font-size: 14px;
+                    padding: 10px;
+                    font-size: 16px;
 
                     .line {
-                        padding: 5px 0;
                         display: flex;
                         align-items: center;
+                        cursor: pointer;
+                        padding: 10px 10px;
+                        box-sizing: border-box;
 
-                    }
-
-                    .circle {
-                        width: 10px;
-                        height: 10px;
-                        border-radius: 50%;
-                        overflow: hidden;
-                        border: 1px solid rgba(0, 0, 0, 0.5);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        margin-right: 10px;
-
-                        .inner {
-                            width: 7px;
-                            height: 7px;
+                        .circle {
+                            width: 14px;
+                            height: 14px;
                             border-radius: 50%;
                             overflow: hidden;
-                            background-color: $blue;
+                            border: 1px solid rgba(0, 0, 0, 0.5);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-right: 10px;
+                            padding: 2px;
+                            box-sizing: border-box;
+
+                            .inner {
+                                width: 100%;
+                                height: 100%;
+                                border-radius: 50%;
+                            }
+                        }
+
+                        .circle-active {
+                            .inner {
+                                background-color: $blue;
+                            }
                         }
                     }
                 }
@@ -528,7 +569,7 @@
                         color: white;
                         padding: 5px 20px;
                         background-color: $blue;
-                        border-radius: 1px;
+                        border-radius: 3px;
 
                         &:hover {
                             background-color: #148bdc;

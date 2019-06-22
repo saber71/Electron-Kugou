@@ -46,6 +46,7 @@
             <EditPassword v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_EDIT_PASSWORD"></EditPassword>
             <account-security v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_SECURITY"></account-security>
             <bind-email v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_SECURITY_EMAIL"></bind-email>
+            <SocialContact v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT"></SocialContact>
         </section>
     </div>
 </template>
@@ -66,7 +67,7 @@
         MAIN_RIGHT_ACTIVE_RADIO,
         MAIN_RIGHT_ACTIVE_SECURITY,
         MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
-        MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR
+        MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR, MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT
     } from "@/js/_const";
     import EditAccount from "@/components/main-right/account-setting/EditAccount";
     import UploadAvatar from "@/components/main-right/account-setting/UploadAvatar";
@@ -74,10 +75,19 @@
     import AccountSecurity from "@/components/main-right/account-setting/AccountSecurity";
     import BindEmail from "@/components/main-right/account-setting/BindEmail";
     import UserMusicSpace from "@/components/main-right/UserMusicSpace";
+    import SocialContact from "@/components/main-right/SocialContact";
 
     export default {
         name: "MainRight",
-        components: {UserMusicSpace, BindEmail, AccountSecurity, EditPassword, UploadAvatar, EditAccount},
+        components: {
+            SocialContact,
+            UserMusicSpace,
+            BindEmail,
+            AccountSecurity,
+            EditPassword,
+            UploadAvatar,
+            EditAccount
+        },
         props: {},
         data() {
             return {
@@ -97,6 +107,7 @@
                     MAIN_RIGHT_ACTIVE_EDIT_PASSWORD,
                     MAIN_RIGHT_ACTIVE_SECURITY,
                     MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
+                    MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT,
                 },
             }
         },

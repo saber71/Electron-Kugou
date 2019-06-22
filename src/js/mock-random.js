@@ -98,3 +98,7 @@ export function ranColor() {
 export function ranEmail() {
     return ran.email()
 }
+
+export function ranDate() {
+    return ran.date()
+}

@@ -6,7 +6,15 @@ import {
     UPLOAD_AVATAR,
     USER_DATA,
     USER_DATA_SAVE,
-    PHONE_VALIDATOR, EMAIL_VALIDATOR, MUSIC_SPACE_DATA
+    PHONE_VALIDATOR,
+    EMAIL_VALIDATOR,
+    MUSIC_SPACE_DATA,
+    MUSIC_SPACE_SECURITY,
+    FRIENDS,
+    FOCUS_USER,
+    FANS,
+    SPACE_VISITORS,
+    SET_FOCUS, REMOVE_VISIT_RECORD
 } from "@/js/url";
 
 const ajax = {
@@ -81,11 +89,76 @@ const ajax = {
     },
     /**
      * 获取指定用户的音乐空间的数据
-     * @param userAccount
      * @returns {Promise<AxiosPromise<any>>}
      */
-    async getMusicSpaceData(userAccount) {
+    async getMusicSpaceData() {
+        const userAccount = store.state.musicSpaceUser
         return axios.get(MUSIC_SPACE_DATA, userAccount)
+    },
+    /**
+     * 设置自己的音乐空间的可见等级
+     * @param level     0，所有人可见；1，仅好友可见；2，仅自己可见
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async setMusicSpaceSecurity(level) {
+        return axios.post(MUSIC_SPACE_SECURITY, level)
+    },
+    /**
+     * 获取指定用户的音乐空间的可见等级
+     * @returns {Promise<AxiosPromise<any>>}    0，所有人可见；1，仅好友可见；2，仅自己可见
+     */
+    async getMusicSpaceSecurity() {
+        const userAccount = store.state.musicSpaceUser
+        return axios.get(MUSIC_SPACE_SECURITY, userAccount)
+    },
+    /**
+     * 获取指定用户的好友
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async getFriends() {
+        const userAccount = store.state.musicSpaceUser
+        return axios.get(FRIENDS, userAccount)
+    },
+    /**
+     * 获取指定用户关注的用户
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async getFocusUser() {
+        const userAccount = store.state.musicSpaceUser
+        return axios.get(FOCUS_USER, userAccount)
+    },
+    /**
+     * 获取指定用户的粉丝
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async getFans() {
+        const userAccount = store.state.musicSpaceUser
+        return axios.get(FANS, userAccount)
+    },
+    /**
+     * 获取指定用户的音乐空间的访客
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async getSpaceVisitors() {
+        const userAccount = store.state.musicSpaceUser
+        return axios.get(SPACE_VISITORS, userAccount)
+    },
+    /**
+     * 设置对指定用户的关注与否
+     * @param account
+     * @param val
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async setFocus(account, val) {
+        return axios.post(SET_FOCUS, {account, val})
+    },
+    /**
+     * 删除指定用户的浏览记录
+     * @param account
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async removeVisitRecord(account) {
+        return axios.post(REMOVE_VISIT_RECORD, account)
     },
 }
 
