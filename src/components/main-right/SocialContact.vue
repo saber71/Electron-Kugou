@@ -3,10 +3,8 @@
         <h1 class="title">{{banner}}[{{userDataArray?userDataArray.length:0}}]</h1>
         <section class="content" v-if="userDataArray">
             <section class="zero" v-if="userDataArray.length===0">
-                <div class="card">
-                    <img src="../../assets/no-friend.png"><br/>
-                    {{zeroMsg}}
-                </div>
+                <img src="../../assets/no-friend.png">
+                <span>{{zeroMsg}}</span>
             </section>
             <section class="user-brief-data" v-else>
                 <div class="item" v-for="(v,index) in userDataArray" @click="remove(index)">
@@ -93,23 +91,20 @@
         }
 
         .content {
+
             .zero {
                 width: 100%;
                 height: 100%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                flex-direction: column;
+                font-size: 13px;
+                color: rgba(0, 0, 0, 0.7);
 
-                .card {
-                    font-size: 13px;
-                    color: rgba(0, 0, 0, 0.7);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-
-                    img {
-                        margin-bottom: 20px;
-                    }
+                img {
+                    margin-top: 50px;
+                    margin-bottom: 20px;
                 }
             }
 

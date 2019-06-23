@@ -15,12 +15,12 @@ import {
     FOCUS_USER,
     FANS,
     SPACE_VISITORS,
-    SET_FOCUS, REMOVE_VISIT_RECORD
+    SET_FOCUS, REMOVE_VISIT_RECORD, CAN_VISIT_SPACE
 } from "@/js/url";
 import {
     ranBoolean,
     ranCity, ranCTitle,
-    ranDataImage, ranDate, ranEmail,
+    ranDataImage, ranDate, ranDatetime, ranEmail,
     ranInteger,
     ranParagraph,
     ranProvince,
@@ -113,12 +113,15 @@ regm(FANS, 'get', () => {
 })
 regm(SPACE_VISITORS, 'get', () => {
     const res = generateMultiUserBriefData()
-    res.forEach(value => value.date = ranDate())
+    res.forEach(value => value.date = ranDatetime())
     return res
 })
 m(SET_FOCUS, 'post', () => {
     return mayFalse()
 })
 m(REMOVE_VISIT_RECORD, 'post', () => {
+    return mayFalse()
+})
+regm(CAN_VISIT_SPACE, 'get', () => {
     return mayFalse()
 })

@@ -1,6 +1,6 @@
 <template>
     <div id="UserBriefData">
-        <div class="top" @click.stop="">
+        <div class="top" @click.stop="visitSpace">
             <div class="avatar">
                 <img :src="userData.avatar">
             </div>
@@ -23,6 +23,7 @@
 
     import {FAIL, LOADING, SUCCESS} from "@/js/event-bus";
     import ajax from "@/js/ajax";
+    import {MAIN_RIGHT_ACTIVE_MUSIC_SPACE} from "@/js/_const";
 
     export default {
         name: "UserBriefData",
@@ -40,6 +41,17 @@
         watch: {},
         computed: {},
         methods: {
+            async visitSpace() {
+                eventBus.$emit(LOADING, true)
+                const res = (await ajax.canVisitSpace(this.userData.name)).data
+                if (res) {
+                    store.commit('musicSpaceUser', this.userData.name)
+                    this.mainRightActive(MAIN_RIGHT_ACTIVE_MUSIC_SPACE)
+                } else {
+                    eventBus.$emit(LOADING, false)
+                    eventBus.$emit(FAIL, '您无法访问Ta的音乐空间')
+                }
+            },
             async focus() {
                 const data = this.userData
                 eventBus.$emit(LOADING, true)

@@ -15,3 +15,4 @@ export const FANS = 'fans'//获取指定用户的粉丝
 export const SPACE_VISITORS = 'space-visitors'//获取指定用户的
 export const SET_FOCUS = 'set/focus'//设置对指定用户的关注与否
 export const REMOVE_VISIT_RECORD = 'remove/visit-record'//删除指定用户的浏览记录
+export const CAN_VISIT_SPACE = 'music-space/visit'//是否能够浏览指定用户的音乐空间

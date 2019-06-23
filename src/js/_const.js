@@ -142,6 +142,7 @@ export function generateUserData() {
 *   province    string  所处省份
 *   city    string  所处城市
 *   sex     number  性别  【0：男，1：女】
+*   isFocus boolean 自己是否已关注
 *   friends     number  好友的数量
 *   focus       number  关注的人的数量
 *   fans        number  粉丝的数量
@@ -163,10 +164,11 @@ export function generateMusicSpaceData() {
         province: ranProvince(),
         city: ranCity(),
         sex: ranInteger(0, 1),
-        friends: ranInteger(0, 100),
-        focus: ranInteger(0, 100),
-        fans: ranInteger(0, 100),
-        visitors: ranInteger(0, 100),
+        isFocus: ranBoolean(),
+        friends: ranInteger(0, 20000),
+        focus: ranInteger(0, 20000),
+        fans: ranInteger(0, 20000),
+        visitors: ranInteger(0, 20000),
         customMusicList: [
             generateNetMusicList("我喜欢"),
             generateNetMusicList("默认列表"),

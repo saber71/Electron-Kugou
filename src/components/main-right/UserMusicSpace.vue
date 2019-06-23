@@ -1,9 +1,20 @@
 <template>
     <div id="UserMusicSpace">
-        <section class="header">
+        <section class="header" v-if="musicSpaceData">
             <div class="header-bg"></div>
             <section class="line1">
-                <div class="option" :style="{visibility:isMaster?'visible':'hidden'}">
+                <div class="focus" :class="{'hidden':isMaster}"
+                     @click="focus"
+                     @mouseenter="hoverFocus=true" @mouseleave="hoverFocus=false">
+                    <div class="content">
+                        {{musicSpaceData.isFocus?hoverFocus?'取消关注':'已关注':"关注"}}
+                    </div>
+                </div>
+                <div class="report" :class="{'hidden':isMaster}"
+                     @click="report">
+                    <div class="content">举报</div>
+                </div>
+                <div class="option" :class="{'hidden':!isMaster}">
                     <div class="content" @click="clickOption">
                         <img class="icon" src="../../assets/option-white.png">设置
                     </div>
@@ -31,22 +42,22 @@
                         </div>
                         <div class="right">
                             <div class="item" @click="toFriend">
-                                <span class="number">{{musicSpaceData.friends}}</span>
+                                <span class="number">{{formatNumber(musicSpaceData.friends)}}</span>
                                 <label>好友</label>
                             </div>
                             <div class="divide"></div>
                             <div class="item" @click="toFocus">
-                                <span class="number">{{musicSpaceData.focus}}</span>
+                                <span class="number">{{formatNumber(musicSpaceData.focus)}}</span>
                                 <label>关注</label>
                             </div>
                             <div class="divide"></div>
                             <div class="item" @click="toFans">
-                                <span class="number">{{musicSpaceData.fans}}</span>
+                                <span class="number">{{formatNumber(musicSpaceData.fans)}}</span>
                                 <label>粉丝</label>
                             </div>
                             <div class="divide"></div>
                             <div class="item" @click="toVisitor">
-                                <span class="number">{{musicSpaceData.visitors}}</span>
+                                <span class="number">{{formatNumber(musicSpaceData.visitors)}}</span>
                                 <label>访客</label>
                             </div>
                         </div>
@@ -57,7 +68,7 @@
         </section>
         <section class="music-lists" v-if="musicSpaceData">
             <section class="my-create-list">
-                <h2>我创建的歌单<span>[{{musicSpaceData.customMusicList.length}}]</span></h2>
+                <h2>{{isMaster?'我':'Ta'}}创建的歌单<span>[{{musicSpaceData.customMusicList.length}}]</span></h2>
                 <section class="music-list-content">
                     <div class="music-list" v-for="(v) in musicSpaceData.customMusicList"
                          :title="v.name">
@@ -71,7 +82,7 @@
                 </section>
             </section>
             <section class="favorite-list">
-                <h2>我收藏的歌单<span>[{{musicSpaceData.favoriteMusicList.length}}]</span></h2>
+                <h2>{{isMaster?'我':'Ta'}}收藏的歌单<span>[{{musicSpaceData.favoriteMusicList.length}}]</span></h2>
                 <section class="music-list-content">
                     <div class="music-list" v-for="(v) in musicSpaceData.favoriteMusicList"
                          :title="v.name">
@@ -138,7 +149,8 @@
                 optionPopupCount: 0,
                 securityPopupCount: -1,
                 securitySelected: 0,
-                musicSpaceData: undefined
+                musicSpaceData: undefined,
+                hoverFocus: false,
             }
         },
         watch: {},
@@ -151,6 +163,26 @@
             }
         },
         methods: {
+            async focus() {
+                eventBus.$emit(LOADING, true)
+                const res = (await ajax.setFocus(this.musicSpaceData.name, !this.musicSpaceData.isFocus)).data
+                eventBus.$emit(LOADING, false)
+                if (res) {
+                    this.musicSpaceData.isFocus = !this.musicSpaceData.isFocus
+                    eventBus.$emit(SUCCESS, true)
+                } else {
+                    eventBus.$emit(FAIL)
+                }
+            },
+            report() {
+                eventBus.$emit(SUCCESS)
+            },
+            formatNumber(number) {
+                if (number >= 1000) {
+                    return '9999+'
+                }
+                return number
+            },
             clickOption() {
                 // const val = this.visibleMusicOption
                 // store.state.visiblePopup.musicOption = !val
@@ -232,14 +264,14 @@
                 align-items: center;
                 justify-content: flex-end;
 
-                .option {
+                .option, .focus, .report {
                     position: relative;
 
                     .content {
                         padding: 3px 5px;
                         background-color: rgba(0, 0, 0, 0.5);
                         border-radius: 15px;
-                        color: rgba(242, 242, 242, 0.85);
+                        color: rgba(255, 255, 255, 0.7);
                         font-size: 12px;
                         display: flex;
                         align-items: center;
@@ -294,6 +326,30 @@
                         }
                     }
 
+                }
+
+                .focus {
+                    width: 70px;
+                    margin-right: 10px;
+
+                    .content {
+                        width: 100%;
+                        padding: 3px 0;
+                        text-align: center;
+                        justify-content: center;
+                    }
+                }
+
+                .report {
+                    width: 50px;
+
+                    .content {
+                        justify-content: center;
+                    }
+                }
+
+                .hidden {
+                    display: none;
                 }
             }
 

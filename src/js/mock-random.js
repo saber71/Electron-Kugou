@@ -99,6 +99,10 @@ export function ranEmail() {
     return ran.email()
 }
 
-export function ranDate() {
-    return ran.date()
+export function ranDate(format) {
+    return ran.date(format)
+}
+
+export function ranDatetime(format) {
+    return ran.datetime(format)
 }

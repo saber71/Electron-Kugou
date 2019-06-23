@@ -14,7 +14,7 @@ import {
     FOCUS_USER,
     FANS,
     SPACE_VISITORS,
-    SET_FOCUS, REMOVE_VISIT_RECORD
+    SET_FOCUS, REMOVE_VISIT_RECORD, CAN_VISIT_SPACE
 } from "@/js/url";
 
 const ajax = {
@@ -159,6 +159,14 @@ const ajax = {
      */
     async removeVisitRecord(account) {
         return axios.post(REMOVE_VISIT_RECORD, account)
+    },
+    /**
+     * 是否能够浏览指定用户的音乐空间
+     * @param account
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async canVisitSpace(account) {
+        return axios.get(CAN_VISIT_SPACE, account)
     },
 }
 
