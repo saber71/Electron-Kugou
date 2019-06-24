@@ -15,7 +15,7 @@ import {
     FOCUS_USER,
     FANS,
     SPACE_VISITORS,
-    SET_FOCUS, REMOVE_VISIT_RECORD, CAN_VISIT_SPACE
+    SET_FOCUS, REMOVE_VISIT_RECORD, CAN_VISIT_SPACE, PURCHASED_MUSICS
 } from "@/js/url";
 import {
     ranBoolean,
@@ -28,8 +28,8 @@ import {
 } from "@/js/mock-random";
 import {formatDate} from "@/js/util";
 import {
-    generateMultiUserBriefData,
-    generateMusicSpaceData,
+    generateMultiUserBriefData, generateMusic,
+    generateMusicSpaceData, generatePurchasedMusics,
     generateUserData,
     maxAccount,
     maxPassword,
@@ -124,4 +124,7 @@ m(REMOVE_VISIT_RECORD, 'post', () => {
 })
 regm(CAN_VISIT_SPACE, 'get', () => {
     return mayFalse()
+})
+regm(PURCHASED_MUSICS, 'get', () => {
+    return generatePurchasedMusics()
 })

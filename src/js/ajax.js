@@ -14,7 +14,7 @@ import {
     FOCUS_USER,
     FANS,
     SPACE_VISITORS,
-    SET_FOCUS, REMOVE_VISIT_RECORD, CAN_VISIT_SPACE
+    SET_FOCUS, REMOVE_VISIT_RECORD, CAN_VISIT_SPACE, PURCHASED_MUSICS
 } from "@/js/url";
 
 const ajax = {
@@ -167,6 +167,13 @@ const ajax = {
      */
     async canVisitSpace(account) {
         return axios.get(CAN_VISIT_SPACE, account)
+    },
+    /**
+     * 获取所有已购买的音乐
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async getPurchasedMusics() {
+        return axios.get(PURCHASED_MUSICS)
     },
 }
 

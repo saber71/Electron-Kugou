@@ -47,6 +47,8 @@
             <account-security v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_SECURITY"></account-security>
             <bind-email v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_SECURITY_EMAIL"></bind-email>
             <SocialContact v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT"></SocialContact>
+            <purchased-musics
+                    v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS"></purchased-musics>
         </section>
     </div>
 </template>
@@ -63,7 +65,7 @@
         MAIN_RIGHT_ACTIVE_MUSIC_LIST,
         MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY,
         MAIN_RIGHT_ACTIVE_MUSIC_SPACE,
-        MAIN_RIGHT_ACTIVE_MV,
+        MAIN_RIGHT_ACTIVE_MV, MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS,
         MAIN_RIGHT_ACTIVE_RADIO,
         MAIN_RIGHT_ACTIVE_SECURITY,
         MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
@@ -76,10 +78,12 @@
     import BindEmail from "@/components/main-right/account-setting/BindEmail";
     import UserMusicSpace from "@/components/main-right/UserMusicSpace";
     import SocialContact from "@/components/main-right/SocialContact";
+    import PurchasedMusics from "@/components/main-right/PurchasedMusics";
 
     export default {
         name: "MainRight",
         components: {
+            PurchasedMusics,
             SocialContact,
             UserMusicSpace,
             BindEmail,
@@ -108,6 +112,7 @@
                     MAIN_RIGHT_ACTIVE_SECURITY,
                     MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
                     MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT,
+                    MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS,
                 },
             }
         },

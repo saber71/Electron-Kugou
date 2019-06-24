@@ -75,6 +75,10 @@ export function ranWord(min, max) {
     return ran.word(min, max)
 }
 
+export function ranCWord(min, max) {
+    return ran.cword(min, max)
+}
+
 export function ranImage(size) {
     return ran.image(size)
 }

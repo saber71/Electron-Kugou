@@ -1,10 +1,10 @@
 import {
     ranBoolean,
     ranCity,
-    ranCTitle,
+    ranCTitle, ranCWord,
     ranDataImage, ranEmail,
     ranInteger, ranName, ranParagraph,
-    ranProvince, ranSentence,
+    ranProvince,
     ranTitle,
     ranWord
 } from "@/js/mock-random";
@@ -29,7 +29,8 @@ export const onlineUserKey = '在线用户'
 export const rememberPasswordKey = '记住密码'
 export const autoLoginKey = '自动登陆'
 
-export const HOME_COMMON_BG = ' linear-gradient(to right, #0186E1, #0298f4 50%, #0186E1), linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1))'
+// export const HOME_COMMON_BG = ' linear-gradient(to right, #0186E1, #0298f4 50%, #0186E1), linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1))'
+export const HOME_COMMON_BG = `url(${require('../assets/default-bg.jpg')}) no-repeat center center`
 
 export const MAIN_RIGHT_ACTIVE_DEFAULT = 0//默认页面
 export const MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY = 0//乐库
@@ -47,12 +48,14 @@ export const MAIN_RIGHT_ACTIVE_EDIT_PASSWORD = 11//修改密码
 export const MAIN_RIGHT_ACTIVE_SECURITY = 12//安全设置
 export const MAIN_RIGHT_ACTIVE_SECURITY_EMAIL = 13//绑定邮箱
 export const MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT = 14//用户的社交信息
+export const MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS = 15//已购音乐
 
 /*
 * music {   歌曲对象
 *   name    String,
 *   singer  String,
 *   img
+*   album   string  专辑
 *   duration    Integer（单位秒）
 *   source 【本地资源，网络资源】
 *   quality 【高品，标准】
@@ -65,12 +68,28 @@ export function generateMusic(isNetSource, filePath) {
         name: ranTitle(1, 3),
         singer: ranName(),
         img: ranDataImage('50x50'),
+        album: ranTitle(1, 3),
         duration: ranBoolean(30, 300),
         source: isNetSource ? '网络资源' : '本地资源',
         quality: ranBoolean() ? '高品' : '标准',
         type: ranBoolean() ? 'MP3' : 'FLAC',
         file: filePath ? filePath : ranWord()
     }
+}
+
+/**
+ * 生成music数组
+ * @param min
+ * @param max
+ * @returns {Array}
+ */
+export function generateMultiMusic(min, max) {
+    const res = []
+    const len = ranInteger(min, max)
+    for (let i = 0; i < len; i++) {
+        res.push(generateMusic(true))
+    }
+    return res
 }
 
 /*
@@ -186,16 +205,11 @@ export function generateMusicSpaceData() {
 * }
 * */
 export function generateNetMusicList(name) {
-    const musics = []
-    const len = ranInteger(1, 20)
-    for (let i = 0; i < len; i++) {
-        musics.push(generateMusic(true, undefined))
-    }
     return {
         name: name ? name : ranTitle(1, 3),
         author: ranWord(minAccount, maxAccount),
         img: ranDataImage('100x100'),
-        musics
+        musics: generateMultiMusic(1, 20)
     }
 }
 
@@ -223,6 +237,58 @@ export function generateMultiUserBriefData() {
     const len = ranInteger(0, 20)
     for (let i = 0; i < len; i++) {
         res.push(generateUserBriefData())
+    }
+    return res
+}
+
+/*
+* purchased-musics  {  已购音乐
+*   isSVIP  boolean 是否是SVIP
+*   musicBag    array   音乐包，music数组
+*   singleSings array   付费单曲，music数组
+*   albums  array   已购专辑，album数组
+* }
+* */
+export function generatePurchasedMusics() {
+    return {
+        isSVIP: ranBoolean(),
+        musicBag: generateMultiMusic(0, 50),
+        singleSings: generateMultiMusic(0, 50),
+        albums: generateMultiAlbum(0, 20)
+    }
+}
+
+/*
+* album  {  专辑
+*   name    string 专辑名字
+*   singer  string  演唱者
+*   publisher   string 发行公司
+*   publishDate string  发行时间
+*   lang    string  语言
+*   img     string  封面
+*   score   number  评分
+*   scoreNum    number  评分人数
+*   musics  array   music数组
+* }
+* */
+export function generateAlbum(name) {
+    return {
+        name: name ? name : ranTitle(1, 3),
+        singer: ranName(),
+        publisher: ranCTitle(5, 10),
+        lang: ranCWord(2, 2),
+        img: ranDataImage('100x100'),
+        score: ranInteger(10, 100) / 10,
+        scoreNumber: ranInteger(0, 20000),
+        musics: generateMultiMusic(10, 50)
+    }
+}
+
+export function generateMultiAlbum(min, max) {
+    const res = []
+    const len = ranInteger(min, max)
+    for (let i = 0; i < len; i++) {
+        res.push(generateAlbum())
     }
     return res
 }

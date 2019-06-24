@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="right">
-                        <div class="my-music">已购音乐</div>
+                        <div class="my-music" @click="toPurchasedMusics">已购音乐</div>
                     </div>
                 </div>
                 <div class="line2">
@@ -70,7 +70,7 @@
     import {
         MAIN_RIGHT_ACTIVE_DEFAULT,
         MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT,
-        MAIN_RIGHT_ACTIVE_MUSIC_SPACE
+        MAIN_RIGHT_ACTIVE_MUSIC_SPACE, MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS
     } from "@/js/_const";
 
     export default {
@@ -96,6 +96,11 @@
         },
         computed: {},
         methods: {
+            toPurchasedMusics() {
+                this.mainRightActive(MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS)
+                this.visiblePopup = false
+                this.visibleOptionPopup = false
+            },
             toEditAccount() {
                 this.mainRightActive(MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT)
                 this.visiblePopup = false
