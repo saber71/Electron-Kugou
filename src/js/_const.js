@@ -19,15 +19,12 @@ export const maxAccount = 20
 export const minPassword = 6
 export const maxPassword = 20
 
-export const defaultListKey = '默认列表'
-export const otherSourceListKey = '第三方列表'
-export const recentMusicListKey = '最近播放'
-export const recentMVListKey = '最近播放视频'
-export const customListKey = '自定义列表'
+export const localListKey = '本地列表'
 export const loginHistoryKey = '登陆历史'
 export const onlineUserKey = '在线用户'
 export const rememberPasswordKey = '记住密码'
 export const autoLoginKey = '自动登陆'
+export const localMusicListNamesKey = '本地音乐列表名字'
 
 // export const HOME_COMMON_BG = ' linear-gradient(to right, #0186E1, #0298f4 50%, #0186E1), linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1))'
 export const HOME_COMMON_BG = `url(${require('../assets/default-bg.jpg')}) no-repeat center center`
@@ -56,6 +53,7 @@ export const MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS = 15//已购音乐
 *   singer  String,
 *   img
 *   album   string  专辑
+*   love    boolean 是否喜欢
 *   duration    Integer（单位秒）
 *   source 【本地资源，网络资源】
 *   quality 【高品，标准】
@@ -69,6 +67,7 @@ export function generateMusic(isNetSource, filePath) {
         singer: ranName(),
         img: ranDataImage('50x50'),
         album: ranTitle(1, 3),
+        love: ranBoolean(),
         duration: ranBoolean(30, 300),
         source: isNetSource ? '网络资源' : '本地资源',
         quality: ranBoolean() ? '高品' : '标准',
@@ -77,12 +76,6 @@ export function generateMusic(isNetSource, filePath) {
     }
 }
 
-/**
- * 生成music数组
- * @param min
- * @param max
- * @returns {Array}
- */
 export function generateMultiMusic(min, max) {
     const res = []
     const len = ranInteger(min, max)
@@ -93,19 +86,50 @@ export function generateMultiMusic(min, max) {
 }
 
 /*
-* loginObj  {   登陆账号对象
+* music-list  {  音乐列表
+*   name    string  列表名字
+*   musics  array   music数组
+* }
+* */
+export function generateMusicList(name, minMusic, maxMusic) {
+    return {
+        'name': name ? name : ranTitle(1, 3),
+        musics: generateMultiMusic(minMusic, maxMusic)
+    }
+}
+
+export function generateMultiMusicList(minList, maxList, minMusic, maxMusic) {
+    const res = []
+    const len = ranInteger(minList, maxList)
+    for (let i = 0; i < len; i++) {
+        res.push(generateMusicList(undefined, minMusic, maxMusic))
+    }
+    return res
+}
+
+/*
+* loginObj  & onlineUser {   登陆账号对象  &   在线用户对象
 *   account 账号  String
 *   password    密码  String
 *   byMessage   是否通过短信登陆    Boolean
 * }
 * */
+export function generateLoginObj() {
+    return {
+        account: ranBoolean() ? ranWord(minAccount, maxAccount) : generatePhone(),
+        password: ranWord(minPassword, maxPassword),
+        byMessage: ranBoolean()
+    }
+}
 
-/*
-* customList  { 自定义歌曲/视频列表
-*   name    列表名字 string
-*   array   music / video 对象数组   array
-* }
-* */
+export function generateMultiLoginObj(min, max) {
+    const res = []
+    const len = ranInteger(min, max)
+    for (let i = 0; i < len; i++) {
+        res.push(generateLoginObj())
+    }
+    return res
+}
 
 /*
 * userData  {  从服务器返回的用户数据

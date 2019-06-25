@@ -693,11 +693,6 @@
 
   footer {
     width: 100%;
-    -webkit-app-region: drag;
     height: 86px;
-
-    * {
-      -webkit-app-region: no-drag;
-    }
   }
 }

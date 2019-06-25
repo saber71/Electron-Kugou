@@ -9,16 +9,19 @@
             <span class="name">{{music.name}}</span>
         </div>
         <div class="right">
-            <div class="play" @mouseleave="hoverPlay=false" @mouseenter="hoverPlay=true">
+            <div class="play" @mouseleave="hoverPlay=false" @mouseenter="hoverPlay=true"
+                 title="播放">
                 <img v-show="!hoverPlay" src="../../assets/sanjiao-gray.png">
                 <img v-show="hoverPlay" src="../../assets/sanjiao-blue.png">
             </div>
-            <div class="add"></div>
-            <div class="download" @mouseenter="hoverDownload=true" @mouseleave="hoverDownload=false">
+            <div class="add" title="添加"></div>
+            <div class="download" @mouseenter="hoverDownload=true" @mouseleave="hoverDownload=false"
+                 title="下载">
                 <img v-show="!hoverDownload" src="../../assets/download-gray.png">
                 <img v-show="hoverDownload" src="../../assets/download-blue.png">
             </div>
-            <div class="more" @mouseleave="hoverMore=false" @mouseenter="hoverMore=true">
+            <div class="more" @mouseleave="hoverMore=false" @mouseenter="hoverMore=true"
+                 title="更多">
                 <img v-show="!hoverMore" src="../../assets/more-gray.png">
                 <img v-show="hoverMore" src="../../assets/more-blue.png">
             </div>

@@ -1,6 +1,5 @@
 <template>
-    <div id="home" :style="{'background':$store.state.homeBg}"
-         @click="clickRoot">
+    <div id="home" :style="{'background':$store.state.homeBg,'background-size': '100% 100%'}">
         <header>
             <div class="left">
                 <div class="before-login" v-if="!$store.state.onlineUser||!$store.state.alreadyLogin">
@@ -236,7 +235,9 @@
                 <main-right></main-right>
             </section>
         </main>
-        <footer></footer>
+        <footer>
+            <home-footer></home-footer>
+        </footer>
     </div>
 </template>
 
@@ -257,12 +258,13 @@
         validPhone
     } from "@/js/reg";
     import {VISIBLE_POPUP} from "@/js/event-bus";
+    import HomeFooter from "@/components/HomeFooter";
 
     let width = minWidth;
 
     export default {
         name: "Home",
-        components: {User, MainRight, MainLeft},
+        components: {HomeFooter, User, MainRight, MainLeft},
         props: {},
         data() {
             return {
@@ -620,13 +622,6 @@
         methods: {
             goBack() {
                 store.commit('goBack')
-            },
-            clickRoot() {
-                // const val = store.state.visiblePopup
-                // for (let valKey in val) {
-                //     val[valKey] = false
-                // }
-                eventBus.$emit(VISIBLE_POPUP)
             },
             clickAccountInputDown() {
                 this.matchAccountList = store.state.loginHistory

@@ -11,7 +11,7 @@
             </template>
             <template v-slot:items>
                 <div class="items">
-                    <music v-for="(v,i) in array" :music="v" :key="''+i"></music>
+                    <music v-for="(v,i) in array" :music="v" :key="''+i" :index="i"></music>
                 </div>
             </template>
         </list>
@@ -61,8 +61,12 @@
             clickMenu() {
                 this.visiblePopup = !this.visiblePopup;
             },
-            isLove(music) {
-                // todo
+            removeMusic(index) {
+                store.commit('removeMusicInLocalList', {
+                    name: this.listName,
+                    index,
+                    count: 1
+                })
             },
             name(music) {
                 return music.name + ' - ' + music.singer
@@ -74,6 +78,7 @@
             this.popupHiddenOption.remove = !this.removeable
             this.popupHiddenOption.rename = !this.renameable
             this.popupHiddenOption.addList = true
+            this.$on('remove', this.removeMusic)
         },
         destroyed() {
         }

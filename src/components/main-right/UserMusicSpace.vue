@@ -14,14 +14,15 @@
                      @click="report">
                     <div class="content">举报</div>
                 </div>
-                <div class="option" :class="{'hidden':!isMaster}">
-                    <div class="content" @click="clickOption">
+                <div class="option" :class="{'hidden':!isMaster}" tabindex="0"
+                     @blur="optionPopupCount=false">
+                    <div class="content" @click="optionPopupCount=!optionPopupCount">
                         <img class="icon" src="../../assets/option-white.png">设置
                     </div>
-                    <div class="popup" v-show="optionPopupCount>0">
+                    <div class="popup" v-show="optionPopupCount">
                         <div class="element" @click="mainRightActive(constant.MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT)">编辑资料
                         </div>
-                        <div class="element" @click="securityPopupCount=2">隐私设置</div>
+                        <div class="element" @click="securityPopupCount=true">隐私设置</div>
                     </div>
                 </div>
             </section>
@@ -96,8 +97,8 @@
                 </section>
             </section>
         </section>
-        <section class="security-popup" v-show="securityPopupCount>0"
-                 @click.stop="securityPopupCount=0">
+        <section class="security-popup" v-show="securityPopupCount"
+                 @click.stop="securityPopupCount=false">
             <div class="dialog">
                 <div class="title">
                     隐私设置
@@ -146,8 +147,8 @@
                 constant: {
                     MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT,
                 },
-                optionPopupCount: 0,
-                securityPopupCount: -1,
+                optionPopupCount: false,
+                securityPopupCount: false,
                 securitySelected: 0,
                 musicSpaceData: undefined,
                 hoverFocus: false,
@@ -183,11 +184,6 @@
                 }
                 return number
             },
-            clickOption() {
-                // const val = this.visibleMusicOption
-                // store.state.visiblePopup.musicOption = !val
-                this.optionPopupCount = 2
-            },
             async setSecurity() {
                 eventBus.$emit(LOADING, true)
                 const res = (await ajax.setMusicSpaceSecurity(this.securitySelected)).data
@@ -218,10 +214,6 @@
         mounted() {
         },
         async created() {
-            eventBus.$on(VISIBLE_POPUP, () => {
-                this.optionPopupCount--
-                this.securityPopupCount--
-            })
             eventBus.$emit(LOADING, true)
             this.musicSpaceData = (await ajax.getMusicSpaceData()).data
             eventBus.$emit(LOADING, false)
@@ -230,7 +222,6 @@
             }
         },
         destroyed() {
-            eventBus.$off(VISIBLE_POPUP)
         }
     }
 </script>

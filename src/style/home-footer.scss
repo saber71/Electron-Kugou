@@ -1,0 +1,195 @@
+@import "./common";
+
+#HomeFooter {
+  width: 100%;
+  -webkit-app-region: drag;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  box-sizing: border-box;
+  color: white;
+
+  * {
+    -webkit-app-region: no-drag;
+  }
+
+  .prev {
+    width: 32px;
+    height: 32px;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.85;
+
+    &:before {
+      content: '';
+      width: 2px;
+      height: 50%;
+      background-color: white;
+    }
+
+    img {
+      width: 50%;
+      transform: rotate(180deg);
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .play {
+    @extend .prev;
+    width: 42px;
+    height: 42px;
+
+    &:before {
+      display: none;
+    }
+
+    img {
+      transform: rotate(0);
+      margin-left: 5px;
+    }
+  }
+
+  .next {
+    @extend .prev;
+    flex-direction: row-reverse;
+
+    img {
+      transform: rotate(0);
+    }
+  }
+
+  .progress-bar {
+    width: 40%;
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+
+      .name {
+      }
+
+      .speed {
+        height: fit-content;
+        border: 1px solid white;
+        border-radius: 20px;
+        cursor: pointer;
+        opacity: 0.85;
+        position: relative;
+        padding: 0 20px 0 10px;
+        font-size: 13px;
+
+        &:after {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 5px;
+          width: 0;
+          height: 0;
+          border: 5px solid transparent;
+          border-bottom-color: white;
+        }
+
+        &:hover {
+          opacity: 1;
+        }
+
+        .popup {
+          position: absolute;
+          left: -50px;
+          top: -70px;
+          width: 200px;
+          background-color: rgba(0, 0, 0, 0.7);
+        }
+      }
+    }
+
+    .bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 5px;
+
+      .line {
+        flex-grow: 1;
+        height: 3px;
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+
+      label {
+        font-size: 12px;
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .love, .download, .more, .chat {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    opacity: 0.85;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .loop, .sound, .play-list {
+    img {
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      opacity: 0.85;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .special {
+    position: relative;
+    font-size: 13px;
+    border-radius: 20px;
+    padding: 1px 5px 1px 20px;
+    border: 1px solid white;
+    opacity: 0.85;
+    cursor: pointer;
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 5px;
+      width: 10px;
+      height: 10px;
+      background-color: white;
+      border-radius: 50%;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .lyric {
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0.85;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

@@ -3,16 +3,18 @@
          @mouseleave="visiblePopup=false" @mouseenter="visiblePopup=true">
         <div ref="music" class="content">
             <div class="text">
-                <img src="../../assets/add.png" title="稍后播">
+                <img src="../../assets/add.png" title="稍后播" @click="laterPlay">
                 {{name(music)}}
             </div>
             <div class="icons">
                 <img class="mv" src="../../assets/mv.png" v-if="music.mv" title="观看MV">
                 <div class="mv-space" v-else></div>
-                <img class="love" src="../../assets/love-red.png" v-if="isLove(music)" title="我不喜欢">
-                <img class="love" src="../../assets/love.png" v-else title="我喜欢">
-                <img class="remove" src="../../assets/remove.png" title="删除">
-                <img class="more" src="../../assets/more.png" title="更多">
+                <img class="love" src="../../assets/love-red.png" v-if="music.love" title="我不喜欢"
+                     @click="music.love=true">
+                <img class="love" src="../../assets/love.png" v-else title="我喜欢"
+                     @click="music.love=false">
+                <img class="remove" src="../../assets/remove.png" title="删除" @click="remove">
+                <img class="more" src="../../assets/more.png" title="更多" @click="visibleMorePopup=!visibleMorePopup">
                 <span class="duration">{{formatDuration(music.duration)}}</span>
             </div>
         </div>
@@ -48,11 +50,21 @@
                 </div>
             </div>
         </div>
+        <div class="more-popup" v-show="visibleMorePopup">
+            <div class="item">下载歌曲</div>
+            <div class="item">添加到列表</div>
+            <div class="item">传歌到移动设备</div>
+            <div class="item">传玲声到移动设备</div>
+            <div class="item">相似歌曲</div>
+            <div class="item">分享</div>
+            <div class="item">K歌</div>
+        </div>
     </div>
 </template>
 
 <script>
     import {isReachMainLeftBottom} from "@/js/util";
+    import {ADD_TO_PLAY_LIST} from "@/js/event-bus";
 
     export default {
         name: "Music",
@@ -60,13 +72,18 @@
             music: {
                 type: Object,
                 required: true
+            },
+            index: {
+                type: Number,
+                required: true
             }
         },
         data() {
             return {
                 visiblePopup: false,
                 popupTop: false,
-                popupHeight: 0
+                popupHeight: 0,
+                visibleMorePopup: false
             }
         },
         watch: {
@@ -85,11 +102,14 @@
         },
         computed: {},
         methods: {
+            remove() {
+                this.$parent.$emit('remove', this.index)
+            },
+            laterPlay() {
+                eventBus.$emit(ADD_TO_PLAY_LIST, this.music)
+            },
             name(music) {
                 return music.name + ' - ' + music.singer
-            },
-            isLove(music) {
-                // todo
             },
         },
         mounted() {

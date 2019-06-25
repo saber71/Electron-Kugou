@@ -19,8 +19,11 @@
                  v-if="activeLabel===0&&purchasedMusics.musicBag.length>0&&!purchasedMusics.isSVIP">
                 音乐包已过期，<span class="buy-vip" @click="buyVIP">续费音乐包</span>可再次下载
             </div>
-            <net-music-group v-if="activeLabel===0" :musics="purchasedMusics.musicBag"></net-music-group>
-            <net-music-group v-if="activeLabel===1" :musics="purchasedMusics.singleSings"></net-music-group>
+            <div class="content">
+                <net-music-group v-show="activeLabel===0" :musics="purchasedMusics.musicBag"></net-music-group>
+                <net-music-group v-show="activeLabel===1" :musics="purchasedMusics.singleSings"></net-music-group>
+                <album-group v-show="activeLabel===2" :albums="purchasedMusics.albums"></album-group>
+            </div>
         </section>
     </div>
 </template>
@@ -30,10 +33,11 @@
     import {LOADING} from "@/js/event-bus";
     import {ranInteger} from "@/js/mock-random";
     import NetMusicGroup from "@/components/main-right/NetMusicGroup";
+    import AlbumGroup from "@/components/main-right/AlbumGroup";
 
     export default {
         name: "PurchasedMusics",
-        components: {NetMusicGroup},
+        components: {AlbumGroup, NetMusicGroup},
         props: {},
         data() {
             return {
@@ -113,6 +117,10 @@
                     color: $blue;
                     cursor: pointer;
                 }
+            }
+
+            .content {
+                margin-top: 10px;
             }
         }
     }

@@ -19,6 +19,17 @@
             <net-music v-for="(v,index) in musicArray" :music="v" :index="index"
                        :key="index+''" v-model="itemsRight[index]"></net-music>
         </div>
+        <div class="pager">
+            <button class="to-first" :class="{disabled:page===1}" @click="toStart">首页</button>
+            <img class="prev" :class="{'img-disabled':page===1}"
+                 @click="prev"
+                 src="../../assets/arrow-down-dark.png">
+            <label>{{page}} / {{totalPage}}</label>
+            <img class="next" :class="{'img-disabled':page===totalPage}"
+                 @click="next"
+                 src="../../assets/arrow-down-dark.png">
+            <button class="to-end" :class="{disabled:page===totalPage}" @click="toEnd">尾页</button>
+        </div>
     </div>
 </template>
 
@@ -43,7 +54,7 @@
                 allRight: false,
                 itemsRight: [],
                 page: 1,
-                size: 10,
+                totalPage: 0
             }
         },
         watch: {
@@ -51,15 +62,34 @@
                 for (let i = 0; i < this.itemsRight.length; i++) {
                     this.itemsRight[i] = newVal
                 }
+            },
+            page() {
+                this.allRight = false
             }
         },
         computed: {
             musicArray() {
                 const array = this.musics
-                return array.slice((this.page - 1) * this.size, this.size)
+                return array.slice((this.page - 1) * this.size, this.size * this.page)
             }
         },
         methods: {
+            prev() {
+                if (this.page > 1) {
+                    this.page--
+                }
+            },
+            next() {
+                if (this.page < this.totalPage) {
+                    this.page++
+                }
+            },
+            toStart() {
+                this.page = 1
+            },
+            toEnd() {
+                this.page = this.totalPage
+            },
             add() {
                 //    todo add
             },
@@ -76,6 +106,10 @@
             const len = this.musics.length
             for (let i = 0; i < len; i++) {
                 this.itemsRight.push(false)
+            }
+            this.totalPage = parseInt(len / this.size)
+            if (len % this.size > 0) {
+                this.totalPage++
             }
         },
         destroyed() {
@@ -95,6 +129,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 5px;
 
             .left {
                 display: flex;
@@ -159,6 +194,60 @@
                     }
                 }
             }
+        }
+
+        .pager {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $black;
+            font-size: 14px;
+            margin-top: 10px;
+
+            * {
+                margin: 0 5px;
+            }
+
+            .to-first, .to-end {
+                color: white;
+                padding: 2px 10px;
+                background-color: $blue;
+                border-radius: 3px;
+
+                &:hover {
+                    background-color: $dark-blue;
+                }
+            }
+
+            .disabled {
+                cursor: default;
+                opacity: 0.5;
+                background-color: gray;
+
+                &:hover {
+                    background-color: gray;
+                }
+            }
+
+            .prev, .next {
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+            }
+
+            .prev {
+                transform: rotate(90deg);
+            }
+
+            .next {
+                transform: rotate(-90deg);
+            }
+
+            .img-disabled {
+                cursor: default;
+                opacity: 0.7;
+            }
+
         }
     }
 </style>
