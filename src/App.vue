@@ -80,6 +80,7 @@
                 }
             },
             save() {
+                this.checkInput()
                 if (this.warnMsg.length > 0)
                     return
                 this.visibleAppInput = false
@@ -130,6 +131,7 @@
                 if (obj) {
                     this.visibleAppInput = true
                     this.appInputObj = obj
+                    obj.input = ''
                 } else {
                     this.visibleAppInput = false
                 }

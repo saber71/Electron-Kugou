@@ -31,9 +31,8 @@
                         添加到列表
                     </label>
                     <div class="sub">
-                        <div class="sub-item"><label>默认列表</label></div>
-                        <div class="sub-item"><label>第三方列表</label></div>
-                        <div class="sub-item" v-for="(v) in $store.state.customList"><label>{{v.name}}</label></div>
+                        <p class="type">本地列表</p>
+                        <div class="sub-item" v-for="(v) in $store.getters.localList"><label>{{v.name}}</label></div>
                     </div>
                 </div>
                 <div class="item" v-if="!popupHiddenOptions.later"><label>稍后播</label></div>
@@ -44,16 +43,16 @@
                         排序
                     </label>
                     <div class="sub">
-                        <div class="sub-item"><label>按文件名</label></div>
-                        <div class="sub-item"><label>按歌手</label></div>
-                        <div class="sub-item"><label>按添加时间</label></div>
-                        <div class="sub-item"><label>按播放次数</label></div>
-                        <div class="sub-item" @click="randomSort"><label>随机排序</label></div>
+                        <div class="sub-item" @click="orderBy(constant.ORDER_BY_NAME)"><label>按文件名</label></div>
+                        <div class="sub-item" @click="orderBy(constant.ORDER_BY_SINGER)"><label>按歌手</label></div>
+                        <div class="sub-item" @click="orderBy(constant.ORDER_BY_TIME)"><label>按添加时间</label></div>
+                        <div class="sub-item" @click="orderBy(constant.ORDER_BY_TIMES)"><label>按播放次数</label></div>
+                        <div class="sub-item" @click="orderBy(constant.ORDER_BY_RANDOM)"><label>随机排序</label></div>
                     </div>
                 </div>
-                <div class="item" v-if="!popupHiddenOptions.collection"><label>收藏整个列表</label></div>
-                <div class="item" v-if="!popupHiddenOptions.clear"><label>清空列表</label></div>
-                <div class="item" v-if="!popupHiddenOptions.remove"><label>删除列表</label></div>
+                <div class="item" v-if="!popupHiddenOptions.collection" @click="loveAll"><label>收藏整个列表</label></div>
+                <div class="item" v-if="!popupHiddenOptions.clear" @click="clearList"><label>清空列表</label></div>
+                <div class="item" v-if="!popupHiddenOptions.remove" @click="removeList"><label>删除列表</label></div>
                 <div class="item" v-if="!popupHiddenOptions.rename" @click="rename"><label>重命名</label>
                 </div>
             </div>
@@ -67,9 +66,15 @@
 </template>
 
 <script>
-    import Vue from 'vue'
     import {isReachMainLeftBottom, objNoVal} from "@/js/util";
-    import {INPUT} from "@/js/event-bus";
+    import {CLEAR_MUSIC, INPUT, LOVE_ALL_MUSIC, SORT_ORDER_BY} from "@/js/event-bus";
+    import {
+        CREATE_LOCAL_LIST,
+        REMOVE_LOCAL_LIST,
+        REMOVE_MUSIC_IN_LOCAL_LIST,
+        SAVE_LOCAL_MUSIC_LIST
+    } from "@/js/store/mutations_name";
+    import {ORDER_BY_NAME, ORDER_BY_RANDOM, ORDER_BY_SINGER, ORDER_BY_TIME, ORDER_BY_TIMES} from "@/js/_const";
 
     export default {
         name: "List",
@@ -97,6 +102,13 @@
                 visibleContainer: false,
                 popupHiddenOptions: {},
                 popupTop: 0,
+                constant: {
+                    ORDER_BY_NAME,
+                    ORDER_BY_RANDOM,
+                    ORDER_BY_SINGER,
+                    ORDER_BY_TIME,
+                    ORDER_BY_TIMES
+                }
             }
         },
         watch: {
@@ -119,13 +131,14 @@
         computed: {},
         methods: {
             removeMusic(index) {
-                store.commit('removeMusicInLocalList', {
+                store.commit(REMOVE_MUSIC_IN_LOCAL_LIST, {
                     name: this.name,
                     index,
                     count: 1
                 })
             },
-            randomSort() {
+            orderBy(index) {
+                this.$parent.$emit(SORT_ORDER_BY, index)
             },
             rename() {
             },
@@ -133,15 +146,13 @@
                 this.$emit('change', false)
             },
             newList() {
-                this.visiblePopup = false
+                this.clickMask()
                 eventBus.$emit(INPUT, {
                     title: '新建列表',
                     placeholder: '请输入列表的名字',
                     onSave: (input) => {
-                        Vue.set(store.state.localMusicList, input, {
-                            name: input,
-                            musics: []
-                        })
+                        store.commit(CREATE_LOCAL_LIST, input)
+                        store.commit(SAVE_LOCAL_MUSIC_LIST)
                     },
                     checkInput: (input) => {
                         if (objNoVal(store.state.localMusicList[input])) {
@@ -152,6 +163,16 @@
                     }
                 })
             },
+            clearList() {
+                this.$parent.$emit(CLEAR_MUSIC)
+            },
+            removeList() {
+                store.commit(REMOVE_LOCAL_LIST, this.name)
+                store.commit(SAVE_LOCAL_MUSIC_LIST)
+            },
+            loveAll() {
+                this.$parent.$emit(LOVE_ALL_MUSIC)
+            }
         },
         mounted() {
         },

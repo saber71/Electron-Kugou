@@ -1,14 +1,88 @@
-import {objNoVal, setLocalStorageItem} from "@/js/util";
+import {getPlayTimes, objNoVal, setLocalStorageItem} from "@/js/util";
 import {
-    autoLoginKey,
+    autoLoginKey, emptyMusicList,
     HOME_COMMON_BG,
     localListKey,
     loginHistoryKey,
-    onlineUserKey,
+    onlineUserKey, ORDER_BY_NAME, ORDER_BY_RANDOM, ORDER_BY_SINGER, ORDER_BY_TIME, ORDER_BY_TIMES,
     rememberPasswordKey
 } from "@/js/_const";
+import Vue from 'vue'
+import {
+    CREATE_LOCAL_LIST,
+    GO_BACK,
+    SET_HOME_BG,
+    SET_MAIN_BG,
+    REMOVE_MUSIC_IN_LOCAL_LIST,
+    SAVE_LOCAL_MUSIC_LIST, REMOVE_LOCAL_LIST, SET_LOCAL_LIST_ORDER_BY
+} from "@/js/store/mutations_name";
+import {ranBoolean} from "@/js/mock-random";
 
 export default {
+    /**
+     * 设置一个本地列表的排序依据
+     * @param st
+     * @param obj   {
+     *     name string  本地列表名字
+     *     orderBy  number  排序编号
+     * }
+     */
+    [SET_LOCAL_LIST_ORDER_BY](st, obj) {
+        const orderBy = obj.orderBy
+        const list = st.localMusicList[obj.name]
+        let direction = list.direction
+        if (list.orderBy === orderBy) {
+            direction *= -1
+        } else {
+            list.orderBy = orderBy
+            direction = 1
+        }
+        let func = undefined
+        switch (orderBy) {
+            case ORDER_BY_NAME:
+                func = (a, b) => {
+                    return (a.name - b.name) * direction
+                }
+                break
+            case ORDER_BY_SINGER:
+                func = (a, b) => {
+                    return (a.singer - b.singer) * direction
+                }
+                break
+            case ORDER_BY_TIME:
+                func = (a, b) => {
+                    return (a.time - b.time) * direction
+                }
+                break
+            case ORDER_BY_TIMES:
+                func = (a, b) => {
+                    return (getPlayTimes(a.name) - getPlayTimes(b.name)) * direction
+                }
+                break
+            case ORDER_BY_RANDOM:
+                func = () => {
+                    return ranBoolean() ? 1 : -1
+                }
+                break
+        }
+        list.musics.sort(func)
+    },
+    /**
+     * 删除一个本地列表
+     * @param st
+     * @param name
+     */
+    [REMOVE_LOCAL_LIST](st, name) {
+        Vue.delete(st.localMusicList, name)
+    },
+    /**
+     * 创建新的本地列表
+     * @param st
+     * @param name  新列表的名字
+     */
+    [CREATE_LOCAL_LIST](st, name) {
+        Vue.set(st.localMusicList, name, emptyMusicList(name))
+    },
     /**
      * 删除本地列表中的指定歌曲
      * @param st
@@ -18,7 +92,7 @@ export default {
      *     count    number  删除的数目
      * }
      */
-    removeMusicInLocalList(st, obj) {
+    [REMOVE_MUSIC_IN_LOCAL_LIST](st, obj) {
         const list = st.localMusicList[obj.name].musics
         list.splice(obj.index, obj.count)
     },
@@ -26,7 +100,7 @@ export default {
      * 保存本地音乐列表
      * @param st
      */
-    saveLocalMusicList(st) {
+    [SAVE_LOCAL_MUSIC_LIST](st) {
         setLocalStorageItem(localListKey, st.localMusicList)
     },
     /**
@@ -49,7 +123,7 @@ export default {
      * 回退
      * @param st
      */
-    goBack(st) {
+    [GO_BACK](st) {
         if (st.mainRightActiveHistory.length > 0) {
             st.mainRightActive = st.mainRightActiveHistory.pop()
         }
@@ -171,7 +245,7 @@ export default {
      * @param state
      * @param val
      */
-    mainBg(state, val) {
+    [SET_MAIN_BG](state, val) {
         if (objNoVal(val)) {
             val = 'white'
         }
@@ -182,7 +256,7 @@ export default {
      * @param st
      * @param val
      */
-    homeBg(st, val) {
+    [SET_HOME_BG](st, val) {
         if (objNoVal(val)) {
             val = HOME_COMMON_BG
         }

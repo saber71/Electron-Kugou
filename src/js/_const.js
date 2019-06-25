@@ -2,7 +2,7 @@ import {
     ranBoolean,
     ranCity,
     ranCTitle, ranCWord,
-    ranDataImage, ranEmail,
+    ranDataImage, ranDatetime, ranEmail,
     ranInteger, ranName, ranParagraph,
     ranProvince,
     ranTitle,
@@ -18,6 +18,12 @@ export const minAccount = 6
 export const maxAccount = 20
 export const minPassword = 6
 export const maxPassword = 20
+
+export const ORDER_BY_NAME = 1
+export const ORDER_BY_SINGER = 2
+export const ORDER_BY_TIME = 3
+export const ORDER_BY_TIMES = 4
+export const ORDER_BY_RANDOM = 5
 
 export const localListKey = '本地列表'
 export const loginHistoryKey = '登陆历史'
@@ -54,6 +60,7 @@ export const MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS = 15//已购音乐
 *   img
 *   album   string  专辑
 *   love    boolean 是否喜欢
+*   time    string  添加时间
 *   duration    Integer（单位秒）
 *   source 【本地资源，网络资源】
 *   quality 【高品，标准】
@@ -70,6 +77,7 @@ export function generateMusic(isNetSource, filePath) {
         album: ranTitle(1, 3),
         love: ranBoolean(),
         duration: ranInteger(30, 300),
+        time: ranDatetime(),
         source: isNetSource ? '网络资源' : '本地资源',
         quality: ranBoolean() ? '高品' : '标准',
         type: ranBoolean() ? 'MP3' : 'FLAC',
@@ -91,13 +99,29 @@ export function generateMultiMusic(min, max) {
 * music-list  {  音乐列表
 *   name    string  列表名字
 *   musics  array   music数组
+*   removeable  boolean 是否能够被用户删除
+*   renamable   boolean 是否能够被用户重命名
+*   orderBy number  排序方式【1：按文件名，2：按歌手，3：按添加时间，4：按播放次数，5：随机排序】
+*   direction   number  排序方向【1：从小到大，-1：从大到小】
 * }
 * */
-export function generateMusicList(name, minMusic, maxMusic) {
+export function emptyMusicList(name) {
     return {
-        'name': name ? name : ranTitle(1, 3),
-        musics: generateMultiMusic(minMusic, maxMusic)
+        name: name ? name : ranTitle(1, 3),
+        musics: [],
+        orderBy: 3,
+        renamable: true,
+        removeable: true,
+        direction: 1
     }
+}
+
+export function generateMusicList(name, minMusic, maxMusic, renamable, removeable) {
+    const obj = emptyMusicList(name)
+    obj.musics = generateMultiMusic(minMusic, maxMusic)
+    obj.renamable = renamable
+    obj.removeable = removeable
+    return obj
 }
 
 export function generateMultiMusicList(minList, maxList, minMusic, maxMusic) {

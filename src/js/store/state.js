@@ -11,9 +11,9 @@ import {getLocalStorageItem} from "@/js/util";
 
 const randomLoginHistory = generateMultiLoginObj(1, 20);
 const randomLocalMusicList = {
-    '默认列表': generateMusicList('默认列表', 0, 40),
-    '第三方歌曲': generateMusicList('第三方歌曲', 0, 40),
-    '最近播放': generateMusicList('最近播放', 0, 40),
+    '默认列表': generateMusicList('默认列表', 0, 40, false, false),
+    '第三方歌曲': generateMusicList('第三方歌曲', 0, 40, false, false),
+    '最近播放': generateMusicList('最近播放', 0, 40, false, false),
 }
 
 export default {

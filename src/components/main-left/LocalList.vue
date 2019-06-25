@@ -1,8 +1,9 @@
 <template>
     <div id="local-list">
-        <music-list v-for="v in $store.state.localMusicList" :list-name="v.name" :array="v.musics"
-                    :removeable="checkName(v)"
-                    :key="v.name" :renameable="checkName(v)"></music-list>
+        <music-list v-for="v in $store.getters.localList('最近播放')" :list-name="v.name" :array="v.musics"
+                    :removeable="v.removeable" :key="v.name" :renameable="v.renameable"></music-list>
+        <music-list list-name="最近播放" :array="$store.state.localMusicList['最近播放'].musics" :renameable="false"
+                    :removeable="false"></music-list>
     </div>
 </template>
 
@@ -18,11 +19,7 @@
         },
         watch: {},
         computed: {},
-        methods: {
-            checkName(v) {
-                return v.name !== '默认列表' && v.name !== '第三方歌曲' && v.name !== '最近播放'
-            }
-        },
+        methods: {},
         mounted() {
         },
         created() {
