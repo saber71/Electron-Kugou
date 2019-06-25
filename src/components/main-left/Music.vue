@@ -1,25 +1,27 @@
 <template>
     <div id="music"
          @mouseleave="visiblePopup=false" @mouseenter="visiblePopup=true">
-        <div ref="music" class="content">
+        <div ref="music" class="content" :class="{'content-active':clickContent}" tabindex="1"
+             @click="clickContent=!clickContent" @blur="clickContent=false">
             <div class="text">
-                <img src="../../assets/add.png" title="稍后播" @click="laterPlay">
+                <img src="../../assets/add.png" title="稍后播" @click.stop="laterPlay">
                 {{name(music)}}
             </div>
             <div class="icons">
                 <img class="mv" src="../../assets/mv.png" v-if="music.mv" title="观看MV">
                 <div class="mv-space" v-else></div>
-                <img class="love" src="../../assets/love-red.png" v-if="music.love" title="我不喜欢"
-                     @click="music.love=true">
-                <img class="love" src="../../assets/love.png" v-else title="我喜欢"
+                <img class="love" src="../../assets/love-red.png" v-if="music.love"
                      @click="music.love=false">
+                <img class="love" src="../../assets/love.png" v-else title="我喜欢"
+                     @click="music.love=true">
                 <img class="remove" src="../../assets/remove.png" title="删除" @click="remove">
                 <img class="more" src="../../assets/more.png" title="更多" @click="visibleMorePopup=!visibleMorePopup">
                 <span class="duration">{{formatDuration(music.duration)}}</span>
             </div>
         </div>
         <div class="popup" ref="popup"
-             :class="{'popup-active':visiblePopup,'popup-top':popupTop}"
+             :class="{'popup-active':visiblePopup}"
+             :style="{top:popupTop}"
              @mouseenter="visiblePopup=false">
             <h6>{{name(music)}}</h6>
             <div class="info">
@@ -81,23 +83,23 @@
         data() {
             return {
                 visiblePopup: false,
-                popupTop: false,
+                popupTop: 0,
                 popupHeight: 0,
-                visibleMorePopup: false
+                visibleMorePopup: false,
+                clickContent: false
             }
         },
         watch: {
             visiblePopup(newVal) {
                 if (newVal) {
                     const el = this.$refs.music
-                    if (el) {
-                        if (isReachMainLeftBottom(el.getBoundingClientRect().y, this.popupHeight + 40)) {
-                            this.popupTop = true
-                            return
-                        }
+                    const toTop = el.getBoundingClientRect().y
+                    const height = el.getBoundingClientRect().height
+                    this.popupTop = (toTop + height + 2) + 'px'
+                    if (isReachMainLeftBottom(toTop + height, this.popupHeight)) {
+                        this.popupTop = (toTop - this.popupHeight) + 'px'
                     }
                 }
-                this.popupTop = false
             }
         },
         computed: {},
@@ -124,6 +126,8 @@
 </script>
 
 <style scoped lang="scss">
+    @import "../../style/common";
+
     #music {
         font-size: 13px;
         color: #333333;
@@ -154,7 +158,7 @@
             }
 
             &:hover {
-                background-color: #dddddd;
+                background-color: #F5F5F5;
 
                 .text {
                     img {
@@ -220,10 +224,13 @@
             }
         }
 
+        .content-active {
+            background-color: #F5F5F5;
+        }
+
         .popup {
-            position: absolute;
-            right: 0;
-            top: 40px;
+            position: fixed;
+            left: $left-width - 270px;
             width: 250px;
             visibility: hidden;
             box-shadow: 0 0 2px #777777;
@@ -273,10 +280,6 @@
 
         .popup-active {
             visibility: visible;
-        }
-
-        .popup-top {
-            top: -125px;
         }
     }
 </style>

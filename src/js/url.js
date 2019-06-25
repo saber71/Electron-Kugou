@@ -17,3 +17,4 @@ export const SET_FOCUS = 'set/focus'//设置对指定用户的关注与否
 export const REMOVE_VISIT_RECORD = 'remove/visit-record'//删除指定用户的浏览记录
 export const CAN_VISIT_SPACE = 'music-space/visit'//是否能够浏览指定用户的音乐空间
 export const PURCHASED_MUSICS = 'music/purchased'//所有已购买的音乐
+export const NET_MUSIC_LIST = 'net/music-list'//获取用户的网络音乐列表

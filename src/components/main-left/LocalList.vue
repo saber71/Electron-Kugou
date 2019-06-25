@@ -1,13 +1,13 @@
 <template>
     <div id="local-list">
-        <music-list list-name="默认列表" :array="$store.state.defaultList" :removeable="false"
-                    :renameable="false"></music-list>
+        <music-list v-for="v in $store.state.localMusicList" :list-name="v.name" :array="v.musics"
+                    :removeable="checkName(v)"
+                    :key="v.name" :renameable="checkName(v)"></music-list>
     </div>
 </template>
 
 <script>
     import MusicList from "@/components/main-left/MusicList";
-    import {ranInteger, ranName, ranTitle} from "@/js/mock-random";
 
     export default {
         name: "LocalList",
@@ -18,7 +18,11 @@
         },
         watch: {},
         computed: {},
-        methods: {},
+        methods: {
+            checkName(v) {
+                return v.name !== '默认列表' && v.name !== '第三方歌曲' && v.name !== '最近播放'
+            }
+        },
         mounted() {
         },
         created() {

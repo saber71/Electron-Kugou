@@ -58,6 +58,7 @@ export const MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS = 15//已购音乐
 *   source 【本地资源，网络资源】
 *   quality 【高品，标准】
 *   type    格式  String
+*   size    string  文件大小（单位:M）
 *   file    文件路径
 * }
 * */
@@ -68,11 +69,12 @@ export function generateMusic(isNetSource, filePath) {
         img: ranDataImage('50x50'),
         album: ranTitle(1, 3),
         love: ranBoolean(),
-        duration: ranBoolean(30, 300),
+        duration: ranInteger(30, 300),
         source: isNetSource ? '网络资源' : '本地资源',
         quality: ranBoolean() ? '高品' : '标准',
         type: ranBoolean() ? 'MP3' : 'FLAC',
-        file: filePath ? filePath : ranWord()
+        file: filePath ? filePath : ranWord(),
+        size: (ranInteger(1, 50) / 10) + 'M'
     }
 }
 

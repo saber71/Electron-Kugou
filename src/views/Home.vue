@@ -257,7 +257,6 @@
         validPassword,
         validPhone
     } from "@/js/reg";
-    import {VISIBLE_POPUP} from "@/js/event-bus";
     import HomeFooter from "@/components/HomeFooter";
 
     let width = minWidth;
@@ -700,9 +699,11 @@
         }
     }
 
-    function loginSuccessful(account) {
+    async function loginSuccessful(account) {
         store.commit('onlineUser', account)
         store.commit('loginHistoryPush', account)
+        store.commit('musicSpaceUser', account.account)
+        store.commit('myMusicSpaceData', (await ajax.getMusicSpaceData()).data)
     }
 </script>
 

@@ -90,7 +90,6 @@
 <script>
     import {maxAccount} from "@/js/_const";
     import {objNoVal, strNoVal} from "@/js/util";
-    import {USER_DATA_CHANGE} from "@/js/event-bus";
     import {ranCity, ranProvince} from "@/js/mock-random";
     import ajax from "@/js/ajax";
     import {validAccount} from "@/js/reg";
@@ -203,7 +202,6 @@
         },
         created() {
             this.initEditAccountForm()
-            eventBus.$on(USER_DATA_CHANGE, this.initEditAccountForm)
             for (let i = 0; i < 10; i++) {
                 this.provinceList.push(ranProvince())
             }
@@ -211,7 +209,6 @@
             this.initCityList(this.userDataForm.province)
         },
         destroyed() {
-            eventBus.$off(USER_DATA_CHANGE)
         }
     }
 </script>

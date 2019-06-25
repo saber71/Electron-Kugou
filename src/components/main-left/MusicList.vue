@@ -4,8 +4,6 @@
               :popup-hidden-option="popupHiddenOption">
             <template v-slot:header>
                 <div class="header-items">
-                    <img src="../../assets/update.png" v-if="update" title="一键升级无损音质">
-                    <img src="../../assets/share.png" title="分享">
                     <img src="../../assets/menu-music-list.png" title="列表菜单" @click.stop="clickMenu">
                 </div>
             </template>
@@ -61,13 +59,6 @@
             clickMenu() {
                 this.visiblePopup = !this.visiblePopup;
             },
-            removeMusic(index) {
-                store.commit('removeMusicInLocalList', {
-                    name: this.listName,
-                    index,
-                    count: 1
-                })
-            },
             name(music) {
                 return music.name + ' - ' + music.singer
             }
@@ -78,7 +69,6 @@
             this.popupHiddenOption.remove = !this.removeable
             this.popupHiddenOption.rename = !this.renameable
             this.popupHiddenOption.addList = true
-            this.$on('remove', this.removeMusic)
         },
         destroyed() {
         }
@@ -92,6 +82,8 @@
         .header-items {
             display: flex;
             align-items: center;
+            padding-right: 5px;
+            box-sizing: border-box;
 
             img {
                 width: 16px;

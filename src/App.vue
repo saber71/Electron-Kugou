@@ -18,13 +18,31 @@
                 </div>
             </div>
         </div>
+        <div class="app-input" @click="visibleAppInput=false" v-show="visibleAppInput">
+            <section class="dialog" @click.stop="">
+                <div class="header">
+                    <label>{{appInputObj.title}}</label>
+                    <img src="./assets/close.png" @click="visibleAppInput=false">
+                </div>
+                <div class="content">
+                    <input v-model="appInputObj.input" :placeholder="appInputObj.placeholder"
+                           @blur="checkInput"
+                           autofocus @keypress.enter="save">
+                    <p class="warn">{{warnMsg}}</p>
+                </div>
+                <div class="footer">
+                    <button class="cancel" @click="visibleAppInput=false">取消</button>
+                    <button class="save" @click="save">确定</button>
+                </div>
+            </section>
+        </div>
     </div>
 </template>
 
 <script>
     import Vue from "vue";
-    import {getPlayTimes, strNoVal} from "@/js/util";
-    import {FAIL, LOADING, SUCCESS} from "@/js/event-bus";
+    import {getPlayTimes, objNoVal, strNoVal} from "@/js/util";
+    import {FAIL, INPUT, LOADING, SUCCESS} from "@/js/event-bus";
 
     export default {
         name: 'app',
@@ -36,7 +54,36 @@
                 visibleLoading: false,
                 visibleSuccess: false,
                 visibleFail: false,
-                failMessage: ''
+                failMessage: '',
+                visibleAppInput: false,
+                appInputObj: {
+                    title: '',
+                    placeholder: '',
+                    input: '',
+                    onSave: undefined,
+                    checkInput: undefined
+                },
+                warnMsg: ''
+            }
+        },
+        methods: {
+            checkInput() {
+                const val = this.appInputObj.input
+                this.warnMsg = ''
+                if (strNoVal(val)) {
+                    this.warnMsg = '不可为空'
+                } else {
+                    this.warnMsg = this.appInputObj.checkInput(val)
+                    if (objNoVal(this.warnMsg)) {
+                        this.warnMsg = ''
+                    }
+                }
+            },
+            save() {
+                if (this.warnMsg.length > 0)
+                    return
+                this.visibleAppInput = false
+                this.appInputObj.onSave(this.appInputObj.input)
             }
         },
         created() {
@@ -78,6 +125,14 @@
                     this.failMessage = msg
                 }
                 this.visibleFail = true
+            })
+            eventBus.$on(INPUT, (obj) => {
+                if (obj) {
+                    this.visibleAppInput = true
+                    this.appInputObj = obj
+                } else {
+                    this.visibleAppInput = false
+                }
             })
         }
     }
@@ -165,6 +220,105 @@
 
                         &:hover {
                             background-color: #148bdc;
+                        }
+                    }
+                }
+            }
+        }
+
+        .app-input {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+
+            .dialog {
+                width: 250px;
+                margin: 170px auto;
+                background-color: white;
+                border-radius: 3px;
+                overflow: hidden;
+
+                .header {
+                    background-color: $blue;
+                    padding: 10px;
+                    font-size: 12px;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    img {
+                        width: 16px;
+                        height: 16px;
+                        cursor: pointer;
+                    }
+                }
+
+                .content {
+                    padding-top: 20px;
+
+                    input {
+                        width: 90%;
+                        margin-left: 5%;
+                        padding: 5px 10px;
+                        box-sizing: border-box;
+                        font-size: 14px;
+                        color: $black;
+                        border: 1px solid #D0D0D0;
+
+                        &:focus {
+                            border-color: #BBBBBB;
+                        }
+                    }
+
+                    .warn {
+                        width: 90%;
+                        height: 20px;
+                        color: red;
+                        margin-left: 5%;
+                        line-height: 20px;
+                        font-size: 12px;
+                        padding: 0;
+                        margin-bottom: 0;
+                        margin-top: 0;
+                    }
+                }
+
+                .footer {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    padding-bottom: 10px;
+
+                    .save {
+                        margin-right: 20px;
+                        background-color: $blue;
+                        border-radius: 3px;
+                        color: white;
+                        font-size: 13px;
+                        padding: 5px 10px;
+                        border: 0 solid $blue;
+
+                        &:hover {
+                            background-color: $dark-blue;
+                        }
+                    }
+
+                    .cancel {
+                        padding: 5px 10px;
+                        border-radius: 3px;
+                        margin-right: 10px;
+                        background-color: white;
+                        border: 1px solid $light-black;
+                        color: $light-black;
+
+                        &:hover {
+                            color: $black;
+                            border-color: $black;
+                            background-color: white;
                         }
                     }
                 }

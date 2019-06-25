@@ -7,7 +7,6 @@ import {
     onlineUserKey,
     rememberPasswordKey
 } from "@/js/_const";
-import {USER_DATA_CHANGE} from "@/js/event-bus";
 
 export default {
     /**
@@ -20,7 +19,7 @@ export default {
      * }
      */
     removeMusicInLocalList(st, obj) {
-        const list = st.localMusicList[obj.name]
+        const list = st.localMusicList[obj.name].musics
         list.splice(obj.index, obj.count)
     },
     /**
@@ -79,6 +78,14 @@ export default {
     setMainLeft(state, rect) {
         state.mainLeftY = rect.y;
         state.mainLeftHeight = rect.height;
+    },
+    /**
+     * 设置当前用户的音乐空间数据
+     * @param st
+     * @param val
+     */
+    myMusicSpaceData(st, val) {
+        st.myMusicSpaceData = val
     },
     /**
      * 设置是否显示登陆页面
@@ -158,7 +165,6 @@ export default {
      */
     userData(state, val) {
         state.userData = val
-        eventBus.$emit(USER_DATA_CHANGE, val)
     },
     /**
      * 设置主界面的背景

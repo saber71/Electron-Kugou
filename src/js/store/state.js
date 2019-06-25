@@ -37,5 +37,6 @@ export default {
     mainRightActiveHistory: [],//页面显示历史
 
     musicSpaceUser: '',//正在查看的音乐空间用户
+    myMusicSpaceData: {},//当前登陆用户的音乐空间数据
     socialContactType: 0,//要进入的社交界面的类型【0：好友，1：关注，2：粉丝，3：访客】
 }

@@ -136,7 +136,7 @@
 
 <script>
     import {MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT, MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT} from "@/js/_const";
-    import {FAIL, LOADING, SUCCESS, VISIBLE_POPUP} from "@/js/event-bus";
+    import {FAIL, LOADING, SUCCESS} from "@/js/event-bus";
     import ajax from "@/js/ajax";
 
     export default {
@@ -215,7 +215,10 @@
         },
         async created() {
             eventBus.$emit(LOADING, true)
-            this.musicSpaceData = (await ajax.getMusicSpaceData()).data
+            if (this.isMaster) {
+                this.musicSpaceData = store.state.myMusicSpaceData
+            } else
+                this.musicSpaceData = (await ajax.getMusicSpaceData()).data
             eventBus.$emit(LOADING, false)
             if (this.isMaster) {
                 this.securitySelected = (await ajax.getMusicSpaceSecurity()).data

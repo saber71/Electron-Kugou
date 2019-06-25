@@ -30,8 +30,6 @@
 </template>
 
 <script>
-    import {VISIBLE_POPUP} from "@/js/event-bus";
-
     export default {
         name: "NetMusic",
         model: {
@@ -55,7 +53,7 @@
         data() {
             return {
                 clicked: false,
-                visiblePopup: 0,
+                visiblePopup: false,
                 hoverPlay: false,
                 hoverDownload: false,
                 hoverMore: false
@@ -78,12 +76,8 @@
         mounted() {
         },
         created() {
-            eventBus.$on(VISIBLE_POPUP, () => {
-                this.visiblePopup--
-            })
         },
         destroyed() {
-            eventBus.$off(VISIBLE_POPUP)
         }
     }
 </script>

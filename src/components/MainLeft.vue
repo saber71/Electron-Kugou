@@ -22,6 +22,7 @@
 
 <script>
     import LocalList from "@/components/main-left/LocalList";
+    import {FAIL} from "@/js/event-bus";
 
     export default {
         name: "MainLeft",
@@ -32,7 +33,13 @@
                 activeBanner: 0,
             }
         },
-        watch: {},
+        watch: {
+            activeBanner(newVal) {
+                if (newVal === 1 && !store.state.onlineUser) {
+                    store.commit('visibleLogin', true)
+                }
+            }
+        },
         computed: {
             arrowLeft() {
                 switch (this.activeBanner) {
