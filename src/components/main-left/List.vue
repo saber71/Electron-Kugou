@@ -31,12 +31,17 @@
                         添加到列表
                     </label>
                     <div class="sub">
-                        <p class="type">本地列表</p>
-                        <div class="sub-item" v-for="(v) in $store.getters.localList"><label>{{v.name}}</label></div>
+                        <h5 class="type">本地列表</h5>
+                        <div class="sub-item" v-for="(v) in $store.getters.localList"
+                             @click="addToMusicList(true,v.name)"><label>{{v.name}}</label></div>
+                        <h5 class="type">网络列表</h5>
+                        <div class="sub-item" v-for="(v) in $store.state.netMusicList"
+                             @click="addToMusicList(false,v.name)"><label>{{v.name}}</label></div>
                     </div>
                 </div>
-                <div class="item" v-if="!popupHiddenOptions.later"><label>稍后播</label></div>
-                <div class="item" v-if="!popupHiddenOptions.addPlayList"><label>添加到播放列表</label></div>
+                <div class="item" v-if="!popupHiddenOptions.later" @click="later"><label>稍后播</label></div>
+                <div class="item" v-if="!popupHiddenOptions.addPlayList" @click="pushToPlayList"><label>添加到播放列表</label>
+                </div>
                 <div class="item"
                      v-if="!popupHiddenOptions.sort">
                     <label>
@@ -67,11 +72,20 @@
 
 <script>
     import {isReachMainLeftBottom, objNoVal} from "@/js/util";
-    import {CLEAR_MUSIC, INPUT, LOVE_ALL_MUSIC, SORT_ORDER_BY} from "@/js/event-bus";
     import {
-        CREATE_LOCAL_LIST,
-        REMOVE_LOCAL_LIST,
-        REMOVE_MUSIC_IN_LOCAL_LIST,
+        CLEAR_MUSIC,
+        INPUT,
+        LATER_PLAY,
+        LOVE_ALL_MUSIC,
+        PARENT_ADD_ALL_TO_LIST,
+        PARENT_PUSH_TO_PLAY_LIST,
+        SORT_ORDER_BY
+    } from "@/js/event-bus";
+    import {
+        CREATE_MUSIC_LIST,
+        REMOVE_MUSIC_IN_LIST,
+        REMOVE_MUSIC_LIST,
+        RENAME_MUSIC_LIST,
         SAVE_LOCAL_MUSIC_LIST
     } from "@/js/store/mutations_name";
     import {ORDER_BY_NAME, ORDER_BY_RANDOM, ORDER_BY_SINGER, ORDER_BY_TIME, ORDER_BY_TIMES} from "@/js/_const";
@@ -95,6 +109,10 @@
             popupHiddenOption: {
                 type: Object,
                 required: false
+            },
+            local: {
+                type: Boolean,
+                required: true
             }
         },
         data() {
@@ -131,16 +149,48 @@
         computed: {},
         methods: {
             removeMusic(index) {
-                store.commit(REMOVE_MUSIC_IN_LOCAL_LIST, {
+                store.commit(REMOVE_MUSIC_IN_LIST, {
                     name: this.name,
                     index,
-                    count: 1
+                    count: 1,
+                    local: this.local
                 })
             },
             orderBy(index) {
                 this.$parent.$emit(SORT_ORDER_BY, index)
             },
+            addToMusicList(local, name) {
+                this.$parent.$emit(PARENT_ADD_ALL_TO_LIST, local, name)
+            },
+            later() {
+                this.$parent.$emit(LATER_PLAY)
+            },
+            pushToPlayList() {
+                this.$parent.$emit(PARENT_PUSH_TO_PLAY_LIST)
+            },
             rename() {
+                eventBus.$emit(INPUT, {
+                    title: '为' + this.name + '重命名',
+                    placeholder: '请输入新的名字',
+                    checkInput: (input) => {
+                        let list = store.state.localMusicList
+                        if (!this.local) {
+                            list = store.state.netMusicList
+                        }
+                        if (objNoVal(list[input])) {
+                            return ''
+                        } else {
+                            return '与现有列表名字重复'
+                        }
+                    },
+                    onSave: (input) => {
+                        store.commit(RENAME_MUSIC_LIST, {
+                            local: this.local,
+                            oldName: this.name,
+                            newName: input
+                        })
+                    }
+                })
             },
             clickMask() {
                 this.$emit('change', false)
@@ -151,7 +201,10 @@
                     title: '新建列表',
                     placeholder: '请输入列表的名字',
                     onSave: (input) => {
-                        store.commit(CREATE_LOCAL_LIST, input)
+                        store.commit(CREATE_MUSIC_LIST, {
+                            name: input,
+                            local: this.local
+                        })
                         store.commit(SAVE_LOCAL_MUSIC_LIST)
                     },
                     checkInput: (input) => {
@@ -167,7 +220,10 @@
                 this.$parent.$emit(CLEAR_MUSIC)
             },
             removeList() {
-                store.commit(REMOVE_LOCAL_LIST, this.name)
+                store.commit(REMOVE_MUSIC_LIST, {
+                    name: this.name,
+                    local: this.local
+                })
                 store.commit(SAVE_LOCAL_MUSIC_LIST)
             },
             loveAll() {

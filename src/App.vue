@@ -72,7 +72,7 @@
                 this.warnMsg = ''
                 if (strNoVal(val)) {
                     this.warnMsg = '不可为空'
-                } else {
+                } else if (this.appInputObj.checkInput) {
                     this.warnMsg = this.appInputObj.checkInput(val)
                     if (objNoVal(this.warnMsg)) {
                         this.warnMsg = ''

@@ -1,9 +1,11 @@
 import {
     autoLoginKey,
     generateMultiLoginObj,
-    generateMusicList, HOME_COMMON_BG,
+    generateMusicList,
+    HOME_COMMON_BG,
     localListKey,
-    loginHistoryKey, MAIN_RIGHT_ACTIVE_DEFAULT,
+    loginHistoryKey,
+    MAIN_RIGHT_ACTIVE_DEFAULT,
     onlineUserKey,
     rememberPasswordKey
 } from "@/js/_const";
@@ -18,7 +20,7 @@ const randomLocalMusicList = {
 
 export default {
     localMusicList: getLocalStorageItem(localListKey, randomLocalMusicList),//本地音乐列表
-    netMusicList: [],//网络音乐列表
+    netMusicList: {},//网络音乐列表
 
     loginHistory: getLocalStorageItem(loginHistoryKey, randomLoginHistory),//登陆历史
     onlineUser: getLocalStorageItem(onlineUserKey, undefined),//在线用户

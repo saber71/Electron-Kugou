@@ -133,12 +133,10 @@
           box-shadow: 0 0 2px #a7a7a7;
 
           h5 {
-            img {
-              width: 10px;
-              height: 10px;
-              margin-left: -10px;
-              margin-right: 5px;
-            }
+            font-size: 20px;
+            padding: 5px;
+            margin: 0;
+            cursor: default;
           }
 
           .sub-item {

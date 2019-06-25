@@ -1,35 +1,91 @@
 import {getPlayTimes, objNoVal, setLocalStorageItem} from "@/js/util";
 import {
-    autoLoginKey, emptyMusicList,
+    autoLoginKey,
+    emptyMusicList,
     HOME_COMMON_BG,
     localListKey,
     loginHistoryKey,
-    onlineUserKey, ORDER_BY_NAME, ORDER_BY_RANDOM, ORDER_BY_SINGER, ORDER_BY_TIME, ORDER_BY_TIMES,
+    onlineUserKey,
+    ORDER_BY_NAME,
+    ORDER_BY_RANDOM,
+    ORDER_BY_SINGER,
+    ORDER_BY_TIME,
+    ORDER_BY_TIMES,
     rememberPasswordKey
 } from "@/js/_const";
 import Vue from 'vue'
 import {
-    CREATE_LOCAL_LIST,
+    ADD_ALL_TO_MUSIC_LIST,
+    CREATE_MUSIC_LIST,
     GO_BACK,
+    REMOVE_MUSIC_IN_LIST,
+    REMOVE_MUSIC_LIST,
+    RENAME_MUSIC_LIST,
+    SAVE_LOCAL_MUSIC_LIST,
     SET_HOME_BG,
     SET_MAIN_BG,
-    REMOVE_MUSIC_IN_LOCAL_LIST,
-    SAVE_LOCAL_MUSIC_LIST, REMOVE_LOCAL_LIST, SET_LOCAL_LIST_ORDER_BY
+    SET_MUSIC_LIST_ORDER_BY
 } from "@/js/store/mutations_name";
 import {ranBoolean} from "@/js/mock-random";
 
+function getMusicList(name, local) {
+    let list = store.state.localMusicList[name]
+    if (!local) {
+        list = store.state.netMusicList[name]
+    }
+    return list
+}
+
 export default {
     /**
-     * 设置一个本地列表的排序依据
-     * @param st
-     * @param obj   {
-     *     name string  本地列表名字
-     *     orderBy  number  排序编号
+     * 音乐列表重命名
+     * @param s
+     * @param obj{
+     *    local   boolean 【true：本地列表，false：网络列表】
+     *     oldName  string  原本的名字
+     *     newName  string  新的名字
      * }
      */
-    [SET_LOCAL_LIST_ORDER_BY](st, obj) {
+    [RENAME_MUSIC_LIST](s, obj) {
+        let list
+        if (obj.local) {
+            list = s.localMusicList
+        } else {
+            list = s.netMusicList
+        }
+        const l = list[obj.oldName]
+        l.name = obj.newName
+        list[obj.oldName] = null
+        list[obj.newName] = l
+    },
+    /**
+     *
+     * @param s
+     * @param obj{
+     *     name string  列表名字
+     *    local   boolean 【true：本地列表，false：网络列表】
+     *    musics    array   music数组
+     * }
+     */
+    [ADD_ALL_TO_MUSIC_LIST](s, obj) {
+        const list = getMusicList(obj.name, obj.local)
+        const arr = obj.musics
+        for (let i = 0; i < arr.length; i++) {
+            list.music.push(arr[i])
+        }
+    },
+    /**
+     * 设置一个音乐列表的排序依据
+     * @param st
+     * @param obj   {
+     *     name string  音乐列表名字
+     *     orderBy  number  排序编号
+     *     local    boolean 【true：本地音乐列表，false：网络音乐列表】
+     * }
+     */
+    [SET_MUSIC_LIST_ORDER_BY](st, obj) {
         const orderBy = obj.orderBy
-        const list = st.localMusicList[obj.name]
+        let list = getMusicList(obj.name, obj.local)
         let direction = list.direction
         if (list.orderBy === orderBy) {
             direction *= -1
@@ -68,32 +124,39 @@ export default {
         list.musics.sort(func)
     },
     /**
-     * 删除一个本地列表
+     * 删除一个音乐列表
      * @param st
-     * @param name
+     * @param obj {
+     *     name string  音乐列表名字
+     *     local    boolean 【true：本地音乐列表，false：网络音乐列表】
+     * }
      */
-    [REMOVE_LOCAL_LIST](st, name) {
-        Vue.delete(st.localMusicList, name)
+    [REMOVE_MUSIC_LIST](st, obj) {
+        Vue.delete(obj.local ? st.localMusicList : st.netMusicList, obj.name)
     },
     /**
-     * 创建新的本地列表
+     * 创建新的音乐列表
      * @param st
-     * @param name  新列表的名字
+     * @param obj {
+     *     name string  音乐列表名字
+     *     local    boolean 【true：本地音乐列表，false：网络音乐列表】
+     * }
      */
-    [CREATE_LOCAL_LIST](st, name) {
-        Vue.set(st.localMusicList, name, emptyMusicList(name))
+    [CREATE_MUSIC_LIST](st, obj) {
+        Vue.set(obj.local ? st.localMusicList : st.netMusicList, obj.name, emptyMusicList(obj.name))
     },
     /**
-     * 删除本地列表中的指定歌曲
+     * 删除音乐列表中的指定歌曲
      * @param st
      * @param obj   {
      *     name     string  列表名字
      *     index    number  歌曲序号
      *     count    number  删除的数目
+     *     local    boolean 【true：本地音乐列表，false：网络音乐列表】
      * }
      */
-    [REMOVE_MUSIC_IN_LOCAL_LIST](st, obj) {
-        const list = st.localMusicList[obj.name].musics
+    [REMOVE_MUSIC_IN_LIST](st, obj) {
+        const list = (obj.local ? st.localMusicList : st.netMusicList)[obj.name].musics
         list.splice(obj.index, obj.count)
     },
     /**
@@ -160,6 +223,14 @@ export default {
      */
     myMusicSpaceData(st, val) {
         st.myMusicSpaceData = val
+        st.netMusicList = []
+        const fun = function (list) {
+            for (let i = 0; i < list.length; i++) {
+                Vue.set(st.netMusicList, list[i].name, list[i])
+            }
+        }
+        fun(val.customMusicList)
+        fun(val.favoriteMusicList)
     },
     /**
      * 设置是否显示登陆页面

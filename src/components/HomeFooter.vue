@@ -49,7 +49,7 @@
 </template>
 
 <script>
-    import {ADD_TO_PLAY_LIST, SET_PLAY_LIST} from "@/js/event-bus";
+    import {ADD_TO_PLAY_LIST, PUSH_TO_PLAY_LIST, SET_PLAY_LIST} from "@/js/event-bus";
 
     let audio = undefined
     let playList = []
@@ -98,8 +98,15 @@
         created() {
             eventBus.$on(ADD_TO_PLAY_LIST, addToPlayList)
             eventBus.$on(SET_PLAY_LIST, setPlayList)
+            eventBus.$on(PUSH_TO_PLAY_LIST, pushToPlayList)
         },
         destroyed() {
+        }
+    }
+
+    function pushToPlayList(val) {
+        for (let i = 0; i < val.length; i++) {
+            playList.push(val[i])
         }
     }
 

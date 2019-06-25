@@ -1,6 +1,6 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div id="music-list">
-        <list :name="listName" :size="array.length" v-model="visiblePopup"
+        <list :name="listName" :size="array.length" v-model="visiblePopup" :local="local"
               :popup-hidden-option="popupHiddenOption">
             <template v-slot:header>
                 <div class="header-items">
@@ -18,10 +18,18 @@
 
 <script>
     import List from "@/components/main-left/List";
-    import {isReachMainLeftBottom} from "@/js/util";
     import Music from "@/components/main-left/Music";
-    import {SAVE_LOCAL_MUSIC_LIST, SET_LOCAL_LIST_ORDER_BY} from "@/js/store/mutations_name";
-    import {CLEAR_MUSIC, LOVE_ALL_MUSIC, SORT_ORDER_BY} from "@/js/event-bus";
+    import {ADD_ALL_TO_MUSIC_LIST, SAVE_LOCAL_MUSIC_LIST, SET_MUSIC_LIST_ORDER_BY} from "@/js/store/mutations_name";
+    import {
+        ADD_TO_PLAY_LIST,
+        CLEAR_MUSIC,
+        LATER_PLAY,
+        LOVE_ALL_MUSIC,
+        PARENT_ADD_ALL_TO_LIST,
+        PARENT_PUSH_TO_PLAY_LIST,
+        PUSH_TO_PLAY_LIST,
+        SORT_ORDER_BY
+    } from "@/js/event-bus";
 
     export default {
         name: "MusicList",
@@ -46,6 +54,10 @@
             removeable: {
                 type: Boolean,
                 default: false
+            },
+            local: {
+                type: Boolean,
+                default: true
             }
         },
         data() {
@@ -63,7 +75,7 @@
             },
             name(music) {
                 return music.name + ' - ' + music.singer
-            }
+            },
         },
         mounted() {
         },
@@ -84,9 +96,23 @@
                 }
             })
             this.$on(SORT_ORDER_BY, (index) => {
-                store.commit(SET_LOCAL_LIST_ORDER_BY, {
+                store.commit(SET_MUSIC_LIST_ORDER_BY, {
                     name: this.listName,
-                    orderBy: index
+                    orderBy: index,
+                    local: this.local
+                })
+            })
+            this.$on(LATER_PLAY, () => {
+                eventBus.$emit(ADD_TO_PLAY_LIST, this.array)
+            })
+            this.$on(PARENT_PUSH_TO_PLAY_LIST, () => {
+                eventBus.$emit(PUSH_TO_PLAY_LIST, this.array)
+            })
+            this.$on(PARENT_ADD_ALL_TO_LIST, (local, name) => {
+                store.commit(ADD_ALL_TO_MUSIC_LIST, {
+                    name,
+                    local,
+                    musics: this.array
                 })
             })
         },
