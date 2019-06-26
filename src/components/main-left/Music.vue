@@ -97,7 +97,7 @@
                     const height = el.getBoundingClientRect().height
                     this.popupTop = (toTop + height + 2) + 'px'
                     if (isReachMainLeftBottom(toTop + height, this.popupHeight)) {
-                        this.popupTop = (toTop - this.popupHeight) + 'px'
+                        this.popupTop = (toTop - this.popupHeight - 3) + 'px'
                     }
                 }
             }
@@ -111,7 +111,7 @@
                 eventBus.$emit(ADD_TO_PLAY_LIST, this.music)
             },
             name(music) {
-                return music.name + ' - ' + music.singer
+                return music.name
             },
         },
         mounted() {
@@ -239,6 +239,7 @@
             z-index: 10;
 
             h6 {
+                font-size: 13px;
                 margin-bottom: 10px;
                 margin-top: 0;
                 white-space: nowrap;

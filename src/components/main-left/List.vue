@@ -21,8 +21,8 @@
                         添加歌曲
                     </label>
                     <div class="sub">
-                        <div class="sub-item"><label>添加本地歌曲...</label></div>
-                        <div class="sub-item"><label>添加本地歌曲文件夹...</label></div>
+                        <div class="sub-item" @click="toSelectFiles"><label>添加本地歌曲...</label></div>
+                        <div class="sub-item" @click="toSelectDirectory"><label>添加本地歌曲文件夹...</label></div>
                     </div>
                 </div>
                 <div class="item"
@@ -71,13 +71,14 @@
 </template>
 
 <script>
-    import {isReachMainLeftBottom, objNoVal} from "@/js/util";
+    import {isReachMainLeftBottom, objNoVal, toSelectDirectory, toSelectMusicFiles} from "@/js/util";
     import {
         CLEAR_MUSIC,
         INPUT,
         LATER_PLAY,
         LOVE_ALL_MUSIC,
         PARENT_ADD_ALL_TO_LIST,
+        PARENT_ADD_TO_LIST,
         PARENT_PUSH_TO_PLAY_LIST,
         SORT_ORDER_BY
     } from "@/js/event-bus";
@@ -88,7 +89,17 @@
         RENAME_MUSIC_LIST,
         SAVE_LOCAL_MUSIC_LIST
     } from "@/js/store/mutations_name";
-    import {ORDER_BY_NAME, ORDER_BY_RANDOM, ORDER_BY_SINGER, ORDER_BY_TIME, ORDER_BY_TIMES} from "@/js/_const";
+    import {
+        musicFromTags,
+        ORDER_BY_NAME,
+        ORDER_BY_RANDOM,
+        ORDER_BY_SINGER,
+        ORDER_BY_TIME,
+        ORDER_BY_TIMES
+    } from "@/js/_const";
+
+    const mm = require('music-metadata')
+    const fs = require('fs')
 
     export default {
         name: "List",
@@ -148,6 +159,34 @@
         },
         computed: {},
         methods: {
+            async read(path) {
+                const tag = await mm.parseFile(path, {native: true, duration: true})
+                const music = musicFromTags(tag, path)
+                this.$parent.$emit(PARENT_ADD_TO_LIST, music)
+            },
+            toSelectFiles() {
+                this.closePopup()
+                toSelectMusicFiles((paths) => {
+                    for (let i = 0; i < paths.length; i++) {
+                        this.read(paths[i])
+                    }
+                }, true)
+            },
+            toSelectDirectory() {
+                this.closePopup()
+                toSelectDirectory(true, (paths) => {
+                    for (let i = 0; i < paths.length; i++) {
+                        const dir = paths[i]
+                        const files = fs.readdirSync(dir)
+                        for (let j = 0; j < files.length; j++) {
+                            this.read(dir + '\\' + files[j])
+                        }
+                    }
+                })
+            },
+            closePopup() {
+                this.$emit('change', false)
+            },
             removeMusic(index) {
                 store.commit(REMOVE_MUSIC_IN_LIST, {
                     name: this.name,
@@ -157,18 +196,23 @@
                 })
             },
             orderBy(index) {
+                this.closePopup()
                 this.$parent.$emit(SORT_ORDER_BY, index)
             },
             addToMusicList(local, name) {
+                this.closePopup()
                 this.$parent.$emit(PARENT_ADD_ALL_TO_LIST, local, name)
             },
             later() {
+                this.closePopup()
                 this.$parent.$emit(LATER_PLAY)
             },
             pushToPlayList() {
+                this.closePopup()
                 this.$parent.$emit(PARENT_PUSH_TO_PLAY_LIST)
             },
             rename() {
+                this.closePopup()
                 eventBus.$emit(INPUT, {
                     title: '为' + this.name + '重命名',
                     placeholder: '请输入新的名字',
@@ -193,10 +237,10 @@
                 })
             },
             clickMask() {
-                this.$emit('change', false)
+                this.closePopup()
             },
             newList() {
-                this.clickMask()
+                this.closePopup()
                 eventBus.$emit(INPUT, {
                     title: '新建列表',
                     placeholder: '请输入列表的名字',
@@ -217,9 +261,11 @@
                 })
             },
             clearList() {
+                this.closePopup()
                 this.$parent.$emit(CLEAR_MUSIC)
             },
             removeList() {
+                this.closePopup()
                 store.commit(REMOVE_MUSIC_LIST, {
                     name: this.name,
                     local: this.local
@@ -227,6 +273,7 @@
                 store.commit(SAVE_LOCAL_MUSIC_LIST)
             },
             loveAll() {
+                this.closePopup()
                 this.$parent.$emit(LOVE_ALL_MUSIC)
             }
         },

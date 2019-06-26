@@ -1,15 +1,20 @@
 import {
     ranBoolean,
     ranCity,
-    ranCTitle, ranCWord,
-    ranDataImage, ranDatetime, ranEmail,
-    ranInteger, ranName, ranParagraph,
+    ranCTitle,
+    ranCWord,
+    ranDataImage,
+    ranDatetime,
+    ranEmail,
+    ranInteger,
+    ranName,
+    ranParagraph,
     ranProvince,
     ranTitle,
     ranWord
 } from "@/js/mock-random";
 import {generatePhone} from "@/js/reg";
-import {formatDate} from "@/js/util";
+import {formatDate, getFileName} from "@/js/util";
 
 export const minWidth = 1024
 export const minHeight = 600
@@ -31,6 +36,8 @@ export const onlineUserKey = '在线用户'
 export const rememberPasswordKey = '记住密码'
 export const autoLoginKey = '自动登陆'
 export const localMusicListNamesKey = '本地音乐列表名字'
+export const playListKey = '播放列表'
+export const playingIndexKey = '播放序号'
 
 // export const HOME_COMMON_BG = ' linear-gradient(to right, #0186E1, #0298f4 50%, #0186E1), linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1))'
 export const HOME_COMMON_BG = `url(${require('../assets/default-bg.jpg')}) no-repeat center center`
@@ -61,28 +68,51 @@ export const MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS = 15//已购音乐
 *   album   string  专辑
 *   love    boolean 是否喜欢
 *   time    string  添加时间
+*   mv  boolean 是否匹配MV
 *   duration    Integer（单位秒）
 *   source 【本地资源，网络资源】
-*   quality 【高品，标准】
+*   quality     码率
 *   type    格式  String
 *   size    string  文件大小（单位:M）
 *   file    文件路径
 * }
 * */
 export function generateMusic(isNetSource, filePath) {
+    const singerName = ranName()
     return {
-        name: ranTitle(1, 3),
-        singer: ranName(),
+        name: ranTitle(1, 3) + ' - ' + singerName,
+        singer: singerName,
         img: ranDataImage('50x50'),
         album: ranTitle(1, 3),
         love: ranBoolean(),
         duration: ranInteger(30, 300),
+        mv: ranBoolean(),
         time: ranDatetime(),
         source: isNetSource ? '网络资源' : '本地资源',
-        quality: ranBoolean() ? '高品' : '标准',
+        quality: ranBoolean() ? '128kbs' : '320kbs',
         type: ranBoolean() ? 'MP3' : 'FLAC',
         file: filePath ? filePath : ranWord(),
-        size: (ranInteger(1, 50) / 10) + 'M'
+        size: (ranInteger(1, 50) / 10) + 'M',
+    }
+}
+
+export function musicFromTags(tag, path) {
+    // const pics = tag.common.picture
+    const fs = require('fs')
+    const stat = fs.statSync(path)
+    return {
+        name: getFileName(path),
+        singer: tag.common.artist ? tag.common.artist : '未知',
+        img: ranDataImage('50x50'),
+        album: tag.common.album ? tag.common.album : '未知',
+        love: false,
+        duration: parseInt((tag.format.duration + 1) + ''),
+        time: formatDate(new Date()),
+        source: '本地资源',
+        quality: parseInt('' + tag.format.bitrate / 1000) + 'kbs',
+        type: tag.format.codec,
+        file: path,
+        size: (parseInt((stat.size / 1024 / 1024 * 10) + '') / 10) + "M"
     }
 }
 

@@ -76,12 +76,14 @@
             prev() {
                 if (activeIndex > 0) {
                     activeIndex--
+                    store.state.playingIndex--
                     this.play(true)
                 }
             },
             next() {
                 if (activeIndex < playList.length) {
                     activeIndex++
+                    store.state.playingIndex++
                     this.play(true)
                 }
             },
@@ -96,6 +98,8 @@
         mounted() {
         },
         created() {
+            playList = store.state.playList
+            activeIndex = store.state.playingIndex
             eventBus.$on(ADD_TO_PLAY_LIST, addToPlayList)
             eventBus.$on(SET_PLAY_LIST, setPlayList)
             eventBus.$on(PUSH_TO_PLAY_LIST, pushToPlayList)
@@ -111,7 +115,11 @@
     }
 
     function addToPlayList(val) {
-        playList.splice(activeIndex, 0, val)
+        if (val instanceof Array) {
+            playList.splice(activeIndex, 0, ...val)
+        } else {
+            playList.splice(activeIndex, 0, val)
+        }
     }
 
     function setPlayList(list, index) {

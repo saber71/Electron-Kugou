@@ -57,9 +57,12 @@ export default {
         l.name = obj.newName
         list[obj.oldName] = null
         list[obj.newName] = l
+        if (obj.local) {
+            store.commit(SAVE_LOCAL_MUSIC_LIST)
+        }
     },
     /**
-     *
+     *将数组中的music加入指定的列表
      * @param s
      * @param obj{
      *     name string  列表名字
@@ -72,6 +75,9 @@ export default {
         const arr = obj.musics
         for (let i = 0; i < arr.length; i++) {
             list.music.push(arr[i])
+        }
+        if (obj.local) {
+            store.commit(SAVE_LOCAL_MUSIC_LIST)
         }
     },
     /**
@@ -97,17 +103,17 @@ export default {
         switch (orderBy) {
             case ORDER_BY_NAME:
                 func = (a, b) => {
-                    return (a.name - b.name) * direction
+                    return (a.name.localeCompare(b.name)) * direction
                 }
                 break
             case ORDER_BY_SINGER:
                 func = (a, b) => {
-                    return (a.singer - b.singer) * direction
+                    return (a.singer.localeCompare(b.singer)) * direction
                 }
                 break
             case ORDER_BY_TIME:
                 func = (a, b) => {
-                    return (a.time - b.time) * direction
+                    return (a.time.localeCompare(b.time)) * direction
                 }
                 break
             case ORDER_BY_TIMES:
@@ -122,6 +128,9 @@ export default {
                 break
         }
         list.musics.sort(func)
+        if (obj.local) {
+            store.commit(SAVE_LOCAL_MUSIC_LIST)
+        }
     },
     /**
      * 删除一个音乐列表
@@ -133,6 +142,9 @@ export default {
      */
     [REMOVE_MUSIC_LIST](st, obj) {
         Vue.delete(obj.local ? st.localMusicList : st.netMusicList, obj.name)
+        if (obj.local) {
+            store.commit(SAVE_LOCAL_MUSIC_LIST)
+        }
     },
     /**
      * 创建新的音乐列表
@@ -144,6 +156,9 @@ export default {
      */
     [CREATE_MUSIC_LIST](st, obj) {
         Vue.set(obj.local ? st.localMusicList : st.netMusicList, obj.name, emptyMusicList(obj.name))
+        if (obj.local) {
+            store.commit(SAVE_LOCAL_MUSIC_LIST)
+        }
     },
     /**
      * 删除音乐列表中的指定歌曲
@@ -158,6 +173,9 @@ export default {
     [REMOVE_MUSIC_IN_LIST](st, obj) {
         const list = (obj.local ? st.localMusicList : st.netMusicList)[obj.name].musics
         list.splice(obj.index, obj.count)
+        if (obj.local) {
+            store.commit(SAVE_LOCAL_MUSIC_LIST)
+        }
     },
     /**
      * 保存本地音乐列表
@@ -223,10 +241,11 @@ export default {
      */
     myMusicSpaceData(st, val) {
         st.myMusicSpaceData = val
-        st.netMusicList = []
+        st.netMusicList = {}
         const fun = function (list) {
             for (let i = 0; i < list.length; i++) {
                 Vue.set(st.netMusicList, list[i].name, list[i])
+                // st.netMusicList[list[i].name] = list[i]
             }
         }
         fun(val.customMusicList)

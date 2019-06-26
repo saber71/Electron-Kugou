@@ -5,7 +5,6 @@
                 <img v-if="selected" src="../../assets/right.png">
             </div>
             <span class="index">{{getIndex()}}</span>
-            <span class="singer">{{music.singer}}</span>-
             <span class="name">{{music.name}}</span>
         </div>
         <div class="right">

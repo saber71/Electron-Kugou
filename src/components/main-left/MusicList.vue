@@ -26,6 +26,7 @@
         LATER_PLAY,
         LOVE_ALL_MUSIC,
         PARENT_ADD_ALL_TO_LIST,
+        PARENT_ADD_TO_LIST,
         PARENT_PUSH_TO_PLAY_LIST,
         PUSH_TO_PLAY_LIST,
         SORT_ORDER_BY
@@ -114,6 +115,14 @@
                     local,
                     musics: this.array
                 })
+            })
+            this.$on(PARENT_ADD_TO_LIST, (music) => {
+                store.commit(ADD_ALL_TO_MUSIC_LIST, {
+                    local: this.local,
+                    name: this.listName,
+                    musics: [music]
+                })
+                this.array.push(music)
             })
         },
         destroyed() {

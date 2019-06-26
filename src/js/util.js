@@ -130,22 +130,23 @@ export function boolNoVal() {
 
 //获取歌曲的key
 function musicKey(music) {
-    return music.name + ' - ' + music.singer
+    return music.name
 }
 
 /**
  * 字节数组转换为base64字符串
  * @param buffer
  * @returns {string}
+ * @param type  数据类型
  */
-function bytesToBase64(buffer) {
+export function bytesToBase64(buffer, type) {
     let binary = '';
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
     for (let i = 0; i < len; i++) {
         binary += String.fromCharCode(bytes[i]);
     }
-    return window.btoa(binary);
+    return 'data:image/' + type + ',' + window.btoa(binary);
 }
 
 /**
@@ -156,7 +157,6 @@ function bytesToBase64(buffer) {
 export function toSelectMusicFiles(callback, multiSelections) {
     openDialogToSelect('openFile', [
         {name: '音乐', extensions: ['mp3', 'flac']},
-        {name: '所有文件', extensions: ['*']}
     ], multiSelections, callback)
 }
 
@@ -168,7 +168,6 @@ export function toSelectMusicFiles(callback, multiSelections) {
 export function toSelectImageFiles(multiSelections, callback) {
     openDialogToSelect('openFile', [
         {name: '图片', extensions: ['jpg', 'jpeg', 'png']},
-        {name: '所有文件', extensions: ['*']}
     ], multiSelections, callback)
 }
 
@@ -203,6 +202,15 @@ function openDialogToSelect(openTarget, filters, multiSelections, callback) {
  */
 export function getSuffix(path) {
     return path.substring(path.lastIndexOf('.') + 1).toLowerCase()
+}
+
+/**
+ * 获取文件名
+ * @param path
+ * @returns {string}
+ */
+export function getFileName(path) {
+    return path.substring(path.lastIndexOf('\\') + 1).split('.')[0]
 }
 
 /**
@@ -245,7 +253,7 @@ export function readAsBase64(path, callback) {
     const fs = require('fs')
     fs.readFile(path, {flag: 'r+', encoding: 'base64'}, (err, data) => {
         if (err)
-            alert("读取图片失败")
+            alert("读取失败")
         else {
             const ext = getSuffix(path)
             data = 'data:image/' + ext + ';base64,' + data
