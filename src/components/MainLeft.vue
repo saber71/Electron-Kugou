@@ -8,7 +8,7 @@
             <div :class="[activeBanner===4?'download-active':'download']" @click="activeBanner=4" title="本地音乐"></div>
         </section>
         <div class="arrow" :style="{left:arrowLeft}"></div>
-        <section class="content">
+        <section class="content" @scroll="onScroll" ref="content">
             <div class="item1" :style="{left:itemLeft(0,activeBanner)}">
                 <local-list></local-list>
             </div>
@@ -22,7 +22,7 @@
 
 <script>
     import LocalList from "@/components/main-left/LocalList";
-    import {FAIL} from "@/js/event-bus";
+    import {MAIN_LEFT_ON_SCROLL} from "@/js/event-bus";
 
     export default {
         name: "MainLeft",
@@ -59,6 +59,9 @@
             }
         },
         methods: {
+            onScroll() {
+                eventBus.$emit(MAIN_LEFT_ON_SCROLL)
+            },
             itemLeft(index, activeBanner) {
                 if (index === activeBanner)
                     return "0";

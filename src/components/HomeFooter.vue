@@ -4,7 +4,8 @@
             <img src="../assets/triangle-white.png">
         </div>
         <div class="play" @click="play" title="播放">
-            <img src="../assets/triangle-white.png">
+            <img src="../assets/triangle-white.png" v-show="!playing">
+            <div class="two-line" v-show="playing"></div>
         </div>
         <div class="next" @click="next" title="上一首">
             <img src="../assets/triangle-white.png">
@@ -65,7 +66,8 @@
                 duration: {
                     now: '00:00',
                     total: '00:00'
-                }
+                },
+                playing: false,
             }
         },
         watch: {},
@@ -88,12 +90,8 @@
                     this.play(true)
                 }
             },
-            play(playNewMusic) {
-                if (playNewMusic || !audio) {
-                    const music = playList[activeIndex]
-                    audio = new Audio(music.file)
-                    audio.play()
-                }
+            play() {
+                this.playing = !this.playing
             },
         },
         mounted() {

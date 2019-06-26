@@ -76,6 +76,7 @@
         CLEAR_MUSIC,
         INPUT,
         LATER_PLAY,
+        LIST_ON_EXPAND,
         LOVE_ALL_MUSIC,
         PARENT_ADD_ALL_TO_LIST,
         PARENT_ADD_TO_LIST,
@@ -142,10 +143,17 @@
                     ORDER_BY_SINGER,
                     ORDER_BY_TIME,
                     ORDER_BY_TIMES
-                }
+                },
+                eventEmitter: false
             }
         },
         watch: {
+            visibleContainer(newVal) {
+                if (newVal) {
+                    this.eventEmitter = true
+                    eventBus.$emit(LIST_ON_EXPAND)
+                }
+            },
             visiblePopup(newVal) {
                 if (newVal) {
                     this.$nextTick(() => {
@@ -309,6 +317,13 @@
                     list: getMusicList(this.name, this.local),
                     index: obj.index
                 })
+            })
+            eventBus.$on(LIST_ON_EXPAND, () => {
+                if (this.eventEmitter) {
+                    this.eventEmitter = false
+                    return
+                }
+                this.visibleContainer = false
             })
         },
         destroyed() {
