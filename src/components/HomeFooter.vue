@@ -50,6 +50,7 @@
 
 <script>
     import {ADD_TO_PLAY_LIST, PUSH_TO_PLAY_LIST, SET_PLAY_LIST} from "@/js/event-bus";
+    import {SET_PLAYING_INDEX} from "@/js/store/mutations_name";
 
     let audio = undefined
     let playList = []
@@ -76,14 +77,14 @@
             prev() {
                 if (activeIndex > 0) {
                     activeIndex--
-                    store.state.playingIndex--
+                    store.commit(SET_PLAYING_INDEX, activeIndex)
                     this.play(true)
                 }
             },
             next() {
                 if (activeIndex < playList.length) {
                     activeIndex++
-                    store.state.playingIndex++
+                    store.commit(SET_PLAYING_INDEX, activeIndex)
                     this.play(true)
                 }
             },

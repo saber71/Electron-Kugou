@@ -331,6 +331,11 @@
     * {
         list-style: none;
         outline: none;
+        user-select: none;
+    }
+
+    input {
+        user-select: text;
     }
 
     img {

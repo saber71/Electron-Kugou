@@ -14,5 +14,5 @@ export default {
             res.push(val)
         }
         return res
-    }
+    },
 }

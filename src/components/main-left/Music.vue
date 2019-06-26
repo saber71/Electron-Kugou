@@ -2,6 +2,7 @@
     <div id="music"
          @mouseleave="visiblePopup=false" @mouseenter="visiblePopup=true">
         <div ref="music" class="content" :class="{'content-active':clickContent}" tabindex="1"
+             @dblclick="dbClick"
              @click="clickContent=!clickContent" @blur="clickContent=false">
             <div class="text">
                 <img src="../../assets/add.png" title="稍后播" @click.stop="laterPlay">
@@ -15,7 +16,28 @@
                 <img class="love" src="../../assets/love.png" v-else title="我喜欢"
                      @click="music.love=true">
                 <img class="remove" src="../../assets/remove.png" title="删除" @click="remove">
-                <img class="more" src="../../assets/more.png" title="更多" @click="visibleMorePopup=!visibleMorePopup">
+                <div class="more" ref="more" @click="visibleMorePopup=true"
+                     @mouseleave="visibleMorePopup=false">
+                    <img src="../../assets/more.png" title="更多">
+                    <div class="more-popup" ref="morePopup" v-show="visibleMorePopup" :style="{top:morePopupTop}"
+                         @click.stop="">
+                        <div class="item">相似歌曲</div>
+                        <div class="item" @mouseenter="mouseEnterAddListPopup" ref="subItemAddList">
+                            添加到列表
+                            <div class="sub-popup" ref="subPopupAddList" :style="{top:addListPopupTop}">
+                                <h6>本地列表</h6>
+                                <div class="sub-item" v-for="(v) in $store.getters.localList('最近播放')"
+                                     @click="addToList(true,v.name)">{{v.name}}
+                                </div>
+                                <h6>网络列表</h6>
+                                <div class="sub-item" v-for="(v,name) in $store.state.netMusicList"
+                                     @click="addToList(false,name)">{{name}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">K歌</div>
+                    </div>
+                </div>
                 <span class="duration">{{formatDuration(music.duration)}}</span>
             </div>
         </div>
@@ -52,21 +74,12 @@
                 </div>
             </div>
         </div>
-        <div class="more-popup" v-show="visibleMorePopup">
-            <div class="item">下载歌曲</div>
-            <div class="item">添加到列表</div>
-            <div class="item">传歌到移动设备</div>
-            <div class="item">传玲声到移动设备</div>
-            <div class="item">相似歌曲</div>
-            <div class="item">分享</div>
-            <div class="item">K歌</div>
-        </div>
     </div>
 </template>
 
 <script>
-    import {isReachMainLeftBottom} from "@/js/util";
-    import {ADD_TO_PLAY_LIST} from "@/js/event-bus";
+    import {getMainLeftBottom, isReachMainLeftBottom} from "@/js/util";
+    import {ADD_TO_PLAY_LIST, PARENT_ADD_TO_LIST, PARENT_DB_CLICK} from "@/js/event-bus";
 
     export default {
         name: "Music",
@@ -86,7 +99,9 @@
                 popupTop: 0,
                 popupHeight: 0,
                 visibleMorePopup: false,
-                clickContent: false
+                clickContent: false,
+                morePopupTop: 0,
+                addListPopupTop: 0
             }
         },
         watch: {
@@ -100,10 +115,49 @@
                         this.popupTop = (toTop - this.popupHeight - 3) + 'px'
                     }
                 }
+            },
+            visibleMorePopup(newVal) {
+                if (newVal) {
+                    this.visiblePopup = false
+                    this.$nextTick(() => {
+                        const moreY = this.$refs.more.getBoundingClientRect().y
+                        const morePopupHeight = this.$refs.morePopup.getBoundingClientRect().height
+                        if (isReachMainLeftBottom(moreY, morePopupHeight)) {
+                            this.morePopupTop = (getMainLeftBottom() - morePopupHeight - moreY) + 'px'
+                        } else {
+                            this.morePopupTop = '0px'
+                        }
+                    })
+                }
             }
         },
         computed: {},
         methods: {
+            dbClick() {
+                this.$parent.$emit(PARENT_DB_CLICK, {
+                    music: this.music,
+                    index: this.index
+                })
+            },
+            addToList(local, name) {
+                this.$parent.$emit(PARENT_ADD_TO_LIST, {
+                    name, local,
+                    music: this.music
+                })
+            },
+            mouseEnterAddListPopup() {
+                this.$nextTick(() => {
+                    const subItem = this.$refs.subItemAddList
+                    const subPopup = this.$refs.subPopupAddList
+                    const itemY = subItem.getBoundingClientRect().y
+                    const popupHeight = subPopup.getBoundingClientRect().height
+                    if (isReachMainLeftBottom(itemY, popupHeight)) {
+                        this.addListPopupTop = (getMainLeftBottom() - itemY - popupHeight) + 'px'
+                    } else {
+                        this.addListPopupTop = '0'
+                    }
+                })
+            },
             remove() {
                 this.$parent.$emit('remove', this.index)
             },
@@ -200,6 +254,71 @@
 
                 .more {
                     display: none;
+                    position: relative;
+
+                    img {
+                        display: block;
+                    }
+
+                    .more-popup {
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                        width: 150px;
+                        background-color: white;
+                        z-index: 10;
+                        box-shadow: 0 0 2px gray;
+
+                        .item {
+                            padding: 10px;
+                            box-sizing: border-box;
+                            font-size: 13px;
+                            color: $black;
+                            cursor: pointer;
+                            position: relative;
+                            background-color: white;
+
+                            .sub-popup {
+                                position: absolute;
+                                left: -130px;
+                                width: 150px;
+                                max-height: 300px;
+                                overflow: auto;
+                                box-shadow: 0 0 2px gray;
+                                background-color: white;
+                                display: none;
+                                cursor: default;
+                                z-index: 10;
+
+                                h6 {
+                                    color: $black;
+                                    font-size: 15px;
+                                    margin: 5px 0;
+                                    padding-left: 5px;
+                                    box-sizing: border-box;
+                                }
+
+                                .sub-item {
+                                    @extend .item;
+                                    color: $black;
+                                    padding: 10px 15px;
+
+                                    &:hover {
+                                        color: white;
+                                    }
+                                }
+                            }
+
+                            &:hover {
+                                background-color: $blue;
+                                color: white;
+
+                                .sub-popup {
+                                    display: block;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 .duration {

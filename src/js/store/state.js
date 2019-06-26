@@ -45,6 +45,6 @@ export default {
     socialContactType: 0,//要进入的社交界面的类型【0：好友，1：关注，2：粉丝，3：访客】
 
     playList: getLocalStorageItem(playListKey, []),
-    playingMusic: [],
+    playingMusic: {},
     playingIndex: getLocalStorageItem(playingIndexKey, 0)
 }

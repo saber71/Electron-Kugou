@@ -11,6 +11,8 @@ import {
     ORDER_BY_SINGER,
     ORDER_BY_TIME,
     ORDER_BY_TIMES,
+    playingIndexKey,
+    playListKey,
     rememberPasswordKey
 } from "@/js/_const";
 import Vue from 'vue'
@@ -24,11 +26,14 @@ import {
     SAVE_LOCAL_MUSIC_LIST,
     SET_HOME_BG,
     SET_MAIN_BG,
-    SET_MUSIC_LIST_ORDER_BY
+    SET_MUSIC_LIST_ORDER_BY,
+    SET_PLAY_LIST,
+    SET_PLAYING_INDEX,
+    SET_PLAYING_MUSIC
 } from "@/js/store/mutations_name";
 import {ranBoolean} from "@/js/mock-random";
 
-function getMusicList(name, local) {
+export function getMusicList(name, local) {
     let list = store.state.localMusicList[name]
     if (!local) {
         list = store.state.netMusicList[name]
@@ -37,6 +42,39 @@ function getMusicList(name, local) {
 }
 
 export default {
+    /**
+     * 设置播放队列
+     * @param st
+     * @param val
+     */
+    [SET_PLAY_LIST](st, val) {
+        st.playList = val
+        setLocalStorageItem(playListKey, val)
+    },
+    /**
+     * 设置正在播放的音乐在播放列表中序号
+     * @param st
+     * @param val
+     */
+    [SET_PLAYING_INDEX](st, val) {
+        st.playingIndex = val
+        setLocalStorageItem(playingIndexKey, val)
+    },
+    /**
+     * 设置正在播放的音乐
+     * @param s
+     * @param obj{
+     *     music    将要播放的music对象
+     *     list     music对象所在的列表
+     *     index    music对象在列表中序号
+     * }
+     */
+    [SET_PLAYING_MUSIC](s, obj) {
+        s.playingMusic = obj.music
+        store.commit(SET_PLAY_LIST, obj.list)
+        store.commit(SET_PLAYING_INDEX, obj.index)
+        eventBus.$emit('setPlayList', obj.list, obj.index)
+    },
     /**
      * 音乐列表重命名
      * @param s
@@ -55,8 +93,8 @@ export default {
         }
         const l = list[obj.oldName]
         l.name = obj.newName
-        list[obj.oldName] = null
-        list[obj.newName] = l
+        Vue.delete(list, obj.oldName)
+        Vue.set(list, obj.newName, l)
         if (obj.local) {
             store.commit(SAVE_LOCAL_MUSIC_LIST)
         }
@@ -68,16 +106,20 @@ export default {
      *     name string  列表名字
      *    local   boolean 【true：本地列表，false：网络列表】
      *    musics    array   music数组
+     *    callback  function    回掉函数，当操作完成后执行
      * }
      */
     [ADD_ALL_TO_MUSIC_LIST](s, obj) {
         const list = getMusicList(obj.name, obj.local)
         const arr = obj.musics
         for (let i = 0; i < arr.length; i++) {
-            list.music.push(arr[i])
+            list.musics.push(arr[i])
         }
         if (obj.local) {
             store.commit(SAVE_LOCAL_MUSIC_LIST)
+        }
+        if (obj.callback) {
+            obj.callback()
         }
     },
     /**
@@ -245,7 +287,6 @@ export default {
         const fun = function (list) {
             for (let i = 0; i < list.length; i++) {
                 Vue.set(st.netMusicList, list[i].name, list[i])
-                // st.netMusicList[list[i].name] = list[i]
             }
         }
         fun(val.customMusicList)

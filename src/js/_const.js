@@ -140,7 +140,7 @@ export function emptyMusicList(name) {
         name: name ? name : ranTitle(1, 3),
         musics: [],
         orderBy: 3,
-        renamable: true,
+        renameable: true,
         removeable: true,
         direction: 1
     }

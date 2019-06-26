@@ -79,15 +79,19 @@
         LOVE_ALL_MUSIC,
         PARENT_ADD_ALL_TO_LIST,
         PARENT_ADD_TO_LIST,
+        PARENT_DB_CLICK,
         PARENT_PUSH_TO_PLAY_LIST,
-        SORT_ORDER_BY
+        SORT_ORDER_BY,
+        SUCCESS
     } from "@/js/event-bus";
     import {
+        ADD_ALL_TO_MUSIC_LIST,
         CREATE_MUSIC_LIST,
         REMOVE_MUSIC_IN_LIST,
         REMOVE_MUSIC_LIST,
         RENAME_MUSIC_LIST,
-        SAVE_LOCAL_MUSIC_LIST
+        SAVE_LOCAL_MUSIC_LIST,
+        SET_PLAYING_MUSIC
     } from "@/js/store/mutations_name";
     import {
         musicFromTags,
@@ -97,6 +101,7 @@
         ORDER_BY_TIME,
         ORDER_BY_TIMES
     } from "@/js/_const";
+    import {getMusicList} from "@/js/store/mutations";
 
     const mm = require('music-metadata')
     const fs = require('fs')
@@ -286,6 +291,25 @@
                 this.popupHiddenOptions = this.popupHiddenOption
             }
             this.$on('remove', this.removeMusic)
+            this.$on(PARENT_ADD_TO_LIST, (obj) => {
+                if (obj.name !== this.name) {
+                    store.commit(ADD_ALL_TO_MUSIC_LIST, {
+                        name: obj.name,
+                        local: obj.local,
+                        musics: [obj.music],
+                        callback: () => {
+                            eventBus.$emit(SUCCESS, true)
+                        }
+                    })
+                }
+            })
+            this.$on(PARENT_DB_CLICK, (obj) => {
+                store.commit(SET_PLAYING_MUSIC, {
+                    music: obj.music,
+                    list: getMusicList(this.name, this.local),
+                    index: obj.index
+                })
+            })
         },
         destroyed() {
         }
