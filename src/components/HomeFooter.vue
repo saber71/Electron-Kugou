@@ -53,8 +53,17 @@
         <div class="loop">
             <img src="../assets/loop-white.png" title="列表循环">
         </div>
-        <div class="sound">
-            <img src="../assets/sound-white.png" title="音量">
+        <div class="sound" @mouseleave="visibleSoundPopup=false" @mouseenter="visibleSoundPopup=true">
+            <img src="../assets/sound-white.png" title="音量" @click="clickSound">
+            <div class="popup" v-show="visibleSoundPopup">
+                <div class="content">
+                    <div class="line">
+                        <div class="inner" :style="{height:soundInnerHeight+'px'}"></div>
+                    </div>
+                    <div class="circle" :style="{bottom:soundCircleTop+'px'}" :title="volumeValue"></div>
+                </div>
+                <div class="down"></div>
+            </div>
         </div>
         <div class="special" title="蝰蛇音效">
             音效
@@ -86,6 +95,7 @@
         data() {
             return {
                 visibleSpeedPopup: false,
+                visibleSoundPopup: false,
                 duration: {
                     now: 0,
                     total: '00:00'
@@ -100,8 +110,11 @@
                 circleMouseDown: false,
                 oldWidth: 0,
                 progressBarEl: undefined,
+                oldVolumeValue: 0,
                 volumeValue: getLocalStorageItem(volumeValueKey, 1),
                 playbackRate: getLocalStorageItem(playbackRateKey, 1),
+                soundCircleTop: 5,
+                soundInnerHeight: 0
             }
         },
         watch: {
@@ -109,8 +122,9 @@
                 audio.playbackRate = this.playbackRate
                 setLocalStorageItem(playbackRateKey, this.playbackRate)
             },
-            volumeValue() {
-                audio.volumeValue = this.volumeValue
+            volumeValue(newVal, oldVal) {
+                this.oldVolumeValue = oldVal
+                audio.volumeValue = newVal
                 setLocalStorageItem(volumeValueKey, this.volumeValue)
             },
             playingMusicCount() {
@@ -138,6 +152,13 @@
             },
         },
         methods: {
+            clickSound() {
+                if (this.volumeValue === 0) {
+                    this.volumeValue = this.oldVolumeValue
+                } else {
+                    this.volumeValue = 0
+                }
+            },
             setAudioPlayDuration() {
                 //    todo 音频的播放位置
                 if (audio) {
