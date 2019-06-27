@@ -67,8 +67,8 @@ export function getPlayTimes(music) {
     return getLocalStorageItem(musicKey(music), 0)
 }
 
-//存储歌曲的播放次数
-export function setPlayTimes(music) {
+//歌曲的播放次数+1
+export function addPlayTimes(music) {
     localStorage.setItem(musicKey(music), getPlayTimes(music) + 1)
 }
 
@@ -137,7 +137,7 @@ export function boolNoVal() {
 
 //获取歌曲的key
 function musicKey(music) {
-    return music.name
+    return music.file
 }
 
 /**

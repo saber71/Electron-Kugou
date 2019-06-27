@@ -85,14 +85,60 @@
 
   .progress-bar {
     width: 40%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 
     .top {
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-size: 14px;
 
       .name {
+        width: 60%;
+
+        .music-name {
+          width: 100%;
+          display: grid;
+          grid-template-columns: 40px auto;
+          grid-gap: 20px;
+          align-items: center;
+
+          .quality {
+            cursor: default;
+            color: white;
+            border: 1px solid white;
+            text-align: center;
+            opacity: 0.5;
+            font-size: 14px;
+          }
+
+          .banner {
+            overflow-x: hidden;
+            position: relative;
+
+            .text {
+              position: relative;
+              opacity: 0;
+              color: white;
+              font-size: 14px;
+              white-space: nowrap;
+              margin-right: 20px;
+            }
+
+            .text-move {
+              @extend .text;
+              position: absolute;
+              top: 0;
+              opacity: 1;
+              width: fit-content;
+            }
+          }
+        }
       }
 
       .speed {
@@ -131,6 +177,7 @@
     }
 
     .bottom {
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -140,6 +187,31 @@
         flex-grow: 1;
         height: 3px;
         background-color: rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+
+        .passed {
+          height: 100%;
+          background-color: white;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+
+          .circle {
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            animation: flash 3s linear infinite;
+            @keyframes flash {
+              0%, 100% {
+                box-shadow: 0 0 2px 0 rgba(242, 242, 242, 1);
+              }
+              50% {
+                box-shadow: 0 0 10px 5px rgba(242, 242, 242, 1);
+              }
+            }
+          }
+        }
       }
 
       label {

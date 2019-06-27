@@ -71,12 +71,15 @@ export const MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS = 15//已购音乐
 *   mv  boolean 是否匹配MV
 *   duration    Integer（单位秒）
 *   source 【本地资源，网络资源】
-*   quality     码率
+*   quality     【高品，标准】
+*   bitrate    number  码率
 *   type    格式  String
 *   size    string  文件大小（单位:M）
 *   file    文件路径
 * }
 * */
+const DEFAULT_MUSIC_FILE = '/default-music.mp3'
+
 export function generateMusic(isNetSource, filePath) {
     const singerName = ranName()
     return {
@@ -89,9 +92,10 @@ export function generateMusic(isNetSource, filePath) {
         mv: ranBoolean(),
         time: ranDatetime(),
         source: isNetSource ? '网络资源' : '本地资源',
-        quality: ranBoolean() ? '128kbs' : '320kbs',
+        quality: ranBoolean() ? '高品' : '标准',
+        bitrate: ranBoolean() ? '128kbs' : '320kbs',
         type: ranBoolean() ? 'MP3' : 'FLAC',
-        file: filePath ? filePath : ranWord(),
+        file: filePath ? filePath : DEFAULT_MUSIC_FILE,
         size: (ranInteger(1, 50) / 10) + 'M',
     }
 }
@@ -100,6 +104,7 @@ export function musicFromTags(tag, path) {
     // const pics = tag.common.picture
     const fs = require('fs')
     const stat = fs.statSync(path)
+    const bitrate = parseInt('' + tag.format.bitrate / 1000)
     return {
         name: getFileName(path),
         singer: tag.common.artist ? tag.common.artist : '未知',
@@ -109,7 +114,8 @@ export function musicFromTags(tag, path) {
         duration: parseInt((tag.format.duration + 1) + ''),
         time: formatDate(new Date()),
         source: '本地资源',
-        quality: parseInt('' + tag.format.bitrate / 1000) + 'kbs',
+        quality: bitrate >= 320 ? '高品' : '标准',
+        bitrate: bitrate + 'kbs',
         type: tag.format.codec,
         file: path,
         size: (parseInt((stat.size / 1024 / 1024 * 10) + '') / 10) + "M"
