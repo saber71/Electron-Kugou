@@ -11,8 +11,6 @@ import {
     ORDER_BY_SINGER,
     ORDER_BY_TIME,
     ORDER_BY_TIMES,
-    playingIndexKey,
-    playListKey,
     rememberPasswordKey
 } from "@/js/_const";
 import Vue from 'vue'
@@ -27,9 +25,6 @@ import {
     SET_HOME_BG,
     SET_MAIN_BG,
     SET_MUSIC_LIST_ORDER_BY,
-    SET_PLAY_LIST,
-    SET_PLAYING_INDEX,
-    SET_PLAYING_MUSIC
 } from "@/js/store/mutations_name";
 import {ranBoolean} from "@/js/mock-random";
 
@@ -42,39 +37,6 @@ export function getMusicList(name, local) {
 }
 
 export default {
-    /**
-     * 设置播放队列
-     * @param st
-     * @param val
-     */
-    [SET_PLAY_LIST](st, val) {
-        st.playList = val
-        setLocalStorageItem(playListKey, val)
-    },
-    /**
-     * 设置正在播放的音乐在播放列表中序号
-     * @param st
-     * @param val
-     */
-    [SET_PLAYING_INDEX](st, val) {
-        st.playingIndex = val
-        setLocalStorageItem(playingIndexKey, val)
-    },
-    /**
-     * 设置正在播放的音乐
-     * @param s
-     * @param obj{
-     *     music    将要播放的music对象
-     *     list     music对象所在的列表
-     *     index    music对象在列表中序号
-     * }
-     */
-    [SET_PLAYING_MUSIC](s, obj) {
-        s.playingMusic = obj.music
-        store.commit(SET_PLAY_LIST, obj.list)
-        store.commit(SET_PLAYING_INDEX, obj.index)
-        eventBus.$emit('setPlayList', obj.list, obj.index)
-    },
     /**
      * 音乐列表重命名
      * @param s

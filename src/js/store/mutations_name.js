@@ -8,6 +8,3 @@ export const RENAME_MUSIC_LIST = 'renameMusicList'//重命名一个音乐列表
 export const GO_BACK = 'goBack'//回退
 export const SET_MAIN_BG = 'mainBg'//主界面背景
 export const SET_HOME_BG = 'homeBg'//设置Home背景
-export const SET_PLAYING_MUSIC = 'setPlayingMusic'//设置正在播放的音乐
-export const SET_PLAY_LIST = 'setPlayList'//所在播放队列
-export const SET_PLAYING_INDEX = 'setPlayingIndex'//设置正在播放的音乐在播放列表中序号

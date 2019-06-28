@@ -50,7 +50,7 @@
         <img class="love" src="../assets/love-white.png" v-else title="我喜欢" @click="clickLove">
         <img class="download" src="../assets/download-white.png" title="下载">
         <img class="more" src="../assets/more-white.png" title="更多">
-        <div class="loop" @click="visibleLoopPopup=true" @mouseleave="visibleLoopPopup=false">
+        <div class="loop" tabindex="0" @click="visibleLoopPopup=true" @blur="visibleLoopPopup=false">
             <img src="../assets/play-single.png" title="单曲播放" v-if="loopType===0">
             <img src="../assets/loop-single.png" title="单曲循环" v-else-if="loopType===1">
             <img src="../assets/loop-order.png" title="顺序播放" v-else-if="loopType===2">
@@ -98,21 +98,50 @@
         </div>
         <div class="lyric">词</div>
         <img class="chat" src="../assets/chat-white.png" title="评论">
-        <div class="play-list">
-            <img src="../assets/play-list.png" title="播放列表">
+        <div class="play-list" tabindex="0" @blur="visiblePlayListPopup=false">
+            <img src="../assets/play-list.png" title="播放列表"
+                 @click="visiblePlayListPopup=!visiblePlayListPopup">
+            <span class="count" @click="visiblePlayListPopup=!visiblePlayListPopup">{{playList.length>=100?'99+':playList.length}}</span>
+            <div class="popup" v-show="visiblePlayListPopup">
+                <div class="banner">
+                    <label class="left">播放列表</label>
+                    <div class="right">
+                        <img src="../assets/remove.png" title="清空队列">
+                        <img class="close" src="../assets/close-black.png" @click="visiblePlayListPopup=false"
+                             title="收起队列">
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="item" v-for="(v,index) in playList" :class="{'item-active':activeIndex===index}"
+                         @dblclick="onDblClickPlayListItem(v,index)">
+                        <div class="left">{{v.name}}</div>
+                        <div class="right">
+                            <img class="playing" src="../assets/chart-blue.png" v-if="activeIndex===index">
+                            <div class="operation">
+                                <img src="../assets/love-red.png" v-if="v.love" @click="v.love=false">
+                                <img src="../assets/love.png" v-else @click="v.love=true" title="我喜欢">
+                                <img src="../assets/remove.png" title="删除" @click="removeFromPlayList(index)">
+                                <div class="more">
+                                    <img src="../assets/more.png" title="更多">
+                                </div>
+                            </div>
+                            <label class="duration">{{formatDuration(v.duration)}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="triangle"></div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-    import {ADD_TO_PLAY_LIST, PUSH_TO_PLAY_LIST, SET_PLAY_LIST} from "@/js/event-bus";
-    import {SET_PLAYING_INDEX, SET_PLAYING_MUSIC} from "@/js/store/mutations_name";
-    import {getLocalStorageItem, setLocalStorageItem} from "@/js/util";
+    import {ADD_TO_PLAY_LIST, PUSH_TO_PLAY_LIST, SET_PLAY_LIST, SET_PLAYING_MUSIC} from "@/js/event-bus";
+    import {getLocalStorageItem, remove, setLocalStorageItem} from "@/js/util";
     import {ranInteger} from "@/js/mock-random";
+    import {playingIndexKey, playListKey} from "@/js/_const";
 
-    let audio = undefined
-    let playList = []
-    let activeIndex = 0
+    let audio = new Audio()
 
     const volumeValueKey = 'volumeValue'
     const playbackRateKey = 'playbackRate'
@@ -128,11 +157,10 @@
                     total: '00:00'
                 },
                 playing: false,
-                playingMusicCount: 0,
                 bannerCanScroll: false,
                 text1Left: 0,
                 text2Left: 0,
-                progressBarPassedWidth: 120,
+                progressBarPassedWidth: 0,
                 durationHandler: 0,
                 circleMouseDown: false,
                 oldWidth: 0,
@@ -147,9 +175,29 @@
                 volumeCircleDown: false,
                 loopType: 0,
                 visibleLoopPopup: false,
+                visiblePlayListPopup: false,
+                playList: getLocalStorageItem(playListKey, []),
+                activeIndex: getLocalStorageItem(playingIndexKey, 0),
+                playingMusic: undefined,
             }
         },
         watch: {
+            playingMusic() {
+                this.canScroll()
+                this.playing = false
+                this.play()
+                this.progressBarPassedWidth = 0
+                this.duration.now = 0
+                this.duration.total = this.formatDuration(this.playingMusic.duration)
+                this.progressBarPassedWidth = 0
+                this.onAudioEnded()
+            },
+            activeIndex(newVal) {
+                setLocalStorageItem(playingIndexKey, newVal)
+            },
+            playList(newVal) {
+                setLocalStorageItem(playListKey, newVal)
+            },
             loopType() {
                 this.visibleLoopPopup = false
             },
@@ -165,31 +213,23 @@
                     audio.volumeValue = newVal
                 }
             },
-            playingMusicCount() {
-                this.canScroll()
-                this.playing = false
-                this.play()
-                this.progressBarPassedWidth = 0
-                this.duration.now = 0
-                this.duration.total = this.formatDuration(this.playingMusic.duration)
-                this.progressBarPassedWidth = 0
-                this.onAudioEnded()
-            },
             'duration.now'(newVal) {
                 const progressBar = this.$refs.progressBar
                 this.progressBarPassedWidth = parseInt((newVal / this.playingMusic.duration * progressBar.getBoundingClientRect().width) + '')
             }
         },
-        computed: {
-            playingMusic() {
-                const music = store.state.playingMusic
-                if (music) {
-                    this.playingMusicCount++
-                }
-                return music
-            },
-        },
+        computed: {},
         methods: {
+            onDblClickPlayListItem(music, index) {
+                this.playingMusic = music
+                this.activeIndex = index
+            },
+            removeFromPlayList(index) {
+                remove(this.playList, index)
+                if (index === this.activeIndex) {
+                    this.activeIndex = -1
+                }
+            },
             onVolumeUp() {
                 if (this.volumeCircleDown) {
                     this.volumeCircleDown = false
@@ -211,7 +251,7 @@
                         this.soundCircleTop = toLineBottom + 5
                     }
                     this.soundInnerHeight = this.soundCircleTop - 5
-                    this.volumeValue = parseInt(((this.soundCircleTop - 5) / lineHeight * 100) + '')
+                    this.volumeValue = (this.soundCircleTop - 5) / lineHeight
                 }
             },
             onVolumeDown() {
@@ -290,74 +330,74 @@
                 return false
             },
             prev() {
+                if (this.activeIndex < 0) {
+                    this.activeIndex = 0
+                }
+                audio.src = undefined
                 switch (this.loopType) {
                     case 0:
                     case 1:
                     case 2:
-                        if (activeIndex > 0) {
-                            activeIndex--
-                            store.commit(SET_PLAYING_INDEX, activeIndex)
-                            store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                        if (this.activeIndex > 0) {
+                            this.activeIndex--
+                            this.playingMusic = this.playList[this.activeIndex]
                             this.play()
                         }
                         break
                     case 3:
-                        activeIndex++
-                        if (activeIndex < 0) {
-                            activeIndex = playList.length - 1
+                        this.activeIndex--
+                        if (this.activeIndex < 0) {
+                            this.activeIndex = this.playList.length - 1
                         }
-                        store.commit(SET_PLAYING_INDEX, activeIndex)
-                        store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                        this.playingMusic = this.playList[this.activeIndex]
                         this.play()
                         break
                     case 4:
-                        activeIndex = ranInteger(0, playList.length)
-                        store.commit(SET_PLAYING_INDEX, activeIndex)
-                        store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                        this.activeIndex = ranInteger(0, this.playList.length)
+                        this.playingMusic = this.playList[this.activeIndex]
                         this.play()
                         break
                 }
             },
             next() {
+                if (this.activeIndex < 0) {
+                    this.activeIndex = 0
+                }
+                audio.src = undefined
                 switch (this.loopType) {
                     case 0:
                     case 1:
                     case 2:
-                        if (activeIndex < playList.length) {
-                            activeIndex++
-                            store.commit(SET_PLAYING_INDEX, activeIndex)
-                            store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                        if (this.activeIndex < this.playList.length) {
+                            this.activeIndex++
+                            this.playingMusic = this.playList[this.activeIndex]
                             this.play()
                         }
                         break
                     case 3:
-                        activeIndex++
-                        if (activeIndex >= playList.length) {
-                            activeIndex = 0
+                        this.activeIndex++
+                        if (this.activeIndex >= this.playList.length) {
+                            this.activeIndex = 0
                         }
-                        store.commit(SET_PLAYING_INDEX, activeIndex)
-                        store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                        this.playingMusic = this.playList[this.activeIndex]
                         this.play()
                         break
                     case 4:
-                        activeIndex = ranInteger(0, playList.length)
-                        store.commit(SET_PLAYING_INDEX, activeIndex)
-                        store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                        this.activeIndex = ranInteger(0, this.playList.length)
+                        this.playingMusic = this.playList[this.activeIndex]
                         this.play()
                         break
                 }
             },
             play() {
+                if (this.activeIndex < 0) {
+                    this.activeIndex = 0
+                }
                 this.playing = !this.playing
                 if (this.playing) {
-                    if (!audio) {
-                        audio = new Audio(this.playingMusic.file)
-                        audio.controls = false
-                        audio.autoplay = true
-                        audio.onended = this.onAudioEnded
-                        audio.loop = true
-                        audio.volume = this.volumeValue
-                        audio.playbackRate = this.playbackRate
+                    if (!audio.src) {
+                        audio.src = this.playingMusic.file
+                        audio.currentTime = 0
                     }
                     audio.play()
                     this.durationHandler = setInterval(() => {
@@ -396,6 +436,22 @@
                             break
                     }
                 }
+            },
+            pushToPlayList(val) {
+                for (let i = 0; i < val.length; i++) {
+                    this.playList.push(val[i])
+                }
+            },
+            addToPlayList(val) {
+                if (val instanceof Array) {
+                    this.playList.splice(this.activeIndex, 0, ...val)
+                } else {
+                    this.playList.splice(this.activeIndex, 0, val)
+                }
+            },
+            setPlayList(list, index) {
+                this.playList = list
+                this.activeIndex = index
             }
         },
         mounted() {
@@ -431,33 +487,22 @@
             }, 500)
         },
         created() {
-            playList = store.state.playList
-            activeIndex = store.state.playingIndex
-            eventBus.$on(ADD_TO_PLAY_LIST, addToPlayList)
-            eventBus.$on(SET_PLAY_LIST, setPlayList)
-            eventBus.$on(PUSH_TO_PLAY_LIST, pushToPlayList)
+            audio.volume = this.volumeValue
+            audio.playbackRate = this.playbackRate
+            audio.controls = false
+            audio.autoplay = true
+            audio.onended = this.onAudioEnded
+            audio.loop = true
+            eventBus.$on(ADD_TO_PLAY_LIST, this.addToPlayList)
+            eventBus.$on(SET_PLAY_LIST, this.setPlayList)
+            eventBus.$on(PUSH_TO_PLAY_LIST, this.pushToPlayList)
+            eventBus.$on(SET_PLAYING_MUSIC, (obj) => {
+                this.playingMusic = obj.music
+                this.setPlayList(obj.musics, obj.index)
+            })
         },
         destroyed() {
         }
-    }
-
-    function pushToPlayList(val) {
-        for (let i = 0; i < val.length; i++) {
-            playList.push(val[i])
-        }
-    }
-
-    function addToPlayList(val) {
-        if (val instanceof Array) {
-            playList.splice(activeIndex, 0, ...val)
-        } else {
-            playList.splice(activeIndex, 0, val)
-        }
-    }
-
-    function setPlayList(list, index) {
-        playList = list
-        activeIndex = index
     }
 </script>
 

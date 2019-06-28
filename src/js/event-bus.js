@@ -16,6 +16,7 @@ export const CLEAR_MUSIC = 'clearMusic'
 export const LOVE_ALL_MUSIC = 'loveAllMusic'
 export const SORT_ORDER_BY = 'sortOrderBy'
 export const LATER_PLAY = 'later-play'
+export const SET_PLAYING_MUSIC = 'setPlayingMusic'
 
 export const MAIN_LEFT_ON_SCROLL = 'main-left-on-scroll'
 export const LIST_ON_EXPAND = 'list-on-expand'

@@ -82,6 +82,7 @@
         PARENT_ADD_TO_LIST,
         PARENT_DB_CLICK,
         PARENT_PUSH_TO_PLAY_LIST,
+        SET_PLAYING_MUSIC,
         SORT_ORDER_BY,
         SUCCESS
     } from "@/js/event-bus";
@@ -92,7 +93,6 @@
         REMOVE_MUSIC_LIST,
         RENAME_MUSIC_LIST,
         SAVE_LOCAL_MUSIC_LIST,
-        SET_PLAYING_MUSIC
     } from "@/js/store/mutations_name";
     import {
         musicFromTags,
@@ -312,11 +312,8 @@
                 }
             })
             this.$on(PARENT_DB_CLICK, (obj) => {
-                store.commit(SET_PLAYING_MUSIC, {
-                    music: obj.music,
-                    list: getMusicList(this.name, this.local),
-                    index: obj.index
-                })
+                obj.musics = getMusicList(this.name, this.local).musics
+                eventBus.$emit(SET_PLAYING_MUSIC, obj)
             })
             eventBus.$on(LIST_ON_EXPAND, () => {
                 if (this.eventEmitter) {
