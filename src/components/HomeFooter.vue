@@ -46,21 +46,47 @@
                 <label>{{formatDuration(duration.now)}} / {{duration.total}}</label>
             </div>
         </div>
-        <img class="love" src="../assets/love-red.png" v-if="isLove">
-        <img class="love" src="../assets/love.png" v-else title="我喜欢">
+        <img class="love" src="../assets/love-red.png" v-if="isLove()" @click="clickLove">
+        <img class="love" src="../assets/love-white.png" v-else title="我喜欢" @click="clickLove">
         <img class="download" src="../assets/download-white.png" title="下载">
         <img class="more" src="../assets/more-white.png" title="更多">
-        <div class="loop">
-            <img src="../assets/loop-white.png" title="列表循环">
+        <div class="loop" @click="visibleLoopPopup=true" @mouseleave="visibleLoopPopup=false">
+            <img src="../assets/play-single.png" title="单曲播放" v-if="loopType===0">
+            <img src="../assets/loop-single.png" title="单曲循环" v-else-if="loopType===1">
+            <img src="../assets/loop-order.png" title="顺序播放" v-else-if="loopType===2">
+            <img src="../assets/loop-list.png" title="列表循环" v-else-if="loopType===3">
+            <img src="../assets/loop-random.png" title="随机播放" v-else-if="loopType===4">
+            <div class="popup" v-show="visibleLoopPopup" @click.stop="">
+                <div class="content">
+                    <div class="item" @click="loopType=0">
+                        <img src="../assets/play-single.png">单曲播放
+                    </div>
+                    <div class="item" @click="loopType=1">
+                        <img src="../assets/loop-single.png">单曲循环
+                    </div>
+                    <div class="item" @click="loopType=2">
+                        <img src="../assets/loop-order.png">顺序播放
+                    </div>
+                    <div class="item" @click="loopType=3">
+                        <img src="../assets/loop-list.png">列表循环
+                    </div>
+                    <div class="item" @click="loopType=4">
+                        <img src="../assets/loop-random.png">随机播放
+                    </div>
+                </div>
+                <div class="triangle"></div>
+            </div>
         </div>
         <div class="sound" @mouseleave="visibleSoundPopup=false" @mouseenter="visibleSoundPopup=true">
             <img src="../assets/sound-white.png" title="音量" @click="clickSound">
             <div class="popup" v-show="visibleSoundPopup">
-                <div class="content">
-                    <div class="line">
+                <div class="content" @mousedown="onVolumeDown" @mouseleave="onVolumeUp"
+                     @mousemove="onVolumeMove($event)" @mouseup="onVolumeUp">
+                    <div class="line" ref="volumeLine" :title="volumeValue">
                         <div class="inner" :style="{height:soundInnerHeight+'px'}"></div>
                     </div>
-                    <div class="circle" :style="{bottom:soundCircleTop+'px'}" :title="volumeValue"></div>
+                    <div class="circle" :style="{bottom:soundCircleTop+'px'}" :title="volumeValue"
+                         ref="volumeCircle"></div>
                 </div>
                 <div class="down"></div>
             </div>
@@ -80,8 +106,9 @@
 
 <script>
     import {ADD_TO_PLAY_LIST, PUSH_TO_PLAY_LIST, SET_PLAY_LIST} from "@/js/event-bus";
-    import {SET_PLAYING_INDEX} from "@/js/store/mutations_name";
+    import {SET_PLAYING_INDEX, SET_PLAYING_MUSIC} from "@/js/store/mutations_name";
     import {getLocalStorageItem, setLocalStorageItem} from "@/js/util";
+    import {ranInteger} from "@/js/mock-random";
 
     let audio = undefined
     let playList = []
@@ -114,18 +141,29 @@
                 volumeValue: getLocalStorageItem(volumeValueKey, 1),
                 playbackRate: getLocalStorageItem(playbackRateKey, 1),
                 soundCircleTop: 5,
-                soundInnerHeight: 0
+                soundInnerHeight: 0,
+                volumeLineEl: undefined,
+                volumeCircleEl: undefined,
+                volumeCircleDown: false,
+                loopType: 0,
+                visibleLoopPopup: false,
             }
         },
         watch: {
+            loopType() {
+                this.visibleLoopPopup = false
+            },
             playbackRate() {
-                audio.playbackRate = this.playbackRate
+                if (audio) {
+                    audio.playbackRate = this.playbackRate
+                }
                 setLocalStorageItem(playbackRateKey, this.playbackRate)
             },
             volumeValue(newVal, oldVal) {
                 this.oldVolumeValue = oldVal
-                audio.volumeValue = newVal
-                setLocalStorageItem(volumeValueKey, this.volumeValue)
+                if (audio) {
+                    audio.volumeValue = newVal
+                }
             },
             playingMusicCount() {
                 this.canScroll()
@@ -152,6 +190,33 @@
             },
         },
         methods: {
+            onVolumeUp() {
+                if (this.volumeCircleDown) {
+                    this.volumeCircleDown = false
+                    setLocalStorageItem(volumeValueKey, this.volumeValue)
+                }
+            },
+            onVolumeMove(ev) {
+                if (this.volumeCircleDown) {
+                    const lineBound = this.volumeLineEl.getBoundingClientRect()
+                    const clientY = ev.clientY
+                    const lineTopY = lineBound.y
+                    const lineHeight = lineBound.height
+                    if (clientY <= lineTopY) {
+                        this.soundCircleTop = lineHeight + 5
+                    } else if (lineTopY + lineHeight <= clientY) {
+                        this.soundCircleTop = 5
+                    } else {
+                        const toLineBottom = lineTopY + lineHeight - clientY
+                        this.soundCircleTop = toLineBottom + 5
+                    }
+                    this.soundInnerHeight = this.soundCircleTop - 5
+                    this.volumeValue = parseInt(((this.soundCircleTop - 5) / lineHeight * 100) + '')
+                }
+            },
+            onVolumeDown() {
+                this.volumeCircleDown = true
+            },
             clickSound() {
                 if (this.volumeValue === 0) {
                     this.volumeValue = this.oldVolumeValue
@@ -213,21 +278,73 @@
                     }
                 }
             },
+            clickLove() {
+                if (this.playingMusic) {
+                    this.playingMusic.love = !this.playingMusic.love
+                }
+            },
             isLove() {
-                return playList[activeIndex].love
+                if (this.playingMusic) {
+                    return this.playingMusic.love
+                }
+                return false
             },
             prev() {
-                if (activeIndex > 0) {
-                    activeIndex--
-                    store.commit(SET_PLAYING_INDEX, activeIndex)
-                    this.play(true)
+                switch (this.loopType) {
+                    case 0:
+                    case 1:
+                    case 2:
+                        if (activeIndex > 0) {
+                            activeIndex--
+                            store.commit(SET_PLAYING_INDEX, activeIndex)
+                            store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                            this.play()
+                        }
+                        break
+                    case 3:
+                        activeIndex++
+                        if (activeIndex < 0) {
+                            activeIndex = playList.length - 1
+                        }
+                        store.commit(SET_PLAYING_INDEX, activeIndex)
+                        store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                        this.play()
+                        break
+                    case 4:
+                        activeIndex = ranInteger(0, playList.length)
+                        store.commit(SET_PLAYING_INDEX, activeIndex)
+                        store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                        this.play()
+                        break
                 }
             },
             next() {
-                if (activeIndex < playList.length) {
-                    activeIndex++
-                    store.commit(SET_PLAYING_INDEX, activeIndex)
-                    this.play(true)
+                switch (this.loopType) {
+                    case 0:
+                    case 1:
+                    case 2:
+                        if (activeIndex < playList.length) {
+                            activeIndex++
+                            store.commit(SET_PLAYING_INDEX, activeIndex)
+                            store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                            this.play()
+                        }
+                        break
+                    case 3:
+                        activeIndex++
+                        if (activeIndex >= playList.length) {
+                            activeIndex = 0
+                        }
+                        store.commit(SET_PLAYING_INDEX, activeIndex)
+                        store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                        this.play()
+                        break
+                    case 4:
+                        activeIndex = ranInteger(0, playList.length)
+                        store.commit(SET_PLAYING_INDEX, activeIndex)
+                        store.commit(SET_PLAYING_MUSIC, playList[activeIndex])
+                        this.play()
+                        break
                 }
             },
             play() {
@@ -263,15 +380,28 @@
             onAudioEnded() {
                 if (audio && audio.duration >= this.playingMusic.duration) {
                     audio.pause()
-                    audio = undefined
                     this.playing = false
                     clearInterval(this.durationHandler)
-                    this.next()
+                    switch (this.loopType) {
+                        case 0:
+                            break;
+                        case 1:
+                            this.playing = true
+                            audio.play()
+                            break;
+                        case 2:
+                        case 3:
+                        case 4:
+                            this.next()
+                            break
+                    }
                 }
             }
         },
         mounted() {
+            this.volumeLineEl = this.$refs.volumeLine
             this.progressBarEl = this.$refs.progressBar
+            this.volumeCircleEl = this.$refs.volumeCircle
             let text1 = undefined, text2 = undefined
             let banner = undefined
             setInterval(() => {

@@ -245,6 +245,52 @@
     }
   }
 
+  .loop {
+    position: relative;
+
+    .popup {
+      position: absolute;
+      left: -50px;
+      top: -195px;
+      width: 120px;
+      padding-bottom: 15px;
+
+      .content {
+        width: 100%;
+        background-color: $black;
+
+        .item {
+          color: white;
+          font-size: 13px;
+          padding: 10px 0;
+          opacity: 0.7;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+
+          img {
+            width: 16px;
+            height: 16px;
+            margin: 0 10px;
+          }
+
+          &:hover {
+            opacity: 1;
+            background-color: black;
+          }
+        }
+      }
+
+      .triangle {
+        width: 0;
+        height: 0;
+        margin: auto;
+        border: 5px solid transparent;
+        border-top-color: $black;
+      }
+    }
+  }
+
   .sound {
     position: relative;
 
@@ -254,7 +300,6 @@
       top: -110px;
       width: 30px;
       height: 110px;
-      background-color: chocolate;
 
       .content {
         position: relative;
