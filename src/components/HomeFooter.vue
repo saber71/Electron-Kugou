@@ -1,7 +1,7 @@
 <template>
     <div id="HomeFooter">
         <div class="prev" @click="prev" title="上一首"><img src="../assets/triangle-white.png"/></div>
-        <div class="play" @click="play" title="播放">
+        <div class="play" @click="play(!playing)" title="播放">
             <img src="../assets/triangle-white.png" v-show="!playing"/>
             <div class="two-line" v-show="playing"></div>
         </div>
@@ -153,7 +153,7 @@
 
 <script>
     import {ADD_TO_PLAY_LIST, PUSH_TO_PLAY_LIST, SET_PLAY_LIST, SET_PLAYING_MUSIC} from '@/js/event-bus';
-    import {getLocalStorageItem, remove, setLocalStorageItem} from '@/js/util';
+    import {getLocalStorageItem, objNoVal, remove, setLocalStorageItem} from '@/js/util';
     import {ranInteger} from '@/js/mock-random';
     import {playingIndexKey, playListKey} from '@/js/_const';
 
@@ -163,6 +163,7 @@
     const playbackRateKey = 'playbackRate';
     const soundCircleTopKey = 'soundCircleTop'
     const soundInnerHeightKey = 'soundInnerHeight'
+    const loopTypeKey = 'loopType'
     export default {
         name: 'HomeFooter',
         props: {},
@@ -171,7 +172,7 @@
                 visibleSpeedPopup: false,
                 visibleSoundPopup: false,
                 duration: {
-                    now: 0,
+                    now: -1,
                     total: '00:00'
                 },
                 playing: false,
@@ -179,7 +180,6 @@
                 text1Left: 0,
                 text2Left: 0,
                 progressBarPassedWidth: 0,
-                durationHandler: 0,
                 circleMouseDown: false,
                 oldWidth: 0,
                 progressBarEl: undefined,
@@ -191,14 +191,15 @@
                 volumeLineEl: undefined,
                 volumeCircleEl: undefined,
                 volumeCircleDown: false,
-                loopType: 0,
+                loopType: getLocalStorageItem(loopTypeKey, 0),
                 visibleLoopPopup: false,
                 visiblePlayListPopup: false,
                 playList: getLocalStorageItem(playListKey, []),
                 activeIndex: getLocalStorageItem(playingIndexKey, 0),
                 playingMusic: undefined,
                 visibleMorePopup: false,
-                morePopupTop: 0
+                morePopupTop: 0,
+                resetAudioSrc: true
             };
         },
         watch: {
@@ -210,13 +211,12 @@
             },
             playingMusic() {
                 this.canScroll();
-                this.playing = false;
-                this.play();
+                audio.pause()
+                this.play(true);
                 this.progressBarPassedWidth = 0;
                 this.duration.now = 0;
                 this.duration.total = this.formatDuration(this.playingMusic.duration);
                 this.progressBarPassedWidth = 0;
-                this.onAudioEnded();
             },
             activeIndex(newVal) {
                 setLocalStorageItem(playingIndexKey, newVal);
@@ -224,8 +224,9 @@
             playList(newVal) {
                 setLocalStorageItem(playListKey, newVal);
             },
-            loopType() {
+            loopType(newVal) {
                 this.visibleLoopPopup = false;
+                setLocalStorageItem(loopTypeKey, newVal)
             },
             playbackRate() {
                 if (audio) {
@@ -336,6 +337,7 @@
                 this.setProgressBar(position);
             },
             canScroll() {
+                this.bannerCanScroll = false
                 const banner = this.$refs.banner;
                 const text = this.$refs.text1;
                 this.text1Left = 0;
@@ -363,7 +365,7 @@
                 if (this.activeIndex < 0) {
                     this.activeIndex = 0;
                 }
-                audio.src = undefined;
+                this.resetAudioSrc = true
                 switch (this.loopType) {
                     case 0:
                     case 1:
@@ -371,7 +373,6 @@
                         if (this.activeIndex > 0) {
                             this.activeIndex--;
                             this.playingMusic = this.playList[this.activeIndex];
-                            this.play();
                         }
                         break;
                     case 3:
@@ -380,12 +381,10 @@
                             this.activeIndex = this.playList.length - 1;
                         }
                         this.playingMusic = this.playList[this.activeIndex];
-                        this.play();
                         break;
                     case 4:
                         this.activeIndex = ranInteger(0, this.playList.length);
                         this.playingMusic = this.playList[this.activeIndex];
-                        this.play();
                         break;
                 }
             },
@@ -393,7 +392,7 @@
                 if (this.activeIndex < 0) {
                     this.activeIndex = 0;
                 }
-                audio.src = undefined;
+                this.resetAudioSrc = true
                 switch (this.loopType) {
                     case 0:
                     case 1:
@@ -401,7 +400,6 @@
                         if (this.activeIndex < this.playList.length) {
                             this.activeIndex++;
                             this.playingMusic = this.playList[this.activeIndex];
-                            this.play();
                         }
                         break;
                     case 3:
@@ -410,61 +408,52 @@
                             this.activeIndex = 0;
                         }
                         this.playingMusic = this.playList[this.activeIndex];
-                        this.play();
                         break;
                     case 4:
-                        this.activeIndex = ranInteger(0, this.playList.length);
+                        this.activeIndex = ranInteger(0, this.playList.length - 1);
                         this.playingMusic = this.playList[this.activeIndex];
-                        this.play();
                         break;
                 }
             },
-            play() {
+            play(val) {
                 if (this.activeIndex < 0) {
                     this.activeIndex = 0;
                 }
-                this.playing = !this.playing;
+                if (!objNoVal(val)) {
+                    this.playing = val
+                } else {
+                    this.playing = !this.playing
+                }
                 if (this.playing) {
-                    if (!audio.src) {
+                    if (this.resetAudioSrc) {
+                        this.resetAudioSrc = false
                         audio.src = this.playingMusic.file;
                         audio.currentTime = 0;
+                        audio.load()
                     }
-                    audio.play();
-                    this.durationHandler = setInterval(() => {
-                        if (this.circleMouseDown) {
-                            return;
-                        }
-                        if (this.duration.now >= this.playingMusic.duration) {
-                            this.onAudioEnded();
-                        } else {
-                            if (audio.readyState === 4) {
-                                this.duration.now++;
-                            }
-                        }
-                    }, 1000);
+                    if (!audio.played) {
+                        audio.play();
+                    }
                 } else {
                     audio.pause();
-                    clearInterval(this.durationHandler);
                 }
             },
             onAudioEnded() {
-                if (audio && audio.duration >= this.playingMusic.duration) {
-                    audio.pause();
-                    this.playing = false;
-                    clearInterval(this.durationHandler);
-                    switch (this.loopType) {
-                        case 0:
-                            break;
-                        case 1:
-                            this.playing = true;
-                            audio.play();
-                            break;
-                        case 2:
-                        case 3:
-                        case 4:
-                            this.next();
-                            break;
-                    }
+                alert(this.duration.now + "  " + this.playingMusic.duration)
+                audio.pause();
+                this.playing = false;
+                switch (this.loopType) {
+                    case 0:
+                        break;
+                    case 1:
+                        this.playing = true;
+                        audio.play();
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        this.next();
+                        break;
                 }
             },
             pushToPlayList(val) {
@@ -491,6 +480,18 @@
             let text1 = undefined,
                 text2 = undefined;
             let banner = undefined;
+            setInterval(() => {
+                if (!this.playing || this.circleMouseDown) {
+                    return;
+                }
+                if (this.duration.now >= this.playingMusic.duration) {
+                    this.onAudioEnded();
+                } else {
+                    if (audio.readyState === 4) {
+                        this.duration.now++;
+                    }
+                }
+            }, 1000);
             setInterval(() => {
                 if (this.bannerCanScroll) {
                     if (!banner) {
@@ -528,6 +529,7 @@
             eventBus.$on(SET_PLAY_LIST, this.setPlayList);
             eventBus.$on(PUSH_TO_PLAY_LIST, this.pushToPlayList);
             eventBus.$on(SET_PLAYING_MUSIC, obj => {
+                clearInterval(this.durationHandler);
                 this.playingMusic = obj.music;
                 this.setPlayList(obj.musics, obj.index);
             });

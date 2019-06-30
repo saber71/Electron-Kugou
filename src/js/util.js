@@ -244,10 +244,12 @@ export function imageToBase64(imgEl) {
  */
 export function clipImg(imgEl, imgType, bound) {
     const canvas = document.createElement("canvas");
-    canvas.width = bound.width;
-    canvas.height = bound.height;
+    const width = imgEl.getBoundingClientRect().width
+    const height = imgEl.getBoundingClientRect().height
+    canvas.width = width
+    canvas.height = height
     const ctx = canvas.getContext("2d");
-    ctx.drawImage(imgEl, bound.x, bound.y, bound.width, bound.height)
+    ctx.drawImage(imgEl, bound.x, bound.y, bound.width, bound.height, 0, 0, width, height)
     return canvas.toDataURL("image/" + imgType);
 }
 

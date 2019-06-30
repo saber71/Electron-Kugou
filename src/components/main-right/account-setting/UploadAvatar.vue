@@ -9,7 +9,6 @@
                         <button class="select" @click="selectImage">选择文件</button>
                         <button class="upload" @click="upload">上传</button>
                     </div>
-                    <p class="warn">{{warnMsg}}</p>
                     <div class="bottom">
                         <img :src="uploadImage" v-show="uploadImage">
                     </div>
@@ -33,6 +32,7 @@
     import AccountSettingContainer from "@/components/main-right/account-setting/AccountSettingContainer";
     import {clipImg, readAsBase64, toSelectImageFiles} from "@/js/util";
     import ajax from "@/js/ajax";
+    import {FAIL, LOADING, SUCCESS} from "@/js/event-bus";
 
     const standardWidth = 400
     const standardHeight = 400
@@ -69,7 +69,6 @@
                     background: '',
                     'background-position': ''
                 },
-                warnMsg: ''
             }
         },
         watch: {},
@@ -135,7 +134,8 @@
                 rectMoveLimit.down = false
             },
             confirmation() {
-                this.uploadImage = clipImg(document.getElementById('selected-img'), rectMoveLimit.imgType, {
+                const selectedImg = document.getElementById('selected-img')
+                this.uploadImage = clipImg(selectedImg, rectMoveLimit.imgType, {
                     x: rectMoveLimit.positionX,
                     y: rectMoveLimit.positionY,
                     width: rectMoveLimit.width,
@@ -145,15 +145,13 @@
             },
             async upload() {
                 if (this.uploadImage) {
-                    const containerEl = this.$refs.container
-                    containerEl.$emit('loading', true)
-                    this.warnMsg = ''
+                    eventBus.$emit(LOADING, true)
                     const res = (await ajax.uploadAvatar(this.uploadImage)).data
-                    containerEl.$emit('loading', false)
+                    eventBus.$emit(LOADING, false)
                     if (res) {
-                        containerEl.$emit('success', true)
+                        eventBus.$emit(SUCCESS, true)
                     } else {
-                        this.warnMsg = '无法连接服务器，请检查网络'
+                        eventBus.$emit(FAIL, '无法连接服务器，请检查网络')
                     }
                 }
             }
@@ -226,14 +224,15 @@
                 }
 
                 .bottom {
-                    margin: auto;
+                    margin: 20px auto auto;
                     display: flex;
                     align-items: center;
                     justify-content: center;
 
                     img {
-                        max-width: 200px;
+                        width: 200px;
                         max-height: 200px;
+                        box-shadow: 0 0 2px gray;
                     }
                 }
             }
@@ -245,6 +244,7 @@
                 left: 0;
                 top: 0;
                 user-select: none;
+                z-index: 100;
 
                 .bg {
                     position: relative;

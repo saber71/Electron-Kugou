@@ -96,6 +96,9 @@
                 methods: {
                     //格式化时间，参数单位秒
                     formatDuration(seconds) {
+                        if (seconds < 0) {
+                            return '00:00'
+                        }
                         let minute = parseInt((seconds / 60) + '')
                         let second = seconds - minute * 60
                         return (minute < 10 ? '0' + minute : minute) + ':' + (second < 10 ? '0' + second : second)
@@ -350,6 +353,7 @@
 
     ::-webkit-scrollbar {
         width: 5px;
+        height: 5px;
     }
 
     ::-webkit-scrollbar-thumb {
