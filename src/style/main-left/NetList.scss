@@ -1,0 +1,56 @@
+@import "../common";
+
+#NetList {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .type {
+    width: 100%;
+
+    .banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 20px;
+      box-sizing: border-box;
+      background-color: #F7F7F7;
+      border-bottom: 1px solid #dddddd;
+
+      .left {
+        font-size: 13px;
+        color: black;
+      }
+
+      .right {
+        display: flex;
+        align-items: center;
+
+        img {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          opacity: 0.7;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+
+        .create-new {
+          margin-right: 10px;
+        }
+
+        .angle {
+          transform: rotate(-90deg);
+          transition: all 0.3s ease;
+        }
+
+        .angle-active {
+          transform: rotate(0);
+        }
+      }
+    }
+  }
+}

@@ -97,7 +97,6 @@
             return {
                 visiblePopup: false,
                 popupTop: 0,
-                popupHeight: 0,
                 visibleMorePopup: false,
                 clickContent: false,
                 morePopupTop: 0,
@@ -110,10 +109,13 @@
                     const el = this.$refs.music
                     const toTop = el.getBoundingClientRect().y
                     const height = el.getBoundingClientRect().height
-                    this.popupTop = (toTop + height + 2) + 'px'
-                    if (isReachMainLeftBottom(toTop + height, this.popupHeight)) {
-                        this.popupTop = (toTop - this.popupHeight - 3) + 'px'
-                    }
+                    this.$nextTick(() => {
+                        const popupHeight = this.$refs.popup.getBoundingClientRect().height
+                        this.popupTop = (toTop + height + 2) + 'px'
+                        if (isReachMainLeftBottom(toTop + height, popupHeight)) {
+                            this.popupTop = (toTop - popupHeight - 3) + 'px'
+                        }
+                    })
                 }
             },
             visibleMorePopup(newVal) {
@@ -169,8 +171,6 @@
             },
         },
         mounted() {
-            const popup = this.$refs.popup
-            this.popupHeight = popup.getBoundingClientRect().height
         },
         created() {
         },

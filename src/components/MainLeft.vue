@@ -12,7 +12,9 @@
             <div class="item1" :style="{left:itemLeft(0,activeBanner)}">
                 <local-list></local-list>
             </div>
-            <div class="item2" :style="{left:itemLeft(1,activeBanner)}"></div>
+            <div class="item2" :style="{left:itemLeft(1,activeBanner)}">
+                <net-list></net-list>
+            </div>
             <div class="item3" :style="{left:itemLeft(2,activeBanner)}"></div>
             <div class="item4" :style="{left:itemLeft(3,activeBanner)}"></div>
             <div class="item5" :style="{left:itemLeft(4,activeBanner)}"></div>
@@ -23,10 +25,11 @@
 <script>
     import LocalList from "@/components/main-left/LocalList";
     import {MAIN_LEFT_ON_SCROLL} from "@/js/event-bus";
+    import NetList from "@/components/main-left/NetList";
 
     export default {
         name: "MainLeft",
-        components: {LocalList},
+        components: {NetList, LocalList},
         props: {},
         data() {
             return {

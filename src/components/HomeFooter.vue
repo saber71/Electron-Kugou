@@ -529,7 +529,6 @@
             eventBus.$on(SET_PLAY_LIST, this.setPlayList);
             eventBus.$on(PUSH_TO_PLAY_LIST, this.pushToPlayList);
             eventBus.$on(SET_PLAYING_MUSIC, obj => {
-                clearInterval(this.durationHandler);
                 this.playingMusic = obj.music;
                 this.setPlayList(obj.musics, obj.index);
             });

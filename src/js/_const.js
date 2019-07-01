@@ -1,20 +1,6 @@
-import {
-    ranBoolean,
-    ranCity,
-    ranCTitle,
-    ranCWord,
-    ranDataImage,
-    ranDatetime,
-    ranEmail,
-    ranInteger,
-    ranName,
-    ranParagraph,
-    ranProvince,
-    ranTitle,
-    ranWord
-} from "@/js/mock-random";
+import {ranBoolean, ranCity, ranCTitle, ranCWord, ranDataImage, ranDatetime, ranEmail, ranInteger, ranName, ranParagraph, ranProvince, ranTitle, ranWord} from "@/js/mock-random";
 import {generatePhone} from "@/js/reg";
-import {formatDate, getFileName} from "@/js/util";
+import {formatDate, getFileName, objNoVal} from "@/js/util";
 
 export const minWidth = 1024
 export const minHeight = 600
@@ -103,9 +89,8 @@ export function generateMusic(isNetSource, filePath) {
 export function musicFromTags(tag, path) {
     // const pics = tag.common.picture
     const fs = require('fs')
-    const stat = fs.statSync(path)
     const bitrate = parseInt('' + tag.format.bitrate / 1000)
-    return {
+    const res = {
         name: getFileName(path),
         singer: tag.common.artist ? tag.common.artist : '未知',
         img: ranDataImage('50x50'),
@@ -118,8 +103,13 @@ export function musicFromTags(tag, path) {
         bitrate: bitrate + 'kbs',
         type: tag.format.codec,
         file: path,
-        size: (parseInt((stat.size / 1024 / 1024 * 10) + '') / 10) + "M"
     }
+    fs.stat(path, (err, stat) => {
+        if (!err) {
+            res.size = (parseInt((stat.size / 1024 / 1024 * 10) + '') / 10) + "M"
+        }
+    })
+    return res
 }
 
 export function generateMultiMusic(min, max) {
@@ -260,7 +250,7 @@ export function generateMusicSpaceData() {
     const favoriteMusicList = []
     const len = ranInteger(0, 20)
     for (let i = 0; i < len; i++) {
-        favoriteMusicList.push(generateNetMusicList(undefined))
+        favoriteMusicList.push(generateNetMusicList(undefined, true, true))
     }
     return {
         name: ranWord(minAccount, maxAccount),
@@ -287,15 +277,19 @@ export function generateMusicSpaceData() {
 *   name    string  歌单名字
 *   author  string  歌单创建者的昵称
 *   img string  歌单的封面图片
-*   musics  array   歌单包含的音乐，music数组
+*   musics  array   歌单包含的音乐，music数组,
+*   renameable  boolean 是否能够重命名
+*   removeable  boolean 是否能够删除
 * }
 * */
-export function generateNetMusicList(name) {
+export function generateNetMusicList(name, renameable, removeable) {
     return {
         name: name ? name : ranTitle(1, 3),
         author: ranWord(minAccount, maxAccount),
         img: ranDataImage('100x100'),
-        musics: generateMultiMusic(1, 20)
+        musics: generateMultiMusic(1, 20),
+        renameable: objNoVal(renameable) ? ranBoolean() : renameable,
+        removeable: objNoVal(removeable) ? ranBoolean() : removeable
     }
 }
 
