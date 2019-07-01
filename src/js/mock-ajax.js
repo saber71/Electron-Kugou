@@ -1,42 +1,28 @@
 import Mock from 'mockjs'
 import {
+    CAN_VISIT_SPACE,
+    EMAIL_VALIDATOR,
+    FANS,
     FETCH_KU_MONEY,
+    FOCUS_USER,
+    FRIENDS,
     LOGIN,
     MSG_LOGIN,
-    REGISTER,
-    UPLOAD_AVATAR,
-    USER_DATA,
-    USER_DATA_SAVE,
-    PHONE_VALIDATOR,
-    EMAIL_VALIDATOR,
     MUSIC_SPACE_DATA,
     MUSIC_SPACE_SECURITY,
-    FRIENDS,
-    FOCUS_USER,
-    FANS,
+    MY_RADIO_LIST,
+    PHONE_VALIDATOR,
+    PURCHASED_MUSICS,
+    REGISTER,
+    REMOVE_VISIT_RECORD,
+    SET_FOCUS,
     SPACE_VISITORS,
-    SET_FOCUS, REMOVE_VISIT_RECORD, CAN_VISIT_SPACE, PURCHASED_MUSICS
+    UPLOAD_AVATAR,
+    USER_DATA,
+    USER_DATA_SAVE
 } from "@/js/url";
-import {
-    ranBoolean,
-    ranCity, ranCTitle,
-    ranDataImage, ranDate, ranDatetime, ranEmail,
-    ranInteger,
-    ranParagraph,
-    ranProvince,
-    ranWord
-} from "@/js/mock-random";
-import {formatDate} from "@/js/util";
-import {
-    generateMultiUserBriefData, generateMusic,
-    generateMusicSpaceData, generatePurchasedMusics,
-    generateUserData,
-    maxAccount,
-    maxPassword,
-    minAccount,
-    minPassword
-} from "@/js/_const";
-import {generatePhone} from "@/js/reg";
+import {ranBoolean, ranDatetime, ranInteger} from "@/js/mock-random";
+import {generateMultiRadio, generateMultiUserBriefData, generateMusicSpaceData, generatePurchasedMusics, generateUserData} from "@/js/_const";
 
 Mock.setup({
     timeout: '500-1500'
@@ -127,4 +113,7 @@ regm(CAN_VISIT_SPACE, 'get', () => {
 })
 regm(PURCHASED_MUSICS, 'get', () => {
     return generatePurchasedMusics()
+})
+m(MY_RADIO_LIST, 'get', () => {
+    return generateMultiRadio(5, 10)
 })

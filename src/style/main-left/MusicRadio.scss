@@ -1,0 +1,132 @@
+@import "../common";
+
+#MusicRadio {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+
+  .radio-item {
+    padding: 20px 20px 20px 10px;
+    box-sizing: border-box;
+    display: flex;
+
+    &:hover {
+      background-color: #F0F0F0;
+    }
+
+    .left {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .center {
+      width: calc(100% - 60px);
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+
+      .top {
+        font-size: 14px;
+        color: $black;
+        font-weight: bold;
+        padding-bottom: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .right {
+          width: fit-content;
+          display: flex;
+
+          .triangle {
+            width: 16px;
+            height: 16px;
+            transform: rotate(90deg);
+            margin-right: 10px;
+            cursor: pointer;
+          }
+
+          .playing {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            cursor: pointer;
+
+            &:before, &:after {
+              content: '';
+              width: 1px;
+              height: 100%;
+              background-color: $light-black;
+              margin-left: 3px;
+              margin-right: 3px;
+            }
+          }
+
+          .remove-icon {
+            width: 16px;
+            height: 16px;
+            position: relative;
+            cursor: pointer;
+
+            &:before {
+              content: '';
+              width: 100%;
+              height: 1px;
+              position: absolute;
+              left: 0;
+              top: 50%;
+              transform: rotate(45deg);
+              background-color: $light-black;
+            }
+
+            &:after {
+              content: '';
+              width: 100%;
+              height: 1px;
+              position: absolute;
+              left: 0;
+              top: 50%;
+              transform: rotate(-45deg);
+              background-color: $light-black;
+            }
+          }
+        }
+      }
+
+      .bottom {
+        font-size: 14px;
+        color: $light-black;
+        overflow: hidden;
+
+        label {
+          display: inline-block;
+          width: fit-content;
+          position: relative;
+          white-space: nowrap;
+        }
+
+        .active-label {
+          animation: label-move 4s linear infinite;
+          @keyframes label-move {
+            0% {
+              left: 100%;
+            }
+            100% {
+              left: -100%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .radio-item-active {
+    background-color: #F0F0F0;
+  }
+}

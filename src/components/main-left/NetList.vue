@@ -45,6 +45,7 @@
     import MusicList from "@/components/main-left/MusicList";
     import {INPUT} from "@/js/event-bus";
     import {CREATE_MUSIC_LIST} from "@/js/store/mutations_name";
+    import {objNoVal} from "@/js/util";
 
     export default {
         name: "NetList",

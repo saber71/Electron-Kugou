@@ -1,20 +1,24 @@
 import {
+    CAN_VISIT_SPACE,
+    EMAIL_VALIDATOR,
+    FANS,
     FETCH_KU_MONEY,
+    FOCUS_USER,
+    FRIENDS,
     LOGIN,
     MSG_LOGIN,
-    REGISTER,
-    UPLOAD_AVATAR,
-    USER_DATA,
-    USER_DATA_SAVE,
-    PHONE_VALIDATOR,
-    EMAIL_VALIDATOR,
     MUSIC_SPACE_DATA,
     MUSIC_SPACE_SECURITY,
-    FRIENDS,
-    FOCUS_USER,
-    FANS,
+    MY_RADIO_LIST,
+    PHONE_VALIDATOR,
+    PURCHASED_MUSICS,
+    REGISTER,
+    REMOVE_VISIT_RECORD,
+    SET_FOCUS,
     SPACE_VISITORS,
-    SET_FOCUS, REMOVE_VISIT_RECORD, CAN_VISIT_SPACE, PURCHASED_MUSICS
+    UPLOAD_AVATAR,
+    USER_DATA,
+    USER_DATA_SAVE
 } from "@/js/url";
 
 const ajax = {
@@ -174,6 +178,13 @@ const ajax = {
      */
     async getPurchasedMusics() {
         return axios.get(PURCHASED_MUSICS)
+    },
+    /**
+     * 获取我的音乐电台列表
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    async getMyRadioList() {
+        return axios.get(MY_RADIO_LIST)
     },
 }
 

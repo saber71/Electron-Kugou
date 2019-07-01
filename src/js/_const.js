@@ -1,6 +1,6 @@
 import {ranBoolean, ranCity, ranCTitle, ranCWord, ranDataImage, ranDatetime, ranEmail, ranInteger, ranName, ranParagraph, ranProvince, ranTitle, ranWord} from "@/js/mock-random";
 import {generatePhone} from "@/js/reg";
-import {formatDate, getFileName, objNoVal} from "@/js/util";
+import {formatDate, getFileName, objNoVal, strNoVal} from "@/js/util";
 
 export const minWidth = 1024
 export const minHeight = 600
@@ -369,6 +369,30 @@ export function generateMultiAlbum(min, max) {
     const len = ranInteger(min, max)
     for (let i = 0; i < len; i++) {
         res.push(generateAlbum())
+    }
+    return res
+}
+
+/*
+* radio  {  音乐电台
+*   name    string  电台名字
+*   img string  电台封面图片
+*   playing string  正在播放的音乐名字
+* }
+* */
+export function generateRadio(name) {
+    return {
+        name: strNoVal(name) ? ranTitle(1, 2) : name,
+        img: ranDataImage('50x50'),
+        playing: ranName() + ' - ' + ranTitle(1, 3),
+    }
+}
+
+export function generateMultiRadio(min, max) {
+    const res = []
+    const len = ranInteger(min, max)
+    for (let i = 0; i < len; i++) {
+        res.push(generateRadio())
     }
     return res
 }
