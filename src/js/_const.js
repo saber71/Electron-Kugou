@@ -346,29 +346,31 @@ export function generatePurchasedMusics() {
 *   publishDate string  发行时间
 *   lang    string  语言
 *   img     string  封面
+*   price   number?  价格
 *   score   number  评分
 *   scoreNum    number  评分人数
 *   musics  array   music数组
 * }
 * */
-export function generateAlbum(name) {
+export function generateAlbum(name, price) {
     return {
         name: name ? name : ranTitle(1, 3),
         singer: ranName(),
         publisher: ranCTitle(5, 10),
         lang: ranCWord(2, 2),
         img: ranDataImage('100x100'),
+        price: objNoVal(price) ? null : price ? ranInteger(1, 100) : null,
         score: ranInteger(10, 100) / 10,
         scoreNumber: ranInteger(0, 20000),
         musics: generateMultiMusic(10, 50)
     }
 }
 
-export function generateMultiAlbum(min, max) {
+export function generateMultiAlbum(min, max, price) {
     const res = []
     const len = ranInteger(min, max)
     for (let i = 0; i < len; i++) {
-        res.push(generateAlbum())
+        res.push(generateAlbum(undefined, price))
     }
     return res
 }
@@ -397,3 +399,46 @@ export function generateMultiRadio(min, max) {
     return res
 }
 
+/*
+* mv  { MV
+*   name    string  名字
+*   author  string  上传者
+*   img string  封面图片
+*   description string  描述
+* }
+* */
+export function generateMV() {
+    return {
+        name: ranCTitle(5, 10),
+        author: ranTitle(),
+        img: ranDataImage('100x100'),
+        description: ranCTitle(5, 10)
+    }
+}
+
+export function generateMultiMV(min, max) {
+    const res = []
+    const len = ranInteger(min, max)
+    for (let i = 0; i < len; i++) {
+        res.push(generateMV())
+    }
+    return res
+}
+
+/*
+* mv-radio  {  MV电台
+*   description    string  电台描述
+*   type    string  种类
+*   img string  封面图片
+*   playing mv  正在播放的MV
+* }
+* */
+export function generateMVRadio() {
+    const type = ranCTitle(3, 5)
+    return {
+        description: ranCTitle(4, 10),
+        type,
+        img: ranDataImage('100x100', ''),
+        playing: generateMV()
+    }
+}

@@ -15,7 +15,9 @@ import {
     NEW_MUSIC_RECOMMEND,
     PHONE_VALIDATOR,
     PURCHASED_MUSICS,
+    RECOMMEND_ALBUM,
     RECOMMEND_MUSIC_LIST,
+    RECOMMEND_MV,
     REGISTER,
     REMOVE_VISIT_RECORD,
     SET_FOCUS,
@@ -217,6 +219,20 @@ const ajax = {
      */
     getRecommendMusicList() {
         return axios.get(RECOMMEND_MUSIC_LIST)
+    },
+    /**
+     * 获取推荐专辑
+     * @returns {AxiosPromise<any>}
+     */
+    getRecommendAlbum() {
+        return axios.get(RECOMMEND_ALBUM)
+    },
+    /**
+     * 获取推荐MV
+     * @returns {AxiosPromise<any>}
+     */
+    getRecommendMV() {
+        return axios.get(RECOMMEND_MV)
     }
 }
 

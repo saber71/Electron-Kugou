@@ -113,6 +113,91 @@
                 </div>
             </section>
         </section>
+        <section class="recommend-mv-radio">
+            <section class="banner">
+                <div class="left">
+                    <h2 class="section-title">精选MV电台</h2>
+                </div>
+                <div class="right">
+                    <div class="change" @click="mvRadioPage=(mvRadioPage+1)%mvRadioTotal">
+                        <img src="../../../../assets/flush-blue-all.png">
+                        换一批
+                    </div>
+                    <label class="more">更多</label>
+                </div>
+            </section>
+            <section class="content">
+                <div class="item" v-for="v in visibleMVRadio" :title="v.type">
+                    <div class="img">
+                        <img class="icon" :src="v.img">
+                        <div class="on-hover">
+                            <label>{{v.type}}</label>
+                            <div class="play">
+                                <img src="../../../../assets/triangle-white.png">
+                            </div>
+                        </div>
+                    </div>
+                    <p class="name">{{v.description}}</p>
+                </div>
+            </section>
+        </section>
+        <section class="recommend-album">
+            <section class="banner">
+                <div class="left">
+                    <h2 class="section-title">推荐专辑</h2>
+                    <label :class="{'active-label':activeAlbumIndex===0}" @mouseenter="activeAlbumIndex=0">华语</label>
+                    <label :class="{'active-label':activeAlbumIndex===1}" @mouseenter="activeAlbumIndex=1">欧美</label>
+                    <label :class="{'active-label':activeAlbumIndex===2}" @mouseenter="activeAlbumIndex=2">韩国</label>
+                    <label :class="{'active-label':activeAlbumIndex===3}" @mouseenter="activeAlbumIndex=3">日本</label>
+                    <label :class="{'active-label':activeAlbumIndex===4}" @mouseenter="activeAlbumIndex=4">付费</label>
+                </div>
+                <div class="right">
+                    <label class="more">更多</label>
+                </div>
+            </section>
+            <section class="content">
+                <div class="item" v-for="v in activeAlbum" :title="v.type">
+                    <div class="img">
+                        <img class="icon" :src="v.img">
+                        <div class="hover-bottom">
+                            <div class="play" title="播放全部">
+                                <img src="../../../../assets/triangle-white.png">
+                            </div>
+                        </div>
+                    </div>
+                    <p class="name">{{v.name}}</p>
+                    <div class="bottom">
+                        <label :title="v.singer">{{v.singer}}</label>
+                        <span v-if="v.price">￥{{v.price}}</span>
+                        <img src="../../../../assets/play-list-blue.png" v-else>
+                    </div>
+                </div>
+            </section>
+        </section>
+        <section class="recommend-mv">
+            <section class="banner">
+                <div class="left">
+                    <h2 class="section-title">推荐MV</h2>
+                </div>
+                <div class="right">
+                    <label class="more">更多</label>
+                </div>
+            </section>
+            <section class="content">
+                <div class="item" v-for="v in recommendMV" :title="v.type">
+                    <div class="img">
+                        <img class="icon" :src="v.img">
+                        <div class="mask">
+                            <div class="play">
+                                <img src="../../../../assets/triangle-white.png">
+                            </div>
+                        </div>
+                    </div>
+                    <p class="name">{{v.name}}</p>
+                    <p class="description">{{v.description}}</p>
+                </div>
+            </section>
+        </section>
     </div>
 </template>
 
@@ -121,6 +206,7 @@
     import {ADD_ALL_TO_MUSIC_LIST} from "@/js/store/mutations_name";
     import {SET_PLAYING_MUSIC} from "@/js/event-bus";
     import {ranDataImage} from "@/js/mock-random";
+    import {generateMVRadio} from "@/js/_const";
 
     export default {
         name: "MusicRecommend",
@@ -138,11 +224,30 @@
                 currentPage: 1,
                 size: 12,
                 today: new Date(),
-                tempImg: ranDataImage('100x100')
+                tempImg: ranDataImage('100x100'),
+                mvRadioSize: 4,
+                mvRadioPage: 1,
+                activeAlbumIndex: 0,
             }
         },
         watch: {},
         computed: {
+            activeAlbum() {
+                return this.recommendAlbum[this.activeAlbumIndex]
+            },
+            mvRadioTotal() {
+                let res = this.recommendMVRadio.length / this.mvRadioSize
+                if (this.recommendMVRadio.length % this.mvRadioSize > 0) {
+                    res++
+                }
+                return res
+            },
+            visibleMVRadio() {
+                const list = this.recommendMVRadio
+                const page = this.mvRadioPage
+                const size = this.mvRadioSize
+                return list.slice(page * size, (page + 1) * size)
+            },
             visibleRecommendNewMusics() {
                 const musics = this.recommendNewMusics[this.recommendNewMusicActiveLabel]
                 if (musics) {
@@ -249,7 +354,7 @@
         },
         mounted() {
         },
-        async created() {
+        created() {
             ajax.getRecommendNewMusic().then((value) => {
                 this.recommendNewMusics = value.data
             })
@@ -262,6 +367,15 @@
             ajax.getRecommendMusicList().then((value) => {
                 this.recommendMusicList = value.data
             })
+            ajax.getRecommendAlbum().then((value) => {
+                this.recommendAlbum = value.data
+            })
+            ajax.getRecommendMV().then((value) => {
+                this.recommendMV = value.data
+            })
+            for (let i = 0; i < 12; i++) {
+                this.recommendMVRadio.push(generateMVRadio())
+            }
         },
         destroyed() {
         }

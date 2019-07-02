@@ -16,7 +16,9 @@ import {
     NEW_MUSIC_RECOMMEND,
     PHONE_VALIDATOR,
     PURCHASED_MUSICS,
+    RECOMMEND_ALBUM,
     RECOMMEND_MUSIC_LIST,
+    RECOMMEND_MV,
     REGISTER,
     REMOVE_VISIT_RECORD,
     SET_FOCUS,
@@ -29,6 +31,7 @@ import {ranBoolean, ranDatetime, ranInteger} from "@/js/mock-random";
 import {
     generateMultiAlbum,
     generateMultiMusic,
+    generateMultiMV,
     generateMultiRadio,
     generateMultiUserBriefData,
     generateMusicSpaceData,
@@ -156,4 +159,16 @@ m(RECOMMEND_MUSIC_LIST, 'get', () => {
         generateNetMusicList(),
         generateNetMusicList(),
     ]
+})
+m(RECOMMEND_ALBUM, 'get', () => {
+    return [
+        generateMultiAlbum(4, 4),
+        generateMultiAlbum(4, 4),
+        generateMultiAlbum(4, 4),
+        generateMultiAlbum(4, 4),
+        generateMultiAlbum(4, 4, true),
+    ]
+})
+m(RECOMMEND_MV, 'get', () => {
+    return generateMultiMV(4, 4)
 })

@@ -24,3 +24,4 @@ export const NEW_ALBUM_RECOMMEND = 'recommend/new/album'//获取推荐新专辑
 export const CUSTOM_RECOMMEND = 'custom-recommend'//获取个性化推荐
 export const RECOMMEND_MUSIC_LIST = 'recommendMusicList'//推荐歌单
 export const RECOMMEND_MV = 'recommendMV'//推荐MV
+export const RECOMMEND_ALBUM = 'recommendAlbum'//推荐专辑
