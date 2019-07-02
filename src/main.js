@@ -5,6 +5,10 @@ import router from './router'
 import store from './store'
 import './js/mock-ajax'
 import './js/event-bus'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
+
+Vue.use(VueAwesomeSwiper)
 
 Vue.config.productionTip = false
 

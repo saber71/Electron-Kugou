@@ -17,7 +17,11 @@ export const LOVE_ALL_MUSIC = 'loveAllMusic'
 export const SORT_ORDER_BY = 'sortOrderBy'
 export const LATER_PLAY = 'later-play'
 export const SET_PLAYING_MUSIC = 'setPlayingMusic'
-export const GOT_MUSIC_SPACE_DATA = 'gotMusicSpaceData'
+
+export const PLAY_RADIO = 'playRadio'
+export const PAUSE_RADIO = 'pauseRadio'
+export const RADIO_NEXT = 'radio_next'
+export const RADIO_PREV = 'radio_prev'
 
 export const MAIN_LEFT_ON_SCROLL = 'main-left-on-scroll'
 export const LIST_ON_EXPAND = 'list-on-expand'

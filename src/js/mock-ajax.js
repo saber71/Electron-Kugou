@@ -1,6 +1,7 @@
 import Mock from 'mockjs'
 import {
     CAN_VISIT_SPACE,
+    CUSTOM_RECOMMEND,
     EMAIL_VALIDATOR,
     FANS,
     FETCH_KU_MONEY,
@@ -11,8 +12,11 @@ import {
     MUSIC_SPACE_DATA,
     MUSIC_SPACE_SECURITY,
     MY_RADIO_LIST,
+    NEW_ALBUM_RECOMMEND,
+    NEW_MUSIC_RECOMMEND,
     PHONE_VALIDATOR,
     PURCHASED_MUSICS,
+    RECOMMEND_MUSIC_LIST,
     REGISTER,
     REMOVE_VISIT_RECORD,
     SET_FOCUS,
@@ -22,7 +26,16 @@ import {
     USER_DATA_SAVE
 } from "@/js/url";
 import {ranBoolean, ranDatetime, ranInteger} from "@/js/mock-random";
-import {generateMultiRadio, generateMultiUserBriefData, generateMusicSpaceData, generatePurchasedMusics, generateUserData} from "@/js/_const";
+import {
+    generateMultiAlbum,
+    generateMultiMusic,
+    generateMultiRadio,
+    generateMultiUserBriefData,
+    generateMusicSpaceData,
+    generateNetMusicList,
+    generatePurchasedMusics,
+    generateUserData
+} from "@/js/_const";
 
 Mock.setup({
     timeout: '500-1500'
@@ -116,4 +129,31 @@ regm(PURCHASED_MUSICS, 'get', () => {
 })
 m(MY_RADIO_LIST, 'get', () => {
     return generateMultiRadio(5, 10)
+})
+m(NEW_MUSIC_RECOMMEND, 'get', () => {
+    const musicSize = 36
+    return [
+        generateMultiMusic(musicSize, musicSize),
+        generateMultiMusic(musicSize, musicSize),
+        generateMultiMusic(musicSize, musicSize),
+        generateMultiMusic(musicSize, musicSize),
+    ]
+})
+m(NEW_ALBUM_RECOMMEND, 'get', () => {
+    return generateMultiAlbum(4, 4)
+})
+m(CUSTOM_RECOMMEND, 'get', () => {
+    return [
+        generateNetMusicList(),
+        generateNetMusicList(),
+        generateNetMusicList(),
+    ]
+})
+m(RECOMMEND_MUSIC_LIST, 'get', () => {
+    return [
+        generateNetMusicList(),
+        generateNetMusicList(),
+        generateNetMusicList(),
+        generateNetMusicList(),
+    ]
 })

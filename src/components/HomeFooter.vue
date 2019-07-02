@@ -152,10 +152,10 @@
 </template>
 
 <script>
-    import {ADD_TO_PLAY_LIST, PUSH_TO_PLAY_LIST, SET_PLAY_LIST, SET_PLAYING_MUSIC} from '@/js/event-bus';
+    import {ADD_TO_PLAY_LIST, PAUSE_RADIO, PLAY_RADIO, PUSH_TO_PLAY_LIST, RADIO_NEXT, RADIO_PREV, SET_PLAY_LIST, SET_PLAYING_MUSIC} from '@/js/event-bus';
     import {getLocalStorageItem, objNoVal, remove, setLocalStorageItem} from '@/js/util';
     import {ranInteger} from '@/js/mock-random';
-    import {playingIndexKey, playListKey} from '@/js/_const';
+    import {generateMusic, playingIndexKey, playListKey} from '@/js/_const';
 
     let audio = new Audio();
 
@@ -199,7 +199,8 @@
                 playingMusic: undefined,
                 visibleMorePopup: false,
                 morePopupTop: 0,
-                resetAudioSrc: true
+                resetAudioSrc: true,
+                playingRadio: false
             };
         },
         watch: {
@@ -362,6 +363,10 @@
                 return false;
             },
             prev() {
+                if (this.playingRadio) {
+                    eventBus.$emit(RADIO_PREV, generateMusic(true))
+                    return
+                }
                 if (this.activeIndex < 0) {
                     this.activeIndex = 0;
                 }
@@ -389,6 +394,10 @@
                 }
             },
             next() {
+                if (this.playingRadio) {
+                    eventBus.$emit(RADIO_NEXT, generateMusic(true))
+                    return
+                }
                 if (this.activeIndex < 0) {
                     this.activeIndex = 0;
                 }
@@ -428,12 +437,10 @@
                     if (this.resetAudioSrc) {
                         this.resetAudioSrc = false
                         audio.src = this.playingMusic.file;
-                        audio.currentTime = 0;
                         audio.load()
+                        audio.currentTime = 0;
                     }
-                    if (!audio.played) {
-                        audio.play();
-                    }
+                    audio.play();
                 } else {
                     audio.pause();
                 }
@@ -529,9 +536,19 @@
             eventBus.$on(SET_PLAY_LIST, this.setPlayList);
             eventBus.$on(PUSH_TO_PLAY_LIST, this.pushToPlayList);
             eventBus.$on(SET_PLAYING_MUSIC, obj => {
+                this.playingRadio = false
                 this.playingMusic = obj.music;
+                this.resetAudioSrc = true
                 this.setPlayList(obj.musics, obj.index);
             });
+            eventBus.$on(PLAY_RADIO, (music) => {
+                this.activeIndex = -1
+                this.playingRadio = true
+                this.playingMusic = music;
+            })
+            eventBus.$on(PAUSE_RADIO, () => {
+                this.play(false)
+            })
         },
         destroyed() {
         }

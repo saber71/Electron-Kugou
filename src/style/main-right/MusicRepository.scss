@@ -1,0 +1,31 @@
+@import "../common";
+
+#MusicRepository {
+  width: 100%;
+  height: $main-right-height;
+  overflow-y: auto;
+
+  .labels {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #dddddd;
+
+    label {
+      font-size: 14px;
+      color: $light-black;
+      margin: 0 20px;
+      cursor: pointer;
+
+      &:hover {
+        color: $blue;
+      }
+    }
+
+    .active-label {
+      color: $blue;
+    }
+  }
+}

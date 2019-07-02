@@ -377,14 +377,14 @@ export function generateMultiAlbum(min, max) {
 * radio  {  音乐电台
 *   name    string  电台名字
 *   img string  电台封面图片
-*   playing string  正在播放的音乐名字
+*   playing music  正在播放的音乐
 * }
 * */
 export function generateRadio(name) {
     return {
         name: strNoVal(name) ? ranTitle(1, 2) : name,
         img: ranDataImage('50x50'),
-        playing: ranName() + ' - ' + ranTitle(1, 3),
+        playing: generateMusic(true)
     }
 }
 
@@ -396,3 +396,4 @@ export function generateMultiRadio(min, max) {
     }
     return res
 }
+

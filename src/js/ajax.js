@@ -1,5 +1,6 @@
 import {
     CAN_VISIT_SPACE,
+    CUSTOM_RECOMMEND,
     EMAIL_VALIDATOR,
     FANS,
     FETCH_KU_MONEY,
@@ -10,8 +11,11 @@ import {
     MUSIC_SPACE_DATA,
     MUSIC_SPACE_SECURITY,
     MY_RADIO_LIST,
+    NEW_ALBUM_RECOMMEND,
+    NEW_MUSIC_RECOMMEND,
     PHONE_VALIDATOR,
     PURCHASED_MUSICS,
+    RECOMMEND_MUSIC_LIST,
     REGISTER,
     REMOVE_VISIT_RECORD,
     SET_FOCUS,
@@ -186,6 +190,34 @@ const ajax = {
     async getMyRadioList() {
         return axios.get(MY_RADIO_LIST)
     },
+    /**
+     * 获取推荐新歌
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    getRecommendNewMusic() {
+        return axios.get(NEW_MUSIC_RECOMMEND)
+    },
+    /**
+     * 获取推荐新专辑
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    getRecommendNewAlbum() {
+        return axios.get(NEW_ALBUM_RECOMMEND)
+    },
+    /**
+     * 获取个性化推荐
+     * @returns {Promise<AxiosPromise<any>>}
+     */
+    getCustomRecommend() {
+        return axios.get(CUSTOM_RECOMMEND)
+    },
+    /**
+     * 获取推荐歌单
+     * @returns {AxiosPromise<any>}
+     */
+    getRecommendMusicList() {
+        return axios.get(RECOMMEND_MUSIC_LIST)
+    }
 }
 
 export default ajax

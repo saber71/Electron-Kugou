@@ -40,6 +40,7 @@
                  v-show="mainRightActiveIndex<=constant.MAIN_RIGHT_ACTIVE_LYRIC"></div>
         </section>
         <section class="main">
+            <music-repository v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY"></music-repository>
             <user-music-space v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_MUSIC_SPACE"></user-music-space>
             <edit-account v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT"></edit-account>
             <upload-avatar v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR"></upload-avatar>
@@ -65,11 +66,13 @@
         MAIN_RIGHT_ACTIVE_MUSIC_LIST,
         MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY,
         MAIN_RIGHT_ACTIVE_MUSIC_SPACE,
-        MAIN_RIGHT_ACTIVE_MV, MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS,
+        MAIN_RIGHT_ACTIVE_MV,
+        MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS,
         MAIN_RIGHT_ACTIVE_RADIO,
         MAIN_RIGHT_ACTIVE_SECURITY,
         MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
-        MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR, MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT
+        MAIN_RIGHT_ACTIVE_UPLOAD_AVATAR,
+        MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT
     } from "@/js/_const";
     import EditAccount from "@/components/main-right/account-setting/EditAccount";
     import UploadAvatar from "@/components/main-right/account-setting/UploadAvatar";
@@ -79,10 +82,12 @@
     import UserMusicSpace from "@/components/main-right/UserMusicSpace";
     import SocialContact from "@/components/main-right/SocialContact";
     import PurchasedMusics from "@/components/main-right/PurchasedMusics";
+    import MusicRepository from "@/components/main-right/main/MusicRepository";
 
     export default {
         name: "MainRight",
         components: {
+            MusicRepository,
             PurchasedMusics,
             SocialContact,
             UserMusicSpace,
