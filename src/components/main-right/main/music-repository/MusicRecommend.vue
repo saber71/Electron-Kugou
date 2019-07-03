@@ -156,7 +156,7 @@
                 </div>
             </section>
             <section class="content">
-                <div class="item" v-for="v in activeAlbum" :title="v.type">
+                <div class="item" v-for="(v,index) in activeAlbum" :title="v.type">
                     <div class="img">
                         <img class="icon" :src="v.img">
                         <div class="hover-bottom">
@@ -169,7 +169,36 @@
                     <div class="bottom">
                         <label :title="v.singer">{{v.singer}}</label>
                         <span v-if="v.price">￥{{v.price}}</span>
-                        <img src="../../../../assets/play-list-blue.png" v-else>
+                        <img src="../../../../assets/play-list-blue.png" v-else @click="showMusicList(index,$event)" title="所有曲目">
+                        <section class="popup" v-show="showAlbumListIndex===index" @click="showAlbumListIndex=-1">
+                            <div class="popup-content" @click.stop="" :style="musicListPopupStyle">
+                                <div class="top">
+                                    共{{albumMusicTotal}}首
+                                    <div class="close" @click="showAlbumListIndex=-1"></div>
+                                </div>
+                                <div class="middle">
+                                    <div class="music" v-for="(v) in showAlbumMusicList">
+                                        <div class="left">{{v.name}}</div>
+                                        <div class="right">
+                                            <img class="play-icon" src="../../../../assets/sanjiao-gray.png">
+                                            <img src="../../../../assets/download-gray.png">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bottom">
+                                    <div class="pager">
+                                        <img class="prev" src="../../../../assets/arrow-down-dark.png" :class="{'disabled':albumPage===1}"
+                                             @click="albumPage=albumPage===1?albumPage:albumPage-1">
+                                        <label>{{albumPage}} / {{albumMusicListTotalPage}}</label>
+                                        <img class="next" src="../../../../assets/arrow-down-dark.png" :class="{'disabled':albumPage===albumMusicListTotalPage}"
+                                             @click="albumPage=albumPage===albumMusicListTotalPage?albumPage:albumPage+1">
+                                    </div>
+                                    <button>
+                                        <img src="../../../../assets/sanjiao-gray.png">全部播放
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
             </section>
@@ -228,10 +257,44 @@
                 mvRadioSize: 4,
                 mvRadioPage: 1,
                 activeAlbumIndex: 0,
+                showAlbumListIndex: -1,
+                albumPage: 1,
+                albumSize: 8,
+                musicListPopupStyle: {
+                    top: 0,
+                    right: 0
+                }
             }
         },
         watch: {},
         computed: {
+            albumMusicTotal() {
+                if (this.showAlbumListIndex < 0) {
+                    return 0
+                }
+                return this.activeAlbum[this.showAlbumListIndex].musics.length
+            },
+            albumMusicListTotalPage() {
+                if (this.showAlbumListIndex < 0) {
+                    return 0
+                }
+                const musicsLength = this.albumMusicTotal
+                const size = this.albumSize
+                let res = parseInt(musicsLength / size)
+                if (musicsLength % size > 0) {
+                    res++
+                }
+                return res
+            },
+            showAlbumMusicList() {
+                if (this.showAlbumListIndex < 0) {
+                    return []
+                }
+                const musics = this.activeAlbum[this.showAlbumListIndex].musics
+                const page = this.albumPage
+                const size = this.albumSize
+                return musics.slice((page - 1) * size, page * size)
+            },
             activeAlbum() {
                 return this.recommendAlbum[this.activeAlbumIndex]
             },
@@ -263,6 +326,14 @@
             }
         },
         methods: {
+            showMusicList(index, ev) {
+                this.showAlbumListIndex = index
+                const clientX = ev.clientX
+                const clientY = ev.clientY
+                const width = window.innerWidth
+                this.musicListPopupStyle.right = (width - clientX + 15) + 'px'
+                this.musicListPopupStyle.top = (clientY - 150) + 'px'
+            },
             getMonth() {
                 let res = ''
                 const month = this.today.getMonth() + 1

@@ -67,11 +67,7 @@
 <script>
     import ajax from "@/js/ajax";
     import {overDate} from "@/js/util";
-    import {
-        MAIN_RIGHT_ACTIVE_DEFAULT,
-        MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT,
-        MAIN_RIGHT_ACTIVE_MUSIC_SPACE, MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS
-    } from "@/js/_const";
+    import {MAIN_RIGHT_ACTIVE_DEFAULT, MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT, MAIN_RIGHT_ACTIVE_MUSIC_SPACE, MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS} from "@/js/_const";
 
     export default {
         name: "User",
@@ -158,9 +154,11 @@
         },
         mounted() {
         },
-        async created() {
-            this.userData = (await ajax.getUserData()).data
-            store.commit('userData', this.userData)
+        created() {
+            ajax.getUserData().then((value) => {
+                this.userData = value.data
+                store.commit('userData', this.userData)
+            })
         },
         destroyed() {
         }
