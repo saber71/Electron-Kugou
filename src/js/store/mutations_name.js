@@ -8,3 +8,6 @@ export const RENAME_MUSIC_LIST = 'renameMusicList'//重命名一个音乐列表
 export const GO_BACK = 'goBack'//回退
 export const SET_MAIN_BG = 'mainBg'//主界面背景
 export const SET_HOME_BG = 'homeBg'//设置Home背景
+export const SET_MUSIC_REPOSITORY_ACTIVE_INDEX = 'setMusicRepositoryActiveIndex'
+export const SET_LOOK_ALBUM = 'setLookAlbum'//设置将在专辑详情上展示的专辑
+export const SET_LOOK_MUSIC_LIST = 'setLookMusicList'//设置将在歌单详情页上展示的歌单

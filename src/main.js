@@ -7,9 +7,10 @@ import './js/mock-ajax'
 import './js/event-bus'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
+import StarRating from 'vue-star-rating'
 
 Vue.use(VueAwesomeSwiper)
-
+Vue.component('star-rating', StarRating);
 Vue.config.productionTip = false
 
 const isDevelopment = process.env.NODE_ENV !== 'production'

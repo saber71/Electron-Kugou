@@ -29,6 +29,7 @@
     import MusicRankingBoard from "@/components/main-right/main/music-repository/MusicRankingBoard";
     import MusicSinger from "@/components/main-right/main/music-repository/MusicSinger";
     import MusicCategory from "@/components/main-right/main/music-repository/MusicCategory";
+    import {SET_MUSIC_REPOSITORY_ACTIVE_INDEX} from "@/js/store/mutations_name";
 
     export default {
         name: "MusicRepository",
@@ -36,10 +37,14 @@
         props: {},
         data() {
             return {
-                activeIndex: 0
+                activeIndex: store.state.musicRepositoryActiveIndex,
             }
         },
-        watch: {},
+        watch: {
+            activeIndex(newVal) {
+                store.commit(SET_MUSIC_REPOSITORY_ACTIVE_INDEX, newVal)
+            }
+        },
         computed: {},
         methods: {},
         mounted() {

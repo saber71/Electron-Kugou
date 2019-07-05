@@ -41,4 +41,21 @@ export default {
     musicSpaceUser: '',//正在查看的音乐空间用户
     myMusicSpaceData: {},//当前登陆用户的音乐空间数据
     socialContactType: 0,//要进入的社交界面的类型【0：好友，1：关注，2：粉丝，3：访客】
+
+    musicRepositoryActiveIndex: 0,
+
+    /**
+     * 将要在Album页面展示的专辑{
+     *      breadcrumb  array   {name：名字，onclick：点击事件回调}数组
+     *      album   album   专辑对象
+     * }
+     */
+    lookAlbum: {},
+    /**
+     * 将要歌单详情页展示的歌单{
+     *       breadcrumb  array   {name：名字，onclick：点击事件回调}数组
+     *      musicList   music-list   歌单对象
+     * }
+     */
+    lookMusicList: {}
 }

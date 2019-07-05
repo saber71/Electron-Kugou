@@ -23,8 +23,11 @@ import {
     RENAME_MUSIC_LIST,
     SAVE_LOCAL_MUSIC_LIST,
     SET_HOME_BG,
+    SET_LOOK_ALBUM,
+    SET_LOOK_MUSIC_LIST,
     SET_MAIN_BG,
     SET_MUSIC_LIST_ORDER_BY,
+    SET_MUSIC_REPOSITORY_ACTIVE_INDEX,
 } from "@/js/store/mutations_name";
 import {ranBoolean} from "@/js/mock-random";
 
@@ -37,6 +40,15 @@ export function getMusicList(name, local) {
 }
 
 export default {
+    [SET_MUSIC_REPOSITORY_ACTIVE_INDEX](s, val) {
+        s.musicRepositoryActiveIndex = val
+    },
+    [SET_LOOK_ALBUM](s, val) {
+        s.lookAlbum = val
+    },
+    [SET_LOOK_MUSIC_LIST](s, val) {
+        s.lookMusicList = val
+    },
     /**
      * 音乐列表重命名
      * @param s

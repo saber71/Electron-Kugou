@@ -50,12 +50,14 @@
             <SocialContact v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT"></SocialContact>
             <purchased-musics
                     v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS"></purchased-musics>
+            <album v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_ALBUM"></album>
         </section>
     </div>
 </template>
 
 <script>
     import {
+        MAIN_RIGHT_ACTIVE_ALBUM,
         MAIN_RIGHT_ACTIVE_BUY_SVIP,
         MAIN_RIGHT_ACTIVE_DEFAULT,
         MAIN_RIGHT_ACTIVE_EDIT_ACCOUNT,
@@ -64,6 +66,7 @@
         MAIN_RIGHT_ACTIVE_LIVE_BROADCAST,
         MAIN_RIGHT_ACTIVE_LYRIC,
         MAIN_RIGHT_ACTIVE_MUSIC_LIST,
+        MAIN_RIGHT_ACTIVE_MUSIC_LIST_INFO,
         MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY,
         MAIN_RIGHT_ACTIVE_MUSIC_SPACE,
         MAIN_RIGHT_ACTIVE_MV,
@@ -83,10 +86,12 @@
     import SocialContact from "@/components/main-right/SocialContact";
     import PurchasedMusics from "@/components/main-right/PurchasedMusics";
     import MusicRepository from "@/components/main-right/main/MusicRepository";
+    import Album from "@/components/main-right/Album";
 
     export default {
         name: "MainRight",
         components: {
+            Album,
             MusicRepository,
             PurchasedMusics,
             SocialContact,
@@ -118,6 +123,8 @@
                     MAIN_RIGHT_ACTIVE_SECURITY_EMAIL,
                     MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT,
                     MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS,
+                    MAIN_RIGHT_ACTIVE_ALBUM,
+                    MAIN_RIGHT_ACTIVE_MUSIC_LIST_INFO,
                 },
             }
         },

@@ -1,0 +1,173 @@
+@import "../common";
+
+#Comment {
+  background-color: #F8F8F8;
+  padding: 10px;
+  box-sizing: border-box;
+
+  .input {
+    textarea {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #dddddd;
+      color: $black;
+      font-size: 14px;
+    }
+
+    .bottom {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 5px;
+
+      span {
+        font-size: 12px;
+        color: $light-black;
+      }
+
+      button {
+        color: $light-black;
+        border: 1px solid #dddddd;
+        background-color: white;
+        margin-left: 10px;
+        font-size: 13px;
+        padding: 3px 10px;
+        border-radius: 3px;
+
+        &:hover {
+          color: $blue;
+          border-color: $blue;
+        }
+      }
+
+      .disabled {
+        cursor: default;
+        color: #dddddd;
+
+        &:hover {
+          color: #dddddd;
+          border-color: #dddddd;
+        }
+      }
+    }
+  }
+
+  .banner {
+    font-size: 13px;
+    font-weight: bold;
+    border-bottom: 1px solid #dddddd;
+    padding: 5px 0;
+    margin: 0;
+  }
+
+  .item {
+    border-bottom: 1px solid #dddddd;
+    display: grid;
+    grid-template-columns: 40px auto;
+    grid-gap: 10px;
+    padding: 10px 0;
+
+    .left {
+      img {
+        width: 100%;
+      }
+    }
+
+    .right {
+      .top {
+        padding-bottom: 5px;
+        font-size: 13px;
+        color: $light-black;
+
+        .author {
+          color: $black;
+        }
+      }
+
+      .center {
+        background-color: #EBEBEB;
+        padding: 10px;
+        box-sizing: border-box;
+        margin: 10px 0;
+        width: 100%;
+        font-size: 13px;
+        color: $light-black;
+
+        .author {
+          color: $black;
+        }
+      }
+
+      .bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .datetime {
+          font-size: 10px;
+          color: $light-black;
+        }
+
+        .opt {
+          display: flex;
+          align-items: center;
+          font-size: 12px;
+          color: $light-black;
+
+          img {
+            width: 12px;
+            height: 12px;
+            opacity: 0.7;
+            cursor: pointer;
+
+            &:hover {
+              opacity: 1;
+            }
+          }
+
+        }
+      }
+    }
+  }
+
+  .pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+
+    img {
+      width: 16px;
+      height: 16px;
+      opacity: 0.5;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+
+    .prev {
+      transform: rotate(90deg);
+    }
+
+    label {
+      margin: 0 10px;
+      font-size: 14px;
+      color: $black;
+    }
+
+    .next {
+      transform: rotate(-90deg);
+    }
+
+    .disabled {
+      cursor: default;
+
+      &:hover {
+        opacity: 0.5;
+      }
+    }
+  }
+}

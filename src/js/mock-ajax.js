@@ -1,6 +1,7 @@
 import Mock from 'mockjs'
 import {
     CAN_VISIT_SPACE,
+    COMMENT,
     CUSTOM_RECOMMEND,
     EMAIL_VALIDATOR,
     FANS,
@@ -22,6 +23,7 @@ import {
     REGISTER,
     REMOVE_VISIT_RECORD,
     SET_FOCUS,
+    SIMILAR_ALBUMS,
     SPACE_VISITORS,
     UPLOAD_AVATAR,
     USER_DATA,
@@ -30,6 +32,7 @@ import {
 import {ranBoolean, ranDatetime, ranInteger} from "@/js/mock-random";
 import {
     generateMultiAlbum,
+    generateMultiComment,
     generateMultiMusic,
     generateMultiMV,
     generateMultiRadio,
@@ -171,4 +174,10 @@ m(RECOMMEND_ALBUM, 'get', () => {
 })
 m(RECOMMEND_MV, 'get', () => {
     return generateMultiMV(4, 4)
+})
+m(SIMILAR_ALBUMS, 'get', () => {
+    return generateMultiAlbum(4, 4, false)
+})
+m(COMMENT, 'get', () => {
+    return generateMultiComment(0, 100)
 })

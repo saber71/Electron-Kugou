@@ -1,4 +1,21 @@
-import {ranBoolean, ranCity, ranCTitle, ranCWord, ranDataImage, ranDatetime, ranEmail, ranInteger, ranName, ranParagraph, ranProvince, ranTitle, ranWord} from "@/js/mock-random";
+import {
+    ranBoolean,
+    ranCity,
+    ranCParagraph,
+    ranCTitle,
+    ranCWord,
+    ranDataImage,
+    ranDate,
+    ranDatetime,
+    ranEmail,
+    ranInteger,
+    ranName,
+    ranParagraph,
+    ranProvince,
+    ranSentence,
+    ranTitle,
+    ranWord
+} from "@/js/mock-random";
 import {generatePhone} from "@/js/reg";
 import {formatDate, getFileName, objNoVal, strNoVal} from "@/js/util";
 
@@ -45,6 +62,8 @@ export const MAIN_RIGHT_ACTIVE_SECURITY = 12//安全设置
 export const MAIN_RIGHT_ACTIVE_SECURITY_EMAIL = 13//绑定邮箱
 export const MAIN_RIGHT_ACTIVE_USER_SOCIAL_CONTACT = 14//用户的社交信息
 export const MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS = 15//已购音乐
+export const MAIN_RIGHT_ACTIVE_ALBUM = 16//专辑页面
+export const MAIN_RIGHT_ACTIVE_MUSIC_LIST_INFO = 17//音乐列表详情页面
 
 /*
 * music {   歌曲对象
@@ -348,8 +367,11 @@ export function generatePurchasedMusics() {
 *   img     string  封面
 *   price   number?  价格
 *   score   number  评分
-*   scoreNum    number  评分人数
+*   scoreNumber    number  评分人数
 *   musics  array   music数组
+*   collectNumber   number  收藏数
+*   commentNumber   number    评论数
+*   description string  描述
 * }
 * */
 export function generateAlbum(name, price) {
@@ -357,12 +379,16 @@ export function generateAlbum(name, price) {
         name: name ? name : ranTitle(1, 3),
         singer: ranName(),
         publisher: ranCTitle(5, 10),
+        publishDate: ranDate(),
         lang: ranCWord(2, 2),
         img: ranDataImage('100x100'),
         price: objNoVal(price) ? null : price ? ranInteger(1, 100) : null,
         score: ranInteger(10, 100) / 10,
         scoreNumber: ranInteger(0, 20000),
-        musics: generateMultiMusic(10, 50)
+        musics: generateMultiMusic(10, 50),
+        collectNumber: ranInteger(0, 10000),
+        commentNumber: ranInteger(0, 10000),
+        description: ranCParagraph(1, 5)
     }
 }
 
@@ -441,4 +467,38 @@ export function generateMVRadio() {
         img: ranDataImage('100x100', ''),
         playing: generateMV()
     }
+}
+
+/*
+* comment  {  评论
+*   author  string  评论者
+*   img     string  评论者的头像
+*   content string  评论的内容
+*   datetime    string  发布评论的时间
+*   reply   string  回复的对象
+*   replyContent string  回复的对象的评论内容,
+*   goodNumber number 点赞的次数
+* }
+* */
+export function generateComment() {
+    const reply = ranBoolean(false, 1, 3) ? ranTitle(1, 3) : null
+    const replyContent = reply ? ranSentence() : null
+    return {
+        author: ranTitle(1, 3),
+        content: ranSentence(),
+        reply,
+        replyContent,
+        img: ranDataImage('50x50'),
+        datetime: ranDatetime(),
+        goodNumber: ranInteger(0, 10)
+    }
+}
+
+export function generateMultiComment(min, max) {
+    const res = []
+    const len = ranInteger(min, max)
+    for (let i = 0; i < len; i++) {
+        res.push(generateComment())
+    }
+    return res
 }

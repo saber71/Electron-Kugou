@@ -1,5 +1,4 @@
 import Mock from 'mockjs'
-import {objNoVal} from "@/js/util";
 
 export function formatDate(date) {
     return date.replace('-', '.').replace('-', '.');
@@ -109,4 +108,8 @@ export function ranDate(format) {
 
 export function ranDatetime(format) {
     return ran.datetime(format)
+}
+
+export function ranCParagraph(min, max) {
+    return ran.cparagraph(min, max)
 }

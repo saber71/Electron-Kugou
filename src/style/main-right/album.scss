@@ -1,0 +1,204 @@
+@import "../../style/common";
+
+#Album {
+  padding: 20px;
+  box-sizing: border-box;
+  height: $main-right-height;
+  overflow-y: auto;
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+
+    .item {
+      span {
+        color: $light-black;
+        cursor: pointer;
+
+        &:hover {
+          color: $black;
+        }
+      }
+
+      label {
+        margin: 0 5px;
+      }
+    }
+
+    label {
+      color: black;
+      cursor: default;
+    }
+
+  }
+
+  .info {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 250px auto auto;
+    grid-gap: 20px;
+
+    .left {
+      position: relative;
+
+      img {
+        width: 100%;
+      }
+
+      span {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        color: white;
+        font-size: 13px;
+        padding: 5px;
+        box-sizing: border-box;
+      }
+    }
+
+    .middle {
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+
+      .text {
+        p {
+          font-size: 14px;
+          color: $light-black;
+        }
+      }
+
+      .button-group {
+        .play-all, .other {
+          font-size: 13px;
+          color: white;
+          padding: 5px 10px;
+          background-color: $blue;
+          border-radius: 3px;
+
+          &:hover {
+            background-color: #148bdc;
+          }
+        }
+
+        .other {
+          color: $light-black;
+          background-color: white;
+          border: 1px solid $light-black;
+          padding: 4px 20px;
+          margin-left: 10px;
+
+          &:hover {
+            color: $blue;
+            border-color: $blue;
+            background-color: white;
+          }
+        }
+      }
+    }
+
+    .right {
+
+      .score1 {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .text {
+          font-size: 40px;
+          font-weight: bold;
+          color: red;
+          margin-right: 5px;
+        }
+
+        .opt {
+          span {
+            font-size: 13px;
+            color: $light-black;
+            cursor: default;
+          }
+        }
+      }
+
+      .score2 {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .text {
+          font-size: 13px;
+          color: $light-black;
+        }
+      }
+    }
+  }
+
+  .tabs {
+
+    .labels {
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid #dddddd;
+      margin: 20px 0;
+
+      label {
+        padding: 5px 20px;
+        color: $black;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          color: $blue;
+        }
+      }
+
+      .active-label {
+        color: $blue;
+        position: relative;
+
+        &:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: -1px;
+          width: 100%;
+          height: 2px;
+          background-color: $blue;
+        }
+      }
+    }
+
+    .content {
+      .musics {
+        .similar-albums {
+          h2 {
+            color: $black;
+            font-size: 15px;
+            border-left: 2px solid $blue;
+            padding-left: 5px;
+            box-sizing: border-box;
+          }
+
+          .group {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 20px;
+          }
+        }
+      }
+
+      .description {
+        font-size: 13px;
+        color: $light-black;
+        padding: 0 20px;
+        box-sizing: border-box;
+      }
+
+      .comment {
+      }
+    }
+  }
+}

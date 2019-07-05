@@ -1,5 +1,6 @@
 import {
     CAN_VISIT_SPACE,
+    COMMENT,
     CUSTOM_RECOMMEND,
     EMAIL_VALIDATOR,
     FANS,
@@ -21,6 +22,7 @@ import {
     REGISTER,
     REMOVE_VISIT_RECORD,
     SET_FOCUS,
+    SIMILAR_ALBUMS,
     SPACE_VISITORS,
     UPLOAD_AVATAR,
     USER_DATA,
@@ -233,7 +235,21 @@ const ajax = {
      */
     getRecommendMV() {
         return axios.get(RECOMMEND_MV)
-    }
+    },
+    /**
+     * 获取相似的专辑
+     * @returns {AxiosPromise<any>}
+     */
+    getSimilarAlbums() {
+        return axios.get(SIMILAR_ALBUMS)
+    },
+    /**
+     * 获取评论
+     * @returns {AxiosPromise<any>}
+     */
+    getComment() {
+        return axios.get(COMMENT)
+    },
 }
 
 export default ajax

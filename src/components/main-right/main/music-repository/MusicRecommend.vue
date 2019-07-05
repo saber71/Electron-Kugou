@@ -36,7 +36,7 @@
                     <label>更多</label>
                 </section>
                 <section class="album-list">
-                    <div class="album" v-for="v in recommendNewAlbums" :title="v.name">
+                    <div class="album" v-for="v in recommendNewAlbums" :title="v.name" @click="toAlbum(v)">
                         <div class="img">
                             <img class="icon" :src="v.img">
                             <img class="play-icon" src="../../../../assets/triangle-white.png">
@@ -156,50 +156,8 @@
                 </div>
             </section>
             <section class="content">
-                <div class="item" v-for="(v,index) in activeAlbum" :title="v.type">
-                    <div class="img">
-                        <img class="icon" :src="v.img">
-                        <div class="hover-bottom">
-                            <div class="play" title="播放全部">
-                                <img src="../../../../assets/triangle-white.png">
-                            </div>
-                        </div>
-                    </div>
-                    <p class="name">{{v.name}}</p>
-                    <div class="bottom">
-                        <label :title="v.singer">{{v.singer}}</label>
-                        <span v-if="v.price">￥{{v.price}}</span>
-                        <img src="../../../../assets/play-list-blue.png" v-else @click="showMusicList(index,$event)" title="所有曲目">
-                        <section class="popup" v-show="showAlbumListIndex===index" @click="showAlbumListIndex=-1">
-                            <div class="popup-content" @click.stop="" :style="musicListPopupStyle">
-                                <div class="top">
-                                    共{{albumMusicTotal}}首
-                                    <div class="close" @click="showAlbumListIndex=-1"></div>
-                                </div>
-                                <div class="middle">
-                                    <div class="music" v-for="(v) in showAlbumMusicList">
-                                        <div class="left">{{v.name}}</div>
-                                        <div class="right">
-                                            <img class="play-icon" src="../../../../assets/sanjiao-gray.png">
-                                            <img src="../../../../assets/download-gray.png">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="bottom">
-                                    <div class="pager">
-                                        <img class="prev" src="../../../../assets/arrow-down-dark.png" :class="{'disabled':albumPage===1}"
-                                             @click="albumPage=albumPage===1?albumPage:albumPage-1">
-                                        <label>{{albumPage}} / {{albumMusicListTotalPage}}</label>
-                                        <img class="next" src="../../../../assets/arrow-down-dark.png" :class="{'disabled':albumPage===albumMusicListTotalPage}"
-                                             @click="albumPage=albumPage===albumMusicListTotalPage?albumPage:albumPage+1">
-                                    </div>
-                                    <button>
-                                        <img src="../../../../assets/sanjiao-gray.png">全部播放
-                                    </button>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
+                <div class="item" v-for="(v) in activeAlbum" :title="v.type">
+                    <album-card :album="v"></album-card>
                 </div>
             </section>
         </section>
@@ -232,13 +190,15 @@
 
 <script>
     import ajax from "@/js/ajax";
-    import {ADD_ALL_TO_MUSIC_LIST} from "@/js/store/mutations_name";
+    import {ADD_ALL_TO_MUSIC_LIST, SET_LOOK_ALBUM, SET_MUSIC_REPOSITORY_ACTIVE_INDEX} from "@/js/store/mutations_name";
     import {SET_PLAYING_MUSIC} from "@/js/event-bus";
     import {ranDataImage} from "@/js/mock-random";
-    import {generateMVRadio} from "@/js/_const";
+    import {generateMVRadio, MAIN_RIGHT_ACTIVE_ALBUM, MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY} from "@/js/_const";
+    import AlbumCard from "@/components/main-right/AlbumCard";
 
     export default {
         name: "MusicRecommend",
+        components: {AlbumCard},
         props: {},
         data() {
             return {
@@ -379,6 +339,22 @@
             },
             clickCategoryBanner(index) {
                 //    todo clickCategoryBanner
+            },
+            toAlbum(album) {
+                const mainRightActive = this.mainRightActive
+                store.commit(SET_LOOK_ALBUM, {
+                    breadcrumb: [
+                        {
+                            name: '推荐',
+                            onclick() {
+                                store.commit(SET_MUSIC_REPOSITORY_ACTIVE_INDEX, 0)
+                                mainRightActive(MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY)
+                            }
+                        }
+                    ],
+                    album
+                })
+                this.mainRightActive(MAIN_RIGHT_ACTIVE_ALBUM)
             },
             playAll() {
                 const musicList = store.state.localMusicList['默认列表'].musics
