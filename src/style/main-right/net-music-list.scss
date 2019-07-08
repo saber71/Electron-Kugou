@@ -1,10 +1,10 @@
-@import "../../style/common";
+@import "../common";
 
-#Album {
+#NetMusicList {
   padding: 20px;
   box-sizing: border-box;
   height: $main-right-height;
-  overflow-y: auto;
+  overflow: auto;
 
   .breadcrumb {
     display: flex;
@@ -33,11 +33,11 @@
 
   }
 
-  .info {
-    margin-top: 20px;
+  .top {
     display: grid;
     grid-template-columns: 250px auto auto;
     grid-gap: 20px;
+    margin-top: 20px;
 
     .left {
       position: relative;
@@ -46,67 +46,98 @@
         width: 100%;
       }
 
-      span {
+      .bottom {
         position: absolute;
         left: 0;
         bottom: 0;
         width: 100%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+        padding: 10px 0;
+        font-size: 14px;
         color: white;
-        font-size: 13px;
-        padding: 5px;
-        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+
+        img {
+          width: 16px;
+          height: 16px;
+          margin: 0 10px;
+        }
       }
     }
 
     .middle {
-      box-sizing: border-box;
       display: flex;
       justify-content: space-between;
       flex-direction: column;
 
+      button {
+        border-radius: 3px;
+      }
+
       .text {
+        h2 {
+          font-size: 16px;
+          color: black;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+
         p {
           font-size: 14px;
           color: $light-black;
+
+          button {
+            margin: 0 5px;
+            border: 1px solid #dddddd;
+            color: $light-black;
+            background-color: white;
+            padding: 5px;
+
+            &:hover {
+              color: $blue;
+              border-color: $blue;
+            }
+          }
         }
       }
 
       .button-group {
-        .play-all, .other {
-          font-size: 13px;
+        display: flex;
+        align-items: center;
+
+        .play {
+          background-color: $blue;
           color: white;
           padding: 5px 10px;
-          background-color: $blue;
-          border-radius: 3px;
 
           &:hover {
-            background-color: #148bdc;
+            background-color: $dark-blue;
           }
         }
 
-        .other {
+        .collect, .share {
+          border: 1px solid #dddddd;
           color: $light-black;
           background-color: white;
-          border: 1px solid $light-black;
-          padding: 4px 20px;
-          margin-left: 10px;
+          padding: 5px 10px;
+          margin-left: 5px;
 
           &:hover {
             color: $blue;
-            border-color: $blue;
-            background-color: white;
+            border-color: $light-blue;
           }
         }
       }
     }
 
     .right {
-
-      .score1 {
+      .higher {
+        margin-top: 20px;
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        margin-top: 20px;
 
         .text {
           font-size: 40px;
@@ -124,7 +155,7 @@
         }
       }
 
-      .score2 {
+      .lower {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -138,7 +169,6 @@
   }
 
   .tabs {
-
     .labels {
       display: flex;
       align-items: center;
@@ -173,32 +203,17 @@
     }
 
     .content {
-      .musics {
-        .similar-albums {
-          h2 {
-            color: $black;
-            font-size: 15px;
-            border-left: 2px solid $blue;
-            padding-left: 5px;
-            box-sizing: border-box;
-          }
-
-          .group {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-gap: 20px;
-          }
-        }
-      }
-
       .description {
-        font-size: 13px;
+        padding: 0 20px 20px;
+        font-size: 14px;
         color: $light-black;
-        padding: 0 20px;
         box-sizing: border-box;
       }
 
-      .comment {
+      .similar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 0 10px;
       }
     }
   }

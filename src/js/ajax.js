@@ -23,6 +23,7 @@ import {
     REMOVE_VISIT_RECORD,
     SET_FOCUS,
     SIMILAR_ALBUMS,
+    SIMILAR_MUSIC_LIST,
     SPACE_VISITORS,
     UPLOAD_AVATAR,
     USER_DATA,
@@ -249,6 +250,9 @@ const ajax = {
      */
     getComment() {
         return axios.get(COMMENT)
+    },
+    getSimilarMusicList() {
+        return axios.get(SIMILAR_MUSIC_LIST)
     },
 }
 

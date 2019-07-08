@@ -26,4 +26,5 @@ export const RECOMMEND_MUSIC_LIST = 'recommendMusicList'//推荐歌单
 export const RECOMMEND_MV = 'recommendMV'//推荐MV
 export const RECOMMEND_ALBUM = 'recommendAlbum'//推荐专辑
 export const SIMILAR_ALBUMS = 'similar-albums'//相似专辑
+export const SIMILAR_MUSIC_LIST = 'similar-music-list'//相似歌单
 export const COMMENT = 'Comments'//获取评论

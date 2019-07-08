@@ -299,17 +299,45 @@ export function generateMusicSpaceData() {
 *   musics  array   歌单包含的音乐，music数组,
 *   renameable  boolean 是否能够重命名
 *   removeable  boolean 是否能够删除
+*   type    array   类型
+*   score   number  评分
+*   scoreNumber number  评分人数
+*   updateTime  string  更新日期
+*   listenCount number  聆听的次数
+*   collectCount    number  收藏的次数
+*   description string  歌单描述
 * }
 * */
 export function generateNetMusicList(name, renameable, removeable) {
+    const type = []
+    const typeLen = ranInteger(1, 4)
+    for (let i = 0; i < typeLen; i++) {
+        type.push(ranCWord(2, 2))
+    }
     return {
         name: name ? name : ranTitle(1, 3),
         author: ranWord(minAccount, maxAccount),
         img: ranDataImage('100x100'),
         musics: generateMultiMusic(1, 20),
         renameable: objNoVal(renameable) ? ranBoolean() : renameable,
-        removeable: objNoVal(removeable) ? ranBoolean() : removeable
+        removeable: objNoVal(removeable) ? ranBoolean() : removeable,
+        type,
+        score: parseInt(ranInteger(1, 100)) / 10,
+        scoreNumber: ranInteger(1, 10000),
+        updateTime: ranDate(),
+        listenCount: ranInteger(0, 1000000),
+        collectCount: ranInteger(0, 1000000),
+        description: ranCTitle()
     }
+}
+
+export function generateMultiNetMusicList(min, max) {
+    const res = []
+    const len = ranInteger(min, max)
+    for (let i = 0; i < len; i++) {
+        res.push(generateNetMusicList(undefined, true, true))
+    }
+    return res
 }
 
 /*

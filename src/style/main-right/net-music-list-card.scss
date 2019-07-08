@@ -1,0 +1,106 @@
+@import "../../style/common";
+
+#NetMusicListCard {
+  .img {
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+
+    .icon {
+      width: 100%;
+    }
+
+    .top {
+      background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4));
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 5px 10px 5px 0;
+      box-sizing: border-box;
+      color: white;
+      font-size: 12px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+
+      img {
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+      }
+    }
+
+    .hover-bottom {
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+      display: none;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 10px 0;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+
+      .love, .play {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid white;
+        opacity: 0.7;
+        cursor: pointer;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+          width: 12px;
+          height: 12px;
+        }
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .play {
+        img {
+          margin-left: 2px;
+        }
+      }
+    }
+
+    &:hover {
+      .hover-bottom {
+        display: flex;
+      }
+    }
+  }
+
+  .name {
+    font-size: 14px;
+    color: $black;
+    margin: 5px 0;
+    padding: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    cursor: pointer;
+
+    &:hover {
+      color: $blue;
+    }
+  }
+
+  .author {
+    font-size: 12px;
+    color: $light-black;
+    cursor: pointer;
+    margin-top: 0;
+
+    &:hover {
+      color: $blue;
+    }
+  }
+}

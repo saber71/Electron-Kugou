@@ -51,6 +51,7 @@
             <purchased-musics
                     v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_PURCHASED_MUSICS"></purchased-musics>
             <album v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_ALBUM"></album>
+            <net-music-list v-if="mainRightActiveIndex===constant.MAIN_RIGHT_ACTIVE_MUSIC_LIST_INFO"></net-music-list>
         </section>
     </div>
 </template>
@@ -87,10 +88,12 @@
     import PurchasedMusics from "@/components/main-right/PurchasedMusics";
     import MusicRepository from "@/components/main-right/main/MusicRepository";
     import Album from "@/components/main-right/Album";
+    import NetMusicList from "@/components/main-right/NetMusicList";
 
     export default {
         name: "MainRight",
         components: {
+            NetMusicList,
             Album,
             MusicRepository,
             PurchasedMusics,

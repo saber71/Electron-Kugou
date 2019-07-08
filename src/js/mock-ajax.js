@@ -24,6 +24,7 @@ import {
     REMOVE_VISIT_RECORD,
     SET_FOCUS,
     SIMILAR_ALBUMS,
+    SIMILAR_MUSIC_LIST,
     SPACE_VISITORS,
     UPLOAD_AVATAR,
     USER_DATA,
@@ -35,6 +36,7 @@ import {
     generateMultiComment,
     generateMultiMusic,
     generateMultiMV,
+    generateMultiNetMusicList,
     generateMultiRadio,
     generateMultiUserBriefData,
     generateMusicSpaceData,
@@ -180,4 +182,7 @@ m(SIMILAR_ALBUMS, 'get', () => {
 })
 m(COMMENT, 'get', () => {
     return generateMultiComment(0, 100)
+})
+m(SIMILAR_MUSIC_LIST, 'get', () => {
+    return generateMultiNetMusicList(5, 20)
 })

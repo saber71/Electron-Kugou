@@ -73,7 +73,7 @@
                     </div>
                     <p class="name">每日歌曲推荐</p>
                 </div>
-                <div class="item" v-for="v in recommendCustomMusicList" :title="v.name">
+                <div class="item" v-for="v in recommendCustomMusicList" :title="v.name" @click="toNetMusicList(v)">
                     <div class="img">
                         <img class="icon" :src="v.img">
                         <div class="hover-bottom">
@@ -97,19 +97,8 @@
                 <label class="more">更多</label>
             </section>
             <section class="content">
-                <div class="item" v-for="v in recommendMusicList" :title="v.name">
-                    <div class="img">
-                        <img class="icon" :src="v.img">
-                        <div class="hover-bottom">
-                            <div class="love" title="收藏歌单">
-                                <img src="../../../../assets/love-white-all.png">
-                            </div>
-                            <div class="play" title="播放全部">
-                                <img src="../../../../assets/triangle-white.png">
-                            </div>
-                        </div>
-                    </div>
-                    <p class="name">{{v.name}}</p>
+                <div v-for="v in recommendMusicList" @click="toNetMusicList(v)">
+                    <net-music-list-card :music-list="v" :key="v.name"></net-music-list-card>
                 </div>
             </section>
         </section>
@@ -190,15 +179,16 @@
 
 <script>
     import ajax from "@/js/ajax";
-    import {ADD_ALL_TO_MUSIC_LIST, SET_LOOK_ALBUM, SET_MUSIC_REPOSITORY_ACTIVE_INDEX} from "@/js/store/mutations_name";
+    import {ADD_ALL_TO_MUSIC_LIST, SET_LOOK_ALBUM, SET_LOOK_MUSIC_LIST, SET_MUSIC_REPOSITORY_ACTIVE_INDEX} from "@/js/store/mutations_name";
     import {SET_PLAYING_MUSIC} from "@/js/event-bus";
     import {ranDataImage} from "@/js/mock-random";
-    import {generateMVRadio, MAIN_RIGHT_ACTIVE_ALBUM, MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY} from "@/js/_const";
+    import {generateMVRadio, MAIN_RIGHT_ACTIVE_ALBUM, MAIN_RIGHT_ACTIVE_MUSIC_LIST_INFO, MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY} from "@/js/_const";
     import AlbumCard from "@/components/main-right/AlbumCard";
+    import NetMusicListCard from "@/components/main-right/NetMusicListCard";
 
     export default {
         name: "MusicRecommend",
-        components: {AlbumCard},
+        components: {NetMusicListCard, AlbumCard},
         props: {},
         data() {
             return {
@@ -217,44 +207,10 @@
                 mvRadioSize: 4,
                 mvRadioPage: 1,
                 activeAlbumIndex: 0,
-                showAlbumListIndex: -1,
-                albumPage: 1,
-                albumSize: 8,
-                musicListPopupStyle: {
-                    top: 0,
-                    right: 0
-                }
             }
         },
         watch: {},
         computed: {
-            albumMusicTotal() {
-                if (this.showAlbumListIndex < 0) {
-                    return 0
-                }
-                return this.activeAlbum[this.showAlbumListIndex].musics.length
-            },
-            albumMusicListTotalPage() {
-                if (this.showAlbumListIndex < 0) {
-                    return 0
-                }
-                const musicsLength = this.albumMusicTotal
-                const size = this.albumSize
-                let res = parseInt(musicsLength / size)
-                if (musicsLength % size > 0) {
-                    res++
-                }
-                return res
-            },
-            showAlbumMusicList() {
-                if (this.showAlbumListIndex < 0) {
-                    return []
-                }
-                const musics = this.activeAlbum[this.showAlbumListIndex].musics
-                const page = this.albumPage
-                const size = this.albumSize
-                return musics.slice((page - 1) * size, page * size)
-            },
             activeAlbum() {
                 return this.recommendAlbum[this.activeAlbumIndex]
             },
@@ -286,14 +242,6 @@
             }
         },
         methods: {
-            showMusicList(index, ev) {
-                this.showAlbumListIndex = index
-                const clientX = ev.clientX
-                const clientY = ev.clientY
-                const width = window.innerWidth
-                this.musicListPopupStyle.right = (width - clientX + 15) + 'px'
-                this.musicListPopupStyle.top = (clientY - 150) + 'px'
-            },
             getMonth() {
                 let res = ''
                 const month = this.today.getMonth() + 1
@@ -355,6 +303,22 @@
                     album
                 })
                 this.mainRightActive(MAIN_RIGHT_ACTIVE_ALBUM)
+            },
+            toNetMusicList(musicList) {
+                const mainRightActive = this.mainRightActive
+                store.commit(SET_LOOK_MUSIC_LIST, {
+                    breadcrumb: [
+                        {
+                            name: '推荐',
+                            onclick() {
+                                store.commit(SET_MUSIC_REPOSITORY_ACTIVE_INDEX, 0)
+                                mainRightActive(MAIN_RIGHT_ACTIVE_MUSIC_REPOSITORY)
+                            }
+                        }
+                    ],
+                    musicList
+                })
+                this.mainRightActive(MAIN_RIGHT_ACTIVE_MUSIC_LIST_INFO)
             },
             playAll() {
                 const musicList = store.state.localMusicList['默认列表'].musics
